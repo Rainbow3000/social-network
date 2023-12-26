@@ -12,12 +12,14 @@ import { LuTwitter } from "react-icons/lu";
 import { RiSendPlane2Line } from "react-icons/ri";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
 import Recommend from '../../components/recommend/Recommend'
+import { useNavigate } from 'react-router-dom'
+import PostAction from '../../components/postAction/PostAction'
 const Home = () => {
 
   const {postList} = useSelector(state => state.post); 
-
+  const {user} = useSelector(state => state.user); 
   const dispatch = useDispatch(); 
-
+  const navigate = useNavigate(); 
   const getPosts = async()=>{
     try {
       dispatch(getPostList()); 
@@ -26,35 +28,26 @@ const Home = () => {
     }
   }
 
+  
   useEffect(()=>{
     getPosts(); 
   },[])
 
+
+  if(user === null){
+    navigate('/auth')
+    return;
+  }
   return (
     <div className='home-container'>
         <div className="home-main">
             <div className="left">
-              <div className='post-create'>
-                  <div className='user-input'>
-                    <img src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />
-                    <input placeholder='Nội dung bài viết của bạn ...' type="text" />
-                  </div>
-                  <div className='post-media'>
-                    <div className='media-action'>
-                      <ul>
-                        <li><IoMdImages/>&nbsp; Ảnh/Video</li>
-                        <li><FaRegFaceSmile/>&nbsp; Biểu tượng</li>
-                      </ul>            
-                    </div>             
-                    <button>Đăng</button>
-                  </div>
-              </div>
-
+             <PostAction/>
               <div className='post-list'>
                   {
                     postList && postList.map((item,index)=>{
                       return (
-                        <Post item = {item}/>
+                        <Post key={item._id} item = {item}/>
                       )
                     })
                   }
@@ -62,74 +55,43 @@ const Home = () => {
 
             </div>
             <div className="right">
-            <Recommend/>
-
-
-              {/* <div className="right-recomment">
-                  <div className='top'>
-                    <span>Sự kiện</span>
-                    <span>Xem thêm</span>
-                  </div>
-                  <div className='center'>
-                   
-                      <img src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />            
-                      <div className="user-wrapper">
-                        <div className='user-name'>
-                          <span>Nguyễn Văn A</span>
-                          <span>Người đóng góp nổi bật</span>
-                          <div className='icon-list'>
-                            <span><RiFacebookBoxLine/></span>
-                            <span><LuTwitter/></span>
-                            <span><FaInstagram/></span>
+                    
+                <Recommend/>
+                <div className="right-recommend">
+                    <div className='top'>
+                      <span>Sinh nhật</span>
+                      <span>Xem thêm</span>
+                    </div>
+                    <div className='center'>           
+                        <img className='dob-user-img' src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />            
+                        <div className="user-wrapper">
+                          <div className='user-name'>
+                            <span>Nguyễn Văn A</span>
+                            <span>Sinh nhật ngày hôm nay</span>                      
                           </div>
+
                         </div>
-
-
+                        
                       </div>
-                      
-                    </div>
-                
-                  <div className='bottom'>
-                    <button>Ẩn</button>
-                    <button>Theo dõi</button>
-                  </div>
-              </div> */}
-
-
-              <div className="right-recommend">
-                  <div className='top'>
-                    <span>Sinh nhật</span>
-                    <span>Xem thêm</span>
-                  </div>
-                  <div className='center'>           
-                      <img className='dob-user-img' src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />            
-                      <div className="user-wrapper">
-                        <div className='user-name'>
-                          <span>Nguyễn Văn A</span>
-                          <span>Sinh nhật ngày hôm nay</span>                      
-                        </div>
-
+                  
+                    <div className='bottom'>
+                      <div className='dob-send-input'>
+                          <input type="text" placeholder='Gửi lời chúc mừng ...'/>
+                          <div className='send-icon-wrapper'><RiSendPlane2Line/></div>
                       </div>
-                      
                     </div>
-                
-                  <div className='bottom'>
-                    <div className='dob-send-input'>
-                        <input type="text" placeholder='Gửi lời chúc mừng ...'/>
-                        <div className='send-icon-wrapper'><RiSendPlane2Line/></div>
-                    </div>
-                  </div>
 
-                  <div className='dob-upcomming'>
-                    <div className='dob-icon'>
-                        <LiaBirthdayCakeSolid/>
+                    <div className='dob-upcomming'>
+                      <div className='dob-icon'>
+                          <LiaBirthdayCakeSolid/>
+                      </div>
+                      <div className='dob-info'>
+                        <span>Sinh nhật của mọi người</span>
+                        <span>12 người bạn đón sinh nhật hôm nay</span>
+                      </div>
                     </div>
-                    <div className='dob-info'>
-                      <span>Sinh nhật của mọi người</span>
-                      <span>12 người bạn đón sinh nhật hôm nay</span>
-                    </div>
-                  </div>
-              </div>
+                </div>
+            
             </div>
         </div>
      

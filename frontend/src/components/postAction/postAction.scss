@@ -12,43 +12,6 @@
     flex-direction: column;
     align-items: center;
     padding: 20px 0;
-    .form-preview{
-        width: 90%;
-        height: auto;
-        margin-top: 30px;
-        .img-preview{
-            width: 100%;
-            height: auto;
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            .img-item{
-                width: 30%;
-                height: auto;
-                border-radius: 5px;
-                position: relative;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin-right: 3.33%;
-                margin-top: 10px;
-                .close-img-icon{
-                    position: absolute;
-                    font-size: 20px;
-                    right: 5px;
-                    top: 5px;
-                    cursor: pointer;
-                    color: white;
-                }
-                img{
-                    width: 100%;
-                    height: 120px;
-                    border-radius: 5px;
-                    object-fit: cover;
-                }
-            }
-        }
-    }
     .close-form-item{
         position: absolute;
         right: 5px;
@@ -106,3 +69,40 @@
         font-weight: 500;
     }
 }
+        .form-preview{
+            width: 90%;
+            height: auto;
+            margin-top: 30px;
+            .img-preview{
+                width: 100%;
+                height: auto;
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                .img-item{
+                    width: 30%;
+                    height: auto;
+                    border-radius: 5px;
+                    position: relative;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-right: 3.33%;
+                    margin-top: 10px;
+                    .close-img-icon{
+                        position: absolute;
+                        font-size: 20px;
+                        right: 5px;
+                        top: 5px;
+                        cursor: pointer;
+                        color: white;
+                    }
+                    img{
+                        width: 100%;
+                        height: 120px;
+                        border-radius: 5px;
+                        object-fit: cover;
+                    }
+                }
+            }
+        }

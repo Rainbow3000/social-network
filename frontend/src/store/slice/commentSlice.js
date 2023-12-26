@@ -36,7 +36,7 @@ export const commentSlice = createSlice({
     },
     hiddenShowCreatePost:(state)=>{
         state.isShowCreatePost = false; 
-    }
+    },
   },
   extraReducers:(builder)=>{
 

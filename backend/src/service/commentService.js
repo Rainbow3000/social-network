@@ -65,8 +65,7 @@ module.exports = {
         try {
             data.createdDate = moment().format();
             const commentCreated = await _commentRepository.create(data);   
-            const postExisted = await _postRepository.get(data.post); 
-            
+            const postExisted = await _postRepository.get(data.post);        
             const userComment = postExisted.comment.userCommented.find(item => mongoose.Types.ObjectId(item).equals(mongoose.Types.ObjectId(data.user)));
             if(userComment === undefined){
                 postExisted.comment.userCommented.push(data.user); 

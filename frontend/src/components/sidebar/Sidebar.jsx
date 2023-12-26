@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './sidebar.scss'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { BiCategory } from "react-icons/bi";
 import { BiBell } from "react-icons/bi";
 import { BiMessage } from "react-icons/bi";
@@ -9,8 +9,19 @@ import { FaWpexplorer } from "react-icons/fa";
 import { RxPerson } from "react-icons/rx";
 import { IoSettingsOutline } from "react-icons/io5";
 import { TbUsersGroup } from "react-icons/tb";
+import { MdOutlineLogout } from "react-icons/md";
+import {userLogout} from '../../store/slice/userSlice'
 const Sidebar = () => {
   const {user} = useSelector(state => state.user); 
+  const navigate = useNavigate();
+  const dispatch = useDispatch(); 
+  const handleLogout = ()=>{
+    dispatch(userLogout());
+  }
+
+  if(user === null){
+    navigate('/auth')
+  }
   return (
     <div className='sidebar'>
         <div id='logo'>
@@ -38,7 +49,7 @@ const Sidebar = () => {
             </li>
 
             <li>
-              <Link className='link' to={user?.data ? `/profile/${user.data._id}`:`/profile/un-auth`}>
+              <Link className='link' to="/notification">
                 <BiBell/>
                  <span>&nbsp;&nbsp; Thông báo</span>
               </Link>
@@ -58,11 +69,22 @@ const Sidebar = () => {
             </li>
 
             <li>
-              <Link className='link' to={user?.data ? `/profile/${user.data._id}`:`/profile/un-auth`}>
+              <Link className='link' to="/setting">
                 <IoSettingsOutline/>
                  <span>&nbsp;&nbsp; Cài đặt</span>
               </Link>
             </li>
+            
+              {
+                user !== null && (
+                <li>
+                    <Link className='link' onClick={handleLogout}>
+                      <MdOutlineLogout/>
+                      <span>&nbsp;&nbsp; Thoát</span>
+                    </Link>
+                </li>
+                )
+              }
            
         </ul>
     </div>

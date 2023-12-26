@@ -4,13 +4,20 @@ const commentSchema = new mongoose.Schema(
   {
     content: {
       type:String,
-      required:true
+      required:[function(){ return this.video?.trim().length === 0 && this.image?.trim().length === 0},"Nội dung bình luận không được bỏ trống"],
     },
     image:{
       type:String
     },
     video:{
       type:String
+    },
+    parentName:{
+      type:String
+    },
+    level:{
+      type:Number,
+      default:0
     },
     like:{
       number:{

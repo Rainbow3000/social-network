@@ -5,8 +5,12 @@ import { _publicRequest } from '../../requestMethod'
 export const userRegister = createAsyncThunk(
   'users/register',
   async (data) => {
-    const response = await _publicRequest.post('account/register',data); 
-    return response.data
+    try {
+      const response = await _publicRequest.post('account/register',data); 
+      return response.data
+    } catch (error) { 
+        throw error?.response?.data
+    }
   }
 )
 
@@ -101,9 +105,9 @@ export const userSlice = createSlice({
       localStorage.setItem('user',JSON.stringify((state.user))); 
     })
     builder.addCase(userRegister.rejected, (state, action) => {
-      state.user = null;
       state.isError = true;
-      state.error = action.payload;
+      state.user = null;
+      state.error = action.error;
       state.isLoading = false; 
     })
 
@@ -117,6 +121,7 @@ export const userSlice = createSlice({
     })
     builder.addCase(userLogin.rejected, (state, action) => {
       state.user = null;
+      state.error = action.payload
       state.isLoading = false; 
     })
 

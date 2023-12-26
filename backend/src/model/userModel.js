@@ -12,30 +12,49 @@ const userSchema = new mongoose.Schema(
       required:[true,"Ảnh người dùng phải được cung cấp"]
 
     },
-    follower:{
+    followers:{
       type:[mongoose.Schema.Types.ObjectId],
       ref:'User'
     },
-    subscribe:{
+    followings:{
       type:[mongoose.Schema.Types.ObjectId],
       ref:'User'
     },
-    friend:{
+    friends:{
       type:[mongoose.Schema.Types.ObjectId],
+      ref:'User'
+    },
+    gender:{
+      type:String,
+      required:[true,"Giới tính người dùng phải được cung cấp"],
       ref:'User'
     },
     dob:{
-        type:String
+      type:String,
+      required:[true,"Ngày sinh người dùng phải được cung cấp"],
+      ref:'User'
     },
     address:{
         type:String
     },
-    education:{
+    career:{
         type:String
     },
     phoneNumber:{
         type:String
     },
+    facebookLink:{
+        type:String
+    },
+    twitterLink:{
+      type:String
+    },
+    instagramLink:{
+      type:String
+    },
+    LinkedInLink:{
+    type:String
+  },
     status: {
       type:Number,
       required:true,

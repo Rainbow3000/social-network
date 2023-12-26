@@ -73,6 +73,25 @@ export const postSlice = createSlice({
     },
     hiddenShowCreatePost:(state)=>{
         state.isShowCreatePost = false; 
+    },
+    setChildrentComment:(state,action)=>{
+      state.postList = state.postList.map(post =>{
+        if(post._id === action.payload.postId){
+          const childComment =  post.commentList?.filter(comment =>{
+            if(action.payload.children.includes(comment._id)){
+              return comment;
+            }
+          });
+         
+          post.commentList = post.commentList.map(comment=>{
+            if(comment._id === action.payload.commentId){
+               comment.children = childComment; 
+            }
+            return comment;
+          })
+        }
+        return post;
+      })
     }
   },
   extraReducers:(builder)=>{
@@ -164,13 +183,13 @@ export const postSlice = createSlice({
       state.isLoading = false;
       state.error = null; 
       state.isError = false;
-      state.postList =  state.postList.map(item=>{
-         if(item._id === action.payload?.data?._id){
-            item = action.payload?.data;
-            return item; 
-         }
-         return item; 
-      })
+      // state.postList =  state.postList.map(item=>{
+      //    if(item._id === action.payload?.data?._id){
+      //       item = action.payload?.data;
+      //    }
+      //    return item; 
+      // })
+      
     })
     builder.addCase(updatePostByOtherUser.rejected, (state, action) => {
       state.isError = true;
@@ -227,6 +246,6 @@ export const postSlice = createSlice({
   }
 })
 
-export const { showCreatePost,hiddenShowCreatePost } = postSlice.actions
+export const { showCreatePost,hiddenShowCreatePost,setChildrentComment } = postSlice.actions
 
 export default postSlice.reducer

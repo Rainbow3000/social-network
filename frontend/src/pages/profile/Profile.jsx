@@ -17,6 +17,13 @@ import { RiFacebookBoxLine } from "react-icons/ri";
 import { FiTwitter } from "react-icons/fi";
 import { FaInstagram } from "react-icons/fa";
 import Recommend from '../../components/recommend/Recommend';
+import { BsPencil } from "react-icons/bs";
+import { HiOutlinePencilSquare } from "react-icons/hi2";
+import { IoCloudUploadOutline } from "react-icons/io5";
+import { HiDotsHorizontal } from "react-icons/hi";
+import { FaPlus } from "react-icons/fa6";
+import { FiRadio } from "react-icons/fi";
+import { PiMessengerLogoBold } from "react-icons/pi";
 const Profile = () => {
     const dispatch = useDispatch(); 
     const location = useLocation(); 
@@ -52,13 +59,20 @@ const Profile = () => {
             <div className='profile-info-user'>
                 <img className='img-cover' src="https://images.unsplash.com/photo-1486911278844-a81c5267e227?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8&w=1000&q=80" alt="" />
                 <div className='user-info'>
+                    <span className='upload-icon'><IoCloudUploadOutline/></span>
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD73TSl-2tkJKbEJ1X8kkc6YHeUmRglKmNzA&usqp=CAU" alt="" />
                     <span className='user-name'>Elon Mark</span>
                     <span>Nhà thiết kế thời trang</span>
                 </div>
+                <div className='profile-btn-list'>
+                    <button><FaPlus/> &nbsp; Kết bạn</button>
+                    <button><PiMessengerLogoBold/> &nbsp; Nhắn tin</button>
+                    <button><FiRadio/>&nbsp; Theo dõi</button>
+                    <span><HiDotsHorizontal/></span>
+                </div>
 
                 <div className='edit-cover-photo'>
-                    <MdOutlineCloudUpload/>
+                    <BsPencil/>
                     &nbsp;
                     <span>Cập nhật ảnh bìa</span>
                 </div>
@@ -81,7 +95,7 @@ const Profile = () => {
                     <li>123 Đang theo dõi</li>
                     <li>
                         <div className='btn-update'>
-                            <span>Cập nhật</span>
+                            <span>Cập nhật thông tin</span>
                         </div>
                     </li>
                 </ul>

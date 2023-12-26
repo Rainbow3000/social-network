@@ -12,58 +12,39 @@ import {useSelector} from 'react-redux'
 import Rightbar from './components/rightbar/Rightbar';
 import Community from './pages/community/Community';
 import Auth from './pages/auth/Auth';
+import Setting from './pages/setting/Setting';
+import Notification from './pages/notification/Notification';
 function App() {
   const {isShowOverlay} = useSelector(state=> state.app);
   const {isShowCreatePost} = useSelector(state=> state.post);
   const {isShowLoginForm} = useSelector(state => state.user); 
-  const user = false; 
+  const {user} = useSelector(state => state.user); 
   return (
     <div id="app">
-      <Routes>
-{/* 
-      {
-        isShowLoginForm && (
-          <Popup/>
-        )
-      }
-
-      {
-        isShowCreatePost && (
-          <PostAction/>
-        )
-      }
-
-      {
-        isShowOverlay && (
-          <div className="overlay"></div>
-        )
-      } */}
-
-      {
-
-        user === true ? (
-          <>
-            <div className="app-left">
-              <Sidebar/>
-            </div>
+            {
+              user !== null &&  (
+                <div className="app-left">
+                  <Sidebar/>
+                </div>
+              )
+            }
             <div className="app-center">
-              <Header/>
+              {
+                user !== null && (
+                  <Header/>           
+                )
+              }
+                  <Routes>
                   <Route path=''  element={<Home/>} />
                   <Route path='/profile/:id'  element={<Profile/>} />
                   <Route path='/chat'  element={<Chat/>} />
                   <Route path='/community'  element={<Community/>} />
-                 
+                  <Route path='/setting'  element={<Setting/>} />               
+                  <Route path='/notification'  element={<Notification/>} />  
+                  <Route path='/auth'  element={<Auth/>} />             
+                </Routes>
             </div>
-          </>
-
-        ):(
-          <>
-            <Route path='/auth'  element={<Auth/>} />
-          </>
-        )
-      }
-      </Routes>
-    </div>
+          </div>
   );
 }
 

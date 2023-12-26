@@ -4,11 +4,16 @@ import { IoCloseSharp } from "react-icons/io5";
 import {hiddenOverlay} from '../../store/slice/appSlice'
 import {hiddenShowCreatePost} from '../../store/slice/postSlice'
 import {useDispatch, useSelector} from 'react-redux'
+import { IoMdImages } from "react-icons/io";
+import { FaRegFaceSmile } from "react-icons/fa6";
 import uuid from 'react-uuid';
 import storage from '../../firebase'; 
 import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import {createPost} from '../../store/slice/postSlice'
+import { validateEmpty } from '../../helper/validateHelper';
+
+let flag = 0;
 const PostAction = () => {
   const [images,setImages] = useState([]); 
   const [video,setVideo] = useState(""); 
@@ -16,6 +21,9 @@ const PostAction = () => {
   const dispacth = useDispatch(); 
   const {isSuccess} = useSelector(state => state.post); 
   const inputRef = useRef(null); 
+
+  const [contentErr,setContentErr] = useState(""); 
+  const [mediaErr,setMediaErr] = useState(""); 
 
   const handleCloseCreatePost = ()=>{
     dispacth(hiddenOverlay()); 
@@ -49,6 +57,22 @@ const PostAction = () => {
 
 const handleSubmitForm = (e)=>{
   e.preventDefault(); 
+
+  if(validateEmpty(content)){
+    setContentErr('Vui lòng nhập nội dung cho bài viết')
+    flag = 1;
+  }
+
+  if(video.trim() === "" && images.length  === 0){
+    setMediaErr("Vui lòng chọn ảnh hoặc video cho bài viết")
+    flag = 1;
+  }
+
+  if(flag === 1){
+    flag = 0
+    return; 
+  }
+
   const post = {
     content,
     images,
@@ -57,6 +81,9 @@ const handleSubmitForm = (e)=>{
   }
   dispacth(createPost(post)); 
   handleCloseCreatePost(); 
+  setContent("");
+  setVideo("");
+  setImages([]);
 }
 
 useEffect(()=>{
@@ -64,22 +91,18 @@ useEffect(()=>{
 },[])
 
 return (
-  <form className='post-form-create' onSubmit={handleSubmitForm}> 
-      <IoCloseSharp className='close-form-item' onClick={handleCloseCreatePost}/>
-      <span className='form-title'>Tạo bài viết</span>
-      <div className='input-item'>
-          <label htmlFor="">Nội dung bài viết</label>
-          <input ref={inputRef} tabIndex={0} type="text" onChange={(e)=>setContent(e.target.value)}/>
-      </div>
-      
-      <div className='input-item'>
-          <label className='lable-file' htmlFor="input-file">
-            Chọn ảnh/video
-            <MdOutlineAddPhotoAlternate className='add-file-img'/>
-          </label>
-          <input style={{display:'none'}} id='input-file' type="file" multiple onChange={handleChooseImage} />
-      </div>
-      <div className="form-preview">
+  <form className='post-create' onSubmit={handleSubmitForm}>
+  <span className='text-error content'>{contentErr}</span>
+  <div className='user-input'>
+    <img src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />
+    <input value={content} placeholder='Nội dung bài viết của bạn ...' type="text" onChange={(e)=>{
+      setContent(e.target.value)
+      setContentErr("")
+      setMediaErr("")
+      }}/>
+    <input type="file" id='post-file' multiple onChange={handleChooseImage}/>
+  </div>
+  <div className="form-preview">
         {
           video.trim() !== "" && (
             <div className='video-preview'> 
@@ -101,10 +124,19 @@ return (
         })}
         </div>
       </div>
-      <div className='post-create-btn'>
-        <button type='submit' className='form-create-btn'>Hoàn tất</button>
-      </div>
-  </form>
+
+  <div className='post-media'>
+    <div className='media-action'>
+      <span className='text-error media'>{mediaErr}</span>
+      <ul>
+        <li><label htmlFor="post-file"><IoMdImages/>&nbsp; Ảnh/Video</label></li>
+        <li><FaRegFaceSmile/>&nbsp; Biểu tượng</li>
+      </ul>            
+    </div>             
+    <button type='submit'>Đăng</button>
+  </div>
+</form>
+
   )
 }
 

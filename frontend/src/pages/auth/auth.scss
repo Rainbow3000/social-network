@@ -1,5 +1,5 @@
 .auth-container{
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -37,8 +37,8 @@
                 width: 960px;
                 display: flex;
                 height: auto;
-                align-items: center;
-                transition: all 1s ease;
+                align-items: flex-start;
+                transition: all 0.5s ease;
             }
 
             .form-slice.active{
@@ -49,8 +49,10 @@
         .form-wrapper{
             color: #4E5D78;
             width: 480px;
-            height: 510px;
+            min-height: 510px;
+            height: auto;
             display: flex;
+            padding-bottom: 30px;
             flex-direction: column;
             align-items: center;
             background-color: #FFFFFF;
@@ -68,14 +70,27 @@
                 align-items: center;
                 .input-item{
                     width: 90%;
-                    height: 45px;
+                    min-height: 45px;
+                    height: auto;
                     border-radius: 10px;
-                    margin-top: 40px;
-                    border: 0.5px solid #EEEEEE;
-                    display: flex;
+                    margin-top: 40px;             
                     align-items: center;
-                    padding: 10px;
                     position: relative;
+                    .error-text{
+                        font-size: 14px;
+                        color: red;
+                    }
+                    .input-main{
+                        width: 100%;
+                        height: 45px;
+                        border-radius: 10px;
+                        margin-top: 5px;
+                        border: 0.5px solid #EEEEEE;
+                        display: flex;
+                        align-items: center;
+                        padding: 10px;
+                        position: relative;
+                    }
                     .input-date{
                         position: absolute;
                         background-color: #FFFFFF;
@@ -98,7 +113,6 @@
                         outline: none;
                         border: none;
                         padding-left: 10px;
-                       
                     }
                    
 
@@ -112,7 +126,7 @@
                         font-size: 14px;
                     }
                     .gender-icon{
-                        margin-right: 20px;
+                        margin-right: 5px;
                         font-weight: bold;
                     }
                     
@@ -121,7 +135,8 @@
                 .input-wrapper{
                     width: 90%;
                     display: flex;
-                    align-items: center;
+                    height: auto;
+                    align-items: flex-end;
                     justify-content: space-between;
                     .input-item{
                         width: 45%;
@@ -153,6 +168,7 @@
                     border-radius: 10px;
                     color: #FFFFFF;
                     cursor: pointer;
+                    border: none;
                     font-weight: bold;
                     &:hover{
                         background-color: #377dffe5;

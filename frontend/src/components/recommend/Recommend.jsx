@@ -3,6 +3,7 @@ import './recommend.scss'
 import { RiFacebookBoxLine } from "react-icons/ri";
 import { FaInstagram } from "react-icons/fa";
 import { LuTwitter } from "react-icons/lu";
+import { PiLinkedinLogoBold } from "react-icons/pi";
 const Recommend = ({isHiddenTop}) => {
   return (
     <div className="right-recommend">
@@ -20,6 +21,7 @@ const Recommend = ({isHiddenTop}) => {
                             <span><RiFacebookBoxLine/></span>
                             <span><LuTwitter/></span>
                             <span><FaInstagram/></span>
+                            <span><PiLinkedinLogoBold/></span>
                           </div>
                         </div>
 

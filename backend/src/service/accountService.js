@@ -36,7 +36,7 @@ module.exports = {
           } else {        
             reject({
                 success:false,
-                message:"Mật khẩu không chính xác",
+                message:"Password:Mật khẩu không chính xác",
                 statusCode:401,
                 data:null,
             });
@@ -44,7 +44,7 @@ module.exports = {
         } else {
           reject({
             success:false,
-            message:"Email không hợp lệ hoặc không tồn tại",
+            message:"Email:Email không hợp lệ hoặc không tồn tại",
             statusCode:401,
             data:null,
         });
@@ -66,7 +66,7 @@ module.exports = {
             if(accountExisted !== null){
                 return {
                     success:false,
-                    message:"Email đã tồn tại",
+                    message:"Email:Email đã tồn tại",
                     statusCode:400,
                     data:null              
                  }; 
@@ -75,7 +75,7 @@ module.exports = {
             data.password = hashPassword;
             const _account = await _accountRepository.create(data);
             const {password,..._accountRest} = _account._doc;
-            const user = await _userRepository.create({_id:_accountRest._id,avatar:process.env.AVATAR_DEFAULT}); 
+            const user = await _userRepository.create({_id:_accountRest._id,avatar:process.env.AVATAR_DEFAULT,dob:data?.dob,gender:data?.gender}); 
             const accessToken = jwt.sign(
               { userName: _accountRest.userName, isAdmin: _accountRest.isAdmin},
               process.env.JWT_TOKEN,
@@ -96,18 +96,16 @@ module.exports = {
           if(error instanceof mongoose.Error.ValidationError){  
             return {
                 success:false,
-                message:"Đăng ký tài khoản thất bại",
                 statusCode:400,
                 data:null,
-                errors:validateError(error)
+                message:validateError(error)
             };
           }
           return {
               success:false,
-              message:"Đăng ký tài khoản thất bại",
               statusCode:500,
               data:null,
-              errors:error?.message
+              message:error?.message
           }
     }
 },

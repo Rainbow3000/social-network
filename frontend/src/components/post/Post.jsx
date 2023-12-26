@@ -24,16 +24,27 @@ moment.locale('vi');
 
 
 const Post = ({item}) => {
+  const [isLike,setIsLike] = useState(false)
+  const [likeNumber,setLikeNumber] = useState(item?.like?.number);
   const [content,setContent] = useState(""); 
   const [image,setImage] = useState(""); 
   const [video,setVideo] = useState(""); 
   const [parent,setParent] = useState(null); 
   const [indexChildShow,setIndexChildShow] = useState([]); 
   const [isShowActionActive,setIsShowActionActive] = useState(false); 
+  const [parentName,setParentName] = useState('')
+  const [level,setLevel] = useState(0); 
   const dispatch = useDispatch(); 
   const {user}= useSelector(state => state.user); 
   const inputRef = useRef(); 
   const handleLikePost = (postId)=>{
+    if(isLike === false){
+        setLikeNumber(item?.like?.number + 1)
+        setIsLike(!isLike)
+    }else {
+        setLikeNumber(likeNumber - 1)
+        setIsLike(!isLike)
+    }
     const userId = JSON.parse(localStorage.getItem('user'))?.data?._id; 
     dispatch(updatePostByOtherUser({postId,userId})); 
   }
@@ -53,7 +64,6 @@ const Post = ({item}) => {
           const storageRef = refStorage(storage,fileName); 
           uploadBytes(storageRef,file).then((snapshot)=>{
               getDownloadURL(refStorage(storage,fileName)).then(downloadUrl =>{
-                console.log(downloadUrl);  
                 setImage(`${downloadUrl}@-@${fileName}`)       
               })
           })
@@ -63,12 +73,14 @@ const Post = ({item}) => {
 const handleSubmitForm = (e)=>{
     e.preventDefault(); 
     const comment = {
-        content,
+        content : content.includes('@') === true ? content.split(' ').slice(1).join(' ') : content,
         parent,
         video,
         image,
         user: JSON.parse(localStorage.getItem('user'))?.data?._id,
-        post: item._id
+        post: item._id,
+        level,
+        parentName
     }
     dispatch(createComment(comment)); 
     setContent("");
@@ -77,9 +89,11 @@ const handleSubmitForm = (e)=>{
     setParent(null); 
 }
 
-const handleSetReplyComment = (userName,parent)=>{
+const handleSetReplyComment = (userName,parent,level)=>{
     setContent(`@${userName}`);
     setParent(parent); 
+    setLevel(level);
+    setParentName(userName);
     inputRef.current.focus();
 }
 
@@ -87,14 +101,14 @@ const handleGetCommentByPost = (postId)=>{
     dispatch(getCommentByPost(postId))
 }
 
-const handleShowCommentChild = (index)=>{
-    if(indexChildShow.indexOf(index) === -1){
-        setIndexChildShow(indexChild => [...indexChild,index]); 
-        return; 
-    }
-    const newIndexChild = indexChildShow.filter(item => item !== index); 
-    setIndexChildShow(newIndexChild); 
-}
+// const handleShowCommentChild = (index)=>{
+//     if(indexChildShow.indexOf(index) === -1){
+//         setIndexChildShow(indexChild => [...indexChild,index]); 
+//         return; 
+//     }
+//     const newIndexChild = indexChildShow.filter(item => item !== index); 
+//     setIndexChildShow(newIndexChild); 
+// }
 
 
   return (
@@ -163,28 +177,36 @@ const handleShowCommentChild = (index)=>{
 
 
             <ul className='post-center-action'>
-                <li onClick={()=>handleLikePost(item?._id)}><LuHeartCrack/>&nbsp;Thích&nbsp;( {item?.like?.number} )</li>
+                <li onClick={()=>handleLikePost(item?._id)}><LuHeartCrack/>&nbsp;Thích&nbsp;( {likeNumber} )</li>
                 <li className='post-comment' onClick={()=> handleGetCommentByPost(item?._id)}><FaRegCommentDots/>&nbsp;Bình Luận&nbsp;( {item?.comment?.number} )</li>
                 <li><CiShare2/>&nbsp;Chia sẻ&nbsp;( {item?.share?.number} )</li>
             </ul>
         </div>
         <div className="post-bottom">
 
-            <div className='post-comment'>
+            <div className='post-comment-list'>
                 {
                     item?.commentList?.length > 0 && item?.commentList.map((comment,index)=>{
                         return (
                             <>
-                            <Comment  handleShowCommentChild = {handleShowCommentChild}  index = {index} handleSetReplyComment = {handleSetReplyComment} comment =  {comment}/>
-                            <div className={ indexChildShow.indexOf(index) !== -1 ?  'child-comment active':'child-comment'}>
-                                 {
-                                    comment?.children?.length > 0 && comment?.children.map(child =>{
-                                        return (
-                                            <Comment  index = {index}  handleShowCommentChild = {handleShowCommentChild} handleSetReplyComment = {handleSetReplyComment} comment = {child}/>
-                                        )
-                                    })
-                                 }
-                            </div>          
+                            {
+                                comment.parent === null && (
+                                    <>
+                                    <Comment level={0} key={index}   index = {index} handleSetReplyComment = {handleSetReplyComment} comment =  {comment}/>
+                                    <div className='child-comment'>
+                                        {
+                                            comment?.children?.length > 0 && comment?.children.map((child,index) =>{
+                                                if(typeof child !== 'string'){
+                                                    return (                                               
+                                                        <Comment level={1} key={index}  index = {index}  handleSetReplyComment = {handleSetReplyComment} comment = {child}/>   
+                                                        )
+                                                }
+                                            })
+                                        }
+                                    </div>          
+                                    </>
+                                )
+                            }
                             </>
                     
                         )
@@ -198,21 +220,6 @@ const handleShowCommentChild = (index)=>{
                     )
                 }
                 
-            </div>
-
-            <div className='post-user-input'>
-                <img src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />
-                <form  onSubmit={handleSubmitForm}>
-                    <input value={content} type="text" ref={inputRef} placeholder='Viết bình luận của bạn ...' onChange={(e)=>setContent(e.target.value)} />
-                    <label htmlFor="" className='post-input icon'>
-                        <VscSmiley/>
-                    </label>
-                    <label className='post-input image' htmlFor="input-file"><CiImageOn/></label>
-                    <input type="file" id='input-file' onChange={handleChooseImage} />
-                </form>
-                <div className='send-icon'>
-                    <RiSendPlane2Line/>
-                </div>
             </div>
             {
                 image.trim() !== "" && (
@@ -231,6 +238,20 @@ const handleShowCommentChild = (index)=>{
                     </div>
                   )
             }
+            <div className='post-user-input'>
+                <img src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />
+                <form  onSubmit={handleSubmitForm}>
+                    <input value={content} type="text" ref={inputRef} placeholder='Viết bình luận của bạn ...' onChange={(e)=>setContent(e.target.value)} />
+                    <label htmlFor="" className='post-input icon'>
+                        <VscSmiley/>
+                    </label>
+                    <label className='post-input image' htmlFor="input-file"><CiImageOn/></label>
+                    <input type="file" id='input-file' onChange={handleChooseImage} />
+                </form>
+                <div className='send-icon'>
+                    <RiSendPlane2Line/>
+                </div>
+            </div>
         </div>
     </div>
   )

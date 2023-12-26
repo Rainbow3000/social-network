@@ -10,6 +10,7 @@
         flex: 3;
         display: flex;
         justify-content: space-between;
+        position: relative;
         .left{
             .post-list{             
                 width: 100%;
@@ -22,22 +23,40 @@
             .post-create{
                 background-color: #FFFFFF;
                 width: 100%;
-                height: max-content;
+                min-height: max-content;
+                height: auto;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 padding: 30px;
                 border-radius: 10px;
+                .text-error{
+                    width: 100%;
+                    font-size: 14px;
+                    color: red;
+                    margin-bottom: 5px;
+                }
+
+                .text-error.content{
+                    padding-left: 65px;
+                }
+
+                .text-error.media{
+                    padding-left: 65px;
+                }
                 .user-input{
                     width: 100%;
                     display: flex;
+                    #post-file{
+                        display: none;
+                    }
                     input{
                         width: 100%;
                         outline: none;
                         background-color: #e5e5e59c;
                         border: none;
                         border-radius: 10px;
-                        padding-left: 20px;
+                        padding: 0 20px;
                     }
                     img{
                         width: 45px;
@@ -51,20 +70,26 @@
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    margin-top: 30px;
+                    margin-top: 20px;
             
                     .media-action{
                         display: flex;
+                        flex-direction: column;
                         ul{
                             display: flex;
                             align-items: center;
                             list-style: none;
+                            padding-left: 45px;
                             li{
                                 margin-left: 20px;
                                 display: flex;
                                 align-items: center;
                                 color: #4E5D78;
                                 font-weight: 500;
+                                cursor: pointer;
+                                label{
+                                    cursor: pointer;
+                                }
                             }
                         }
                     }
@@ -89,10 +114,13 @@
         .right{
             flex: 1;
             width: 30%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-
+            position: sticky;
+            top: 99px;
+           
             .right-recommend{
                 border-radius: 10px; 
                 width: 85%;
