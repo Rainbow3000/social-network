@@ -63,8 +63,8 @@ const Header = () => {
             <input type="text" placeholder='Hôm nay bạn tìm gì ...'/>
           </div>
           <div className='header-user'>
-            <span>Nguyễn Đức Thịnh</span>
-            <img src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />
+            <span>{user.data?.userName}</span>
+            <img src={user.data?.avatar} alt="" />
           </div>
     </div>
   )

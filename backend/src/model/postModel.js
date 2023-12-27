@@ -25,6 +25,9 @@ const postSchema = new mongoose.Schema(
       type:String,
       required:[function(){ return this.images.length === 0},"Ảnh hoặc video phải được cung cấp"],
     },
+    thumb:{
+      type:String
+    },
     user:{
       type:mongoose.Schema.Types.ObjectId,
       ref:"User", 

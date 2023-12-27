@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { GrLike } from "react-icons/gr";
 import { FaRegCommentDots } from "react-icons/fa";
@@ -18,6 +18,7 @@ import {getCommentByPost} from '../../store/slice/postSlice'
 import { LuHeartCrack } from "react-icons/lu";
 import { IoTimeOutline } from "react-icons/io5";
 import { RiSendPlane2Line } from "react-icons/ri";
+
 import moment from 'moment/dist/moment';
 import 'moment/dist/locale/vi'
 moment.locale('vi');
@@ -37,6 +38,7 @@ const Post = ({item}) => {
   const dispatch = useDispatch(); 
   const {user}= useSelector(state => state.user); 
   const inputRef = useRef(); 
+  const videoRef = useRef();
   const handleLikePost = (postId)=>{
     if(isLike === false){
         setLikeNumber(item?.like?.number + 1)
@@ -68,7 +70,10 @@ const Post = ({item}) => {
               })
           })
         }
-}
+    }
+
+
+  
 
 const handleSubmitForm = (e)=>{
     e.preventDefault(); 
@@ -114,7 +119,7 @@ const handleGetCommentByPost = (postId)=>{
   return (
     <div className='post-container'>
         <div className="post-top">
-            <img src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />
+            <img src={item?.user?.avatar} alt="" />
              <ul>
                 <li>{item?.user?._id?.userName}</li>
                 <li>{moment(item?.createdDate).calendar()}</li>
@@ -163,14 +168,31 @@ const handleGetCommentByPost = (postId)=>{
                 )
             }
 
-{
-                item?.images?.length === 0  && (
-                    <div className='post-video'>
-                        <video width="100%" height="100%" controls>
-                            <source src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4"/>
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
+            {
+                item?.thumb !== undefined && item?.thumb !== null & item.thumb !== "" && (
+                    item?.images?.length === 0  && (
+                        <div className='post-video'>
+                            <video width="100%" height="100%" controls ref={videoRef} poster={item.thumb} >
+                                <source src={item.video} type="video/mp4"/>
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    )
+                )
+
+                
+            }
+
+            {
+                 (item?.thumb === undefined || item?.thumb === null || item.thumb === "") && (
+                    item?.images?.length === 0  && (
+                        <div className='post-video'>
+                            <video width="100%" height="100%" controls ref={videoRef} >
+                                <source src={item.video} type="video/mp4"/>
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    )
                 )
             }
 
@@ -239,7 +261,7 @@ const handleGetCommentByPost = (postId)=>{
                   )
             }
             <div className='post-user-input'>
-                <img src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />
+                <img src={user.data?.avatar} alt="" />
                 <form  onSubmit={handleSubmitForm}>
                     <input value={content} type="text" ref={inputRef} placeholder='Viết bình luận của bạn ...' onChange={(e)=>setContent(e.target.value)} />
                     <label htmlFor="" className='post-input icon'>

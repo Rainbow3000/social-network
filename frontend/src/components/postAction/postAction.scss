@@ -106,3 +106,20 @@
                 }
             }
         }
+
+.video-preview{
+    video{
+        border-radius: 10px;
+    }
+    #image-for-video{
+        display: none;
+    }
+    label{
+        display: flex;
+        align-items: center;
+        color: #4E5D78;
+        font-weight: 500;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+}

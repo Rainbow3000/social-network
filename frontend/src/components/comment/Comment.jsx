@@ -21,7 +21,7 @@ const dispatch = useDispatch();
   return (
     <div className='post-comment'>
     <div className='post-comment-item'>
-        <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSGfpQ3m-QWiXgCBJJbrcUFdNdWAhj7rcUqjeNUC6eKcXZDAtWm" alt="" />
+        <img src={comment.user?.avatar} alt="" />
         <div className= 'comment-content'>
             <div className={comment.image !== "" || comment.video !== "" ?"comment-content-main outline":"comment-content-main"}>
                 <div className='comment-top'>

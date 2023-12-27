@@ -10,7 +10,13 @@ module.exports = {
 
     getByUser: async(id)=>{
         try {
-            return await Post.find({user:id}); 
+            return await Post.find({user:id}).populate({
+                path: 'user',
+                populate: {
+                    path:'_id',
+                    select:'userName'
+                }
+              }); 
         } catch (error) {
             throw error;
         }

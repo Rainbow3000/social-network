@@ -10,11 +10,13 @@ const userSchema = new mongoose.Schema(
     avatar:{
       type:String,
       required:[true,"Ảnh người dùng phải được cung cấp"]
-
+    },
+    coverAvatar:{
+      type:String,
     },
     followers:{
       type:[mongoose.Schema.Types.ObjectId],
-      ref:'User'
+      ref:'User',
     },
     followings:{
       type:[mongoose.Schema.Types.ObjectId],

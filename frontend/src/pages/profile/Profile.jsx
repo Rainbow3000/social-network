@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { AiOutlineMessage } from "react-icons/ai";
 import { IoPersonAddOutline } from "react-icons/io5";
@@ -21,17 +21,51 @@ import { BsPencil } from "react-icons/bs";
 import { HiOutlinePencilSquare } from "react-icons/hi2";
 import { IoCloudUploadOutline } from "react-icons/io5";
 import { HiDotsHorizontal } from "react-icons/hi";
+import { IoIosRadio } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
 import { FiRadio } from "react-icons/fi";
 import { PiMessengerLogoBold } from "react-icons/pi";
+import { GiShadowFollower } from "react-icons/gi";
+import {GenderEnum} from '../../enums/Enum'
+import storage from '../../firebase'; 
+import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
+import {updateUserInfo} from '../../store/slice/userSlice'
+import uuid from 'react-uuid';
+import {Link} from 'react-router-dom'
+
 const Profile = () => {
     const dispatch = useDispatch(); 
     const location = useLocation(); 
     const navigate = useNavigate(); 
     const userId = location.pathname.split('/')[2]; 
     const {userInfo} = useSelector(state => state.user); 
-    const {postOfUser,postList} = useSelector(state => state.post); 
+    const {postOfUser} = useSelector(state => state.post); 
+
+    const handleChooseImage = (event)=>{
+            const file = event.target.files[0]; 
+              const fileName =  `images/${uuid()}-${file.name}`; 
+              const storageRef = refStorage(storage,fileName); 
+              uploadBytes(storageRef,file).then((snapshot)=>{
+                  getDownloadURL(refStorage(storage,fileName)).then(downloadUrl =>{     
+                    const userData = {...userInfo,avatar:`${downloadUrl}@-@${fileName}`};
+                    dispatch(updateUserInfo({userId,userData}));
+                  })
+            })
+    }
+
+    const handleChooseCoverImage = (event)=>{
+        const file = event.target.files[0]; 
+          const fileName =  `images/${uuid()}-${file.name}`; 
+          const storageRef = refStorage(storage,fileName); 
+          uploadBytes(storageRef,file).then((snapshot)=>{
+              getDownloadURL(refStorage(storage,fileName)).then(downloadUrl =>{     
+                const userData = {...userInfo,coverAvatar:`${downloadUrl}@-@${fileName}`};
+                dispatch(updateUserInfo({userId,userData}));
+              })
+        })
+}
     
+
     useEffect(()=>{
         // if(userId === "un-auth"){
         //     navigate('/profile/me/un-auth');
@@ -41,28 +75,29 @@ const Profile = () => {
         dispatch(getPostByUser(userId));
     },[])
 
-    const getPosts = async()=>{
-        try {
-            dispatch(getPostList()); 
-        } catch (error) {
-          
-        }
-      }
-    
-      useEffect(()=>{
-        getPosts(); 
-      },[])
-
   return (
     <div className='profile-container'>
         <div className="profile-top">
             <div className='profile-info-user'>
-                <img className='img-cover' src="https://images.unsplash.com/photo-1486911278844-a81c5267e227?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8&w=1000&q=80" alt="" />
+                {
+                    userInfo?.coverAvatar !== undefined && userInfo?.coverAvatar !== null && (
+                        <img className='img-cover' src = {userInfo?.coverAvatar} alt="" />
+                    )
+                }
+
+                {
+                    (userInfo?.coverAvatar === undefined  || userInfo?.coverAvatar === null) && (
+                     
+                        <div className='img-cover-no-img' src = {userInfo?.coverAvatar} alt=""></div>
+                    )
+                }
+
                 <div className='user-info'>
-                    <span className='upload-icon'><IoCloudUploadOutline/></span>
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD73TSl-2tkJKbEJ1X8kkc6YHeUmRglKmNzA&usqp=CAU" alt="" />
-                    <span className='user-name'>Elon Mark</span>
-                    <span>Nhà thiết kế thời trang</span>
+                    <input type="file" id='avatar-update' onChange={handleChooseImage}/>
+                    <label htmlFor='avatar-update' className='upload-icon' ><IoCloudUploadOutline/></label>
+                    <img src={userInfo?.avatar} alt="" />
+                    <span className='user-name'>{userInfo?._id?.userName}</span>
+                    <span>{userInfo?.career}</span>
                 </div>
                 <div className='profile-btn-list'>
                     <button><FaPlus/> &nbsp; Kết bạn</button>
@@ -70,12 +105,12 @@ const Profile = () => {
                     <button><FiRadio/>&nbsp; Theo dõi</button>
                     <span><HiDotsHorizontal/></span>
                 </div>
-
-                <div className='edit-cover-photo'>
-                    <BsPencil/>
+                <input type="file" id='cover-avatar-update' onChange={handleChooseCoverImage} />
+                <label htmlFor='cover-avatar-update' className='edit-cover-photo'>
+                    <IoCloudUploadOutline/>
                     &nbsp;
                     <span>Cập nhật ảnh bìa</span>
-                </div>
+                </label>
             </div>
 
         </div>
@@ -85,17 +120,19 @@ const Profile = () => {
                 
                 <ul>
                     <li>Giới thiệu</li>
-                    <li><BsGenderAmbiguous/> &nbsp;&nbsp;Male</li>
-                    <li><LiaBirthdayCakeSolid/>&nbsp;&nbsp;20-11-2023</li>
-                    <li><IoLocationOutline/>&nbsp;&nbsp;Hà Nội</li>
-                    <li><RiFacebookBoxLine/>&nbsp;&nbsp;Facebook.com</li>
-                    <li><FiTwitter/>&nbsp;&nbsp;Twitter.com</li>
-                    <li><FaInstagram/>&nbsp;&nbsp;Instagram.com</li>
-                    <li>21,888 Người theo dõi</li>
-                    <li>123 Đang theo dõi</li>
+                    <li><BsGenderAmbiguous/> &nbsp;&nbsp;{GenderEnum[userInfo?.gender]}</li>
+                    <li><LiaBirthdayCakeSolid/>&nbsp;&nbsp;{userInfo?.dob}</li>
+                    <li><IoLocationOutline/>&nbsp;&nbsp;{userInfo?.address !== null && userInfo?.address !== undefined ? userInfo?.address :'Chưa cập nhật'}</li>
+                    <li><RiFacebookBoxLine/>&nbsp;&nbsp;{userInfo?.facebookLink !== null && userInfo?.facebookLink !== undefined ? userInfo?.facebookLink :'Chưa cập nhật'}</li>
+                    <li><FiTwitter/>&nbsp;&nbsp;{userInfo?.twitterLink !== null && userInfo?.twitterLink !== undefined ? userInfo?.twitterLink :'Chưa cập nhật'}</li>
+                    <li><FaInstagram/>&nbsp;&nbsp;{userInfo?.instagramLink !== null && userInfo?.instagramLink !== undefined ? userInfo?.instagramLink :'Chưa cập nhật'}</li>
+                    <li><IoIosRadio/>&nbsp;&nbsp;{userInfo?.followers?.length} Người theo dõi</li>
+                    <li><GiShadowFollower/>&nbsp;&nbsp;{userInfo?.followings?.length} Đang theo dõi</li>
                     <li>
                         <div className='btn-update'>
-                            <span>Cập nhật thông tin</span>
+                            <Link to="/setting" className='link'>
+                                <span>Cập nhật thông tin</span>
+                            </Link>
                         </div>
                     </li>
                 </ul>
@@ -105,7 +142,7 @@ const Profile = () => {
                 <div className='post-list'>
                     { <div className="profile-center-bottom">
                         {
-                            postList?.length > 0 && postList.map(item=>{
+                            postOfUser?.length > 0 && postOfUser.map(item=>{
                                 return (
                                     <Post item= {item}/>
                                 )

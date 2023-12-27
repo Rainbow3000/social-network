@@ -92,6 +92,25 @@ export const postSlice = createSlice({
         }
         return post;
       })
+
+
+      state.postOfUser = state.postOfUser.map(post =>{
+        if(post._id === action.payload.postId){
+          const childComment =  post.commentList?.filter(comment =>{
+            if(action.payload.children.includes(comment._id)){
+              return comment;
+            }
+          });
+         
+          post.commentList = post.commentList.map(comment=>{
+            if(comment._id === action.payload.commentId){
+               comment.children = childComment; 
+            }
+            return comment;
+          })
+        }
+        return post;
+      })
     }
   },
   extraReducers:(builder)=>{
@@ -159,6 +178,13 @@ export const postSlice = createSlice({
       state.error = null; 
       state.isError = false;
       state.postList = state.postList.map(item =>{
+        if(item._id === action.payload.postId){
+            item.commentList = action.payload?.commentData?.data.reverse();
+        }
+        return item; 
+      })
+
+      state.postOfUser = state.postOfUser.map(item =>{
         if(item._id === action.payload.postId){
             item.commentList = action.payload?.commentData?.data.reverse();
         }

@@ -12,6 +12,7 @@ import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'fire
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import {createPost} from '../../store/slice/postSlice'
 import { validateEmpty } from '../../helper/validateHelper';
+import { FaCloudUploadAlt } from "react-icons/fa";
 
 let flag = 0;
 const PostAction = () => {
@@ -21,9 +22,10 @@ const PostAction = () => {
   const dispacth = useDispatch(); 
   const {isSuccess} = useSelector(state => state.post); 
   const inputRef = useRef(null); 
-
+  const {user} = useSelector(state => state.user)
   const [contentErr,setContentErr] = useState(""); 
   const [mediaErr,setMediaErr] = useState(""); 
+  const [thumb,setThumb] = useState("");
 
   const handleCloseCreatePost = ()=>{
     dispacth(hiddenOverlay()); 
@@ -55,6 +57,18 @@ const PostAction = () => {
 
 }
 
+const handleChooseImageForVideo = (event)=>{
+  const file = event.target.files[0]; 
+    const fileName =  `images/${uuid()}-${file.name}`; 
+    const storageRef = refStorage(storage,fileName); 
+    uploadBytes(storageRef,file).then((snapshot)=>{
+        getDownloadURL(refStorage(storage,fileName)).then(downloadUrl =>{
+          setThumb(`${downloadUrl}@-@${fileName}`)       
+        })
+    })
+}
+
+
 const handleSubmitForm = (e)=>{
   e.preventDefault(); 
 
@@ -77,6 +91,7 @@ const handleSubmitForm = (e)=>{
     content,
     images,
     video,
+    thumb,
     user: JSON.parse(localStorage.getItem('user'))?.data?._id
   }
   dispacth(createPost(post)); 
@@ -94,7 +109,7 @@ return (
   <form className='post-create' onSubmit={handleSubmitForm}>
   <span className='text-error content'>{contentErr}</span>
   <div className='user-input'>
-    <img src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />
+    <img src={user ?.data.avatar} alt="" />
     <input value={content} placeholder='Nội dung bài viết của bạn ...' type="text" onChange={(e)=>{
       setContent(e.target.value)
       setContentErr("")
@@ -110,18 +125,40 @@ return (
                     <source src={`${video}`} type="video/mp4"/>
                     Your browser does not support the video tag.
                 </video>
+                <input type="file" id='image-for-video' onChange={handleChooseImageForVideo} />
+                <div className='img-preview'> 
+                {
+                  thumb !== "" && (
+                  <div  className="img-item">
+                    <IoCloseSharp className='close-img-icon'/>
+                    <img src={thumb} alt="" />
+                  </div>
+                  )
+                }
+          
+            </div>
+              <div className='btn-upload'>
+                  <label htmlFor="image-for-video">
+                      <FaCloudUploadAlt/>
+                      &nbsp;
+                      <span>Chọn ảnh xem trước cho video</span>
+                  </label>
+              </div>
             </div>
           )
         }
+
+
+
         <div className='img-preview'> 
-        {images && images.map((imageUrl,index)=>{
-          return (
-            <div key={index} className="img-item">
-              <IoCloseSharp className='close-img-icon'/>
-              <img src={`${imageUrl}`} alt="" />
-            </div>
-          )
-        })}
+          {images && images.map((imageUrl,index)=>{
+            return (
+              <div key={index} className="img-item">
+                <IoCloseSharp className='close-img-icon'/>
+                <img src={`${imageUrl}`} alt="" />
+              </div>
+            )
+          })}
         </div>
       </div>
 

@@ -118,6 +118,16 @@
             align-items: center;
             video{
                 object-fit: cover;
+                border-radius: 10px;
+            }
+            .image-for-video{
+                display: none;
+            }
+            .btn-upload{
+                label{
+                    display: flex;
+                    align-items: center;
+                }
             }
         }
     
