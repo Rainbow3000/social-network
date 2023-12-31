@@ -124,22 +124,7 @@
                     &:first-child{
                         font-weight: bold;
                     }
-                    &:last-child{
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        padding: 0;
-                        .btn-update{
-                            width:90%;
-                            height:45px;
-                            cursor: pointer;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            border-radius: 10px;
-                            background-color: rgba(128, 128, 128, 0.096);
-                        }
-                    }
+                    
                 }
             }
         }
@@ -271,16 +256,28 @@
         cursor: pointer;
         display: flex;
         align-items: center;
+        .hr{
+            width: 1px;
+            height: 40px;
+            background-color: rgba(128, 128, 128, 0.384);
+            margin-right: 20px;
+        }
         button{
-            width: 85px;
+            width: auto;
+            padding: 0 10px;
             height: 40px;
             margin-right: 30px;
             border: none;
-            border-radius: 10px;
+            border-radius: 5px;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+    }
+
+    .primary-btn{
+        background-color: #377DFF;
+        color: white;
     }
 }

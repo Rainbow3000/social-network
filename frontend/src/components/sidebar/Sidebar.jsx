@@ -25,7 +25,7 @@ const Sidebar = () => {
   return (
     <div className='sidebar'>
         <div id='logo'>
-            <h1>K2 Meet</h1>
+        <Link className='link' to="/"><h1>K2 Meet</h1></Link>
         </div>
         <ul className='sidebar-action-list'>
             <li>
@@ -78,7 +78,7 @@ const Sidebar = () => {
               {
                 user !== null && (
                 <li>
-                    <Link className='link' onClick={handleLogout}>
+                    <Link className='link' to="/auth" onClick={handleLogout}>
                       <MdOutlineLogout/>
                       <span>&nbsp;&nbsp; Thoát</span>
                     </Link>

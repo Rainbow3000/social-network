@@ -152,4 +152,127 @@ module.exports = {
             };
         }
     },
+
+    addFriend: async(data,id)=>{
+        try {
+            const userExisted = await _userRepository.get(id); 
+            if(!userExisted){
+                return {
+                    success:false,
+                    message:"Người dùng không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+
+            const userUpdated =  await _userRepository.addFriend(data,id);
+            return {
+                success:true,
+                message:"Cập nhật người dùng thành công",
+                statusCode:200,
+                data:userUpdated
+            }
+        } catch (error) {
+            
+            if(error instanceof mongoose.Error.ValidationError){  
+                return {
+                    success:false,
+                    message:"Cập nhật dùng thất bại",
+                    statusCode:400,
+                    data:null,
+                    errors:validateError(error)
+                };
+             }
+      
+            return {
+                success:false,
+                message:"Cập nhật dùng thất bại",
+                statusCode:500,
+                data:null,
+                errors:error?.message
+            };
+        }
+    },
+
+    acceptAddFriend: async(data,id)=>{
+        try {
+            const userExisted = await _userRepository.get(id); 
+            if(!userExisted){
+                return {
+                    success:false,
+                    message:"Người dùng không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+
+            const userUpdated =  await _userRepository.acceptAddFriend(data,id);
+            return {
+                success:true,
+                message:"Cập nhật người dùng thành công",
+                statusCode:200,
+                data:userUpdated
+            }
+        } catch (error) {
+            
+            if(error instanceof mongoose.Error.ValidationError){  
+                return {
+                    success:false,
+                    message:"Cập nhật dùng thất bại",
+                    statusCode:400,
+                    data:null,
+                    errors:validateError(error)
+                };
+             }
+      
+            return {
+                success:false,
+                message:"Cập nhật dùng thất bại",
+                statusCode:500,
+                data:null,
+                errors:error?.message
+            };
+        }
+    },
+
+    unAddFriend: async(data,id)=>{
+        try {
+            const userExisted = await _userRepository.get(id); 
+            if(!userExisted){
+                return {
+                    success:false,
+                    message:"Người dùng không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+
+            const userUpdated =  await _userRepository.unAddFriend(data,id);
+            return {
+                success:true,
+                message:"Cập nhật người dùng thành công",
+                statusCode:200,
+                data:userUpdated
+            }
+        } catch (error) {
+            
+            if(error instanceof mongoose.Error.ValidationError){  
+                return {
+                    success:false,
+                    message:"Cập nhật người dùng dùng thất bại",
+                    statusCode:400,
+                    data:null,
+                    errors:validateError(error)
+                };
+             }
+      
+            return {
+                success:false,
+                message:"Cập nhật người dùng thất bại",
+                statusCode:500,
+                data:null,
+                errors:error?.message
+            };
+        }
+    },
 }

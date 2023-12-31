@@ -22,6 +22,38 @@ export const userLogin = createAsyncThunk(
   }
 )
 
+export const userAddFriend = createAsyncThunk(
+  'users/addFriend',
+  async (data) => {
+    const {id,userData} = data; 
+    const response = await _publicRequest.put(`user/friend/${id}`,userData); 
+    return response.data
+  }
+)
+
+
+export const userAcceptAddFriend = createAsyncThunk(
+  'users/acceptAddFriend',
+  async (data) => {
+    const {id,userData} = data; 
+    const response = await _publicRequest.put(`user/friend/accept/${id}`,userData); 
+    return response.data
+  }
+)
+
+
+
+export const userCancelAddFriend = createAsyncThunk(
+  'users/cancelAddFriend',
+  async (data) => {
+    const {id,userData} = data; 
+    const response = await _publicRequest.put(`user/unfriend/${id}`,userData); 
+    return response.data
+  }
+)
+
+
+
 
 export const getUserInfo = createAsyncThunk(
   'users/getUserInfo',
@@ -73,6 +105,64 @@ export const userSlice = createSlice({
 
   extraReducers: (builder) => {
 
+
+    builder.addCase(userCancelAddFriend.pending, (state, action) => {
+      state.isLoading = true; 
+    })
+    builder.addCase(userCancelAddFriend.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      if(action.payload.data.type !== undefined && action.payload.data.type === 2){
+        state.userInfo.requestAddFriend = action.payload.data.requestAddFriend;
+        return;
+      }
+      state.userInfo.requestAddFriendFromUser = action.payload.data;
+    })
+    builder.addCase(userCancelAddFriend.rejected, (state, action) => {
+      state.user = null;
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
+
+
+    builder.addCase(userAcceptAddFriend.pending, (state, action) => {
+      state.isLoading = true; 
+    })
+    builder.addCase(userAcceptAddFriend.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.userInfo.friends = action.payload.data.friends;
+      state.userInfo.requestAddFriend = action.payload.data.requestAddFriend;
+    })
+    builder.addCase(userAcceptAddFriend.rejected, (state, action) => {
+      state.user = null;
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
+
+
+
+
+    builder.addCase(userAddFriend.pending, (state, action) => {
+      state.isLoading = true; 
+    })
+    builder.addCase(userAddFriend.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.userInfo.requestAddFriendFromUser = action.payload.data;
+
+    })
+    builder.addCase(userAddFriend.rejected, (state, action) => {
+      state.user = null;
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
 
     builder.addCase(updateUserInfo.pending, (state, action) => {
       state.isLoading = true; 

@@ -16,6 +16,7 @@
     "nodemailer": "^6.7.8",
     "nodemon": "^2.0.22",
     "path": "^0.12.7",
+    "socket.io": "^4.7.2",
     "xlsx": "^0.18.5"
   },
   "scripts": {

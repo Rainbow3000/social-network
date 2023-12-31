@@ -14,27 +14,13 @@ const userSchema = new mongoose.Schema(
     coverAvatar:{
       type:String,
     },
-    followers:{
-      type:[mongoose.Schema.Types.ObjectId],
-      ref:'User',
-    },
-    followings:{
-      type:[mongoose.Schema.Types.ObjectId],
-      ref:'User'
-    },
-    friends:{
-      type:[mongoose.Schema.Types.ObjectId],
-      ref:'User'
-    },
     gender:{
       type:String,
       required:[true,"Giới tính người dùng phải được cung cấp"],
-      ref:'User'
     },
     dob:{
       type:String,
       required:[true,"Ngày sinh người dùng phải được cung cấp"],
-      ref:'User'
     },
     address:{
         type:String
@@ -57,11 +43,38 @@ const userSchema = new mongoose.Schema(
     LinkedInLink:{
     type:String
   },
-    status: {
-      type:Number,
-      required:true,
-      default:1,
-    },
+
+  requestAddFriend:{
+    type:[mongoose.Schema.Types.ObjectId],
+    ref:'User'
+  },
+
+  requestAddFriendFromUser:{
+    type:[mongoose.Schema.Types.ObjectId],
+    ref:'User'
+  },
+
+  friends:{
+      type:[mongoose.Schema.Types.ObjectId],
+      ref:'User'
+  },
+  blocking:{
+    type:[mongoose.Schema.Types.ObjectId],
+    ref:'User',
+  },
+  followers:{
+    type:[mongoose.Schema.Types.ObjectId],
+    ref:'User',
+  },
+  followings:{
+    type:[mongoose.Schema.Types.ObjectId],
+    ref:'User'
+  },
+  status: {
+    type:Number,
+    required:true,
+    default:1,
+  },
 
   },{timestamps:true})
 

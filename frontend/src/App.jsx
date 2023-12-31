@@ -14,11 +14,20 @@ import Community from './pages/community/Community';
 import Auth from './pages/auth/Auth';
 import Setting from './pages/setting/Setting';
 import Notification from './pages/notification/Notification';
+import { io } from "socket.io-client";
+import { useEffect } from 'react';
 function App() {
+  const socket = io(process.env.REACT_APP_SOCKET_URL_SERVER);
   const {isShowOverlay} = useSelector(state=> state.app);
   const {isShowCreatePost} = useSelector(state=> state.post);
   const {isShowLoginForm} = useSelector(state => state.user); 
   const {user} = useSelector(state => state.user); 
+
+  useEffect(()=>{
+    socket.on("connect", () => {
+      console.log(socket.id); 
+    });
+  },[])
   return (
     <div id="app">
             {
@@ -35,16 +44,16 @@ function App() {
                 )
               }
                   <Routes>
-                  <Route path=''  element={<Home/>} />
-                  <Route path='/profile/:id'  element={<Profile/>} />
-                  <Route path='/chat'  element={<Chat/>} />
-                  <Route path='/community'  element={<Community/>} />
-                  <Route path='/setting'  element={<Setting/>} />               
-                  <Route path='/notification'  element={<Notification/>} />  
-                  <Route path='/auth'  element={<Auth/>} />             
-                </Routes>
+                    <Route path=''  element={<Home/>} />
+                    <Route path='/profile/:id'  element={<Profile/>} />
+                    <Route path='/chat'  element={<Chat/>} />
+                    <Route path='/community'  element={<Community/>} />
+                    <Route path='/setting'  element={<Setting/>} />               
+                    <Route path='/notification'  element={<Notification/>} />  
+                    <Route path='/auth'  element={<Auth/>} />             
+                 </Routes>
             </div>
-          </div>
+    </div>
   );
 }
 

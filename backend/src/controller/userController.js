@@ -39,6 +39,35 @@ module.exports = {
         }
     },
 
+    addFriend: async(req,res,next)=>{
+        try {
+           
+            const result = await userService.addFriend(req.body,req.params?.id); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
+    acceptAddFriend: async(req,res,next)=>{
+        try {
+           
+            const result = await userService.acceptAddFriend(req.body,req.params?.id); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
+    unAddFriend: async(req,res,next)=>{
+        try {
+            const result = await userService.unAddFriend(req.body,req.params?.id); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
     updatePostByOtherUser: async(req,res,next)=>{
         try {
             const result = await userService.updatePostByOtherUser(req.body,req.params?.id); 
@@ -47,6 +76,8 @@ module.exports = {
             
         }
     },
+
+    
     delete: async(req,res,next)=>{
         try {
             const result = await userService.delete(req.params?.id); 
@@ -55,4 +86,6 @@ module.exports = {
             
         }
     },
+
+    
 }

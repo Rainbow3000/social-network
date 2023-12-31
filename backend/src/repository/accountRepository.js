@@ -18,7 +18,7 @@ module.exports = {
 
     getByEmail: async(email)=>{
         try {
-            return await Account.findOne({email:email}) 
+            return await Account.findOne({email:email})
         } catch (error) {
             throw error;
         }

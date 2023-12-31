@@ -27,35 +27,6 @@ const Header = () => {
   }
   return (
     <div className='header-container'>
-          {/* <ul className='header-action left'>
-            <Link className='link' to="/">
-              <li>Bảng tin</li>
-            </Link>
-            <li>Video</li>
-          </ul>
-          <ul className='header-action right'>
-          {
-            (user === null || user === undefined) && (
-              <>
-                <li onClick={()=>handleShowLoginForm(1)}>Đăng Nhập</li>
-                <li onClick={()=>handleShowLoginForm(2)}>Đăng Ký</li>
-              </>
-            )
-          }
-          {
-            (user !== null && user !== undefined) && (
-              <>
-              <li className='user-nav'>
-                  <img src={user?.data?.avatar} alt="" />
-                  <span>{user?.data?.userName}</span>
-              </li>
-              <li onClick={handleLogoutForm}>Thoát<CiLogout/></li>
-              <li><button onClick={handleClick} className='header-btn'><PiNotePencilLight/> &nbsp; TẠO TIN</button></li>
-              </>
-            )
-          }
-          </ul> */}
-
           <div className='header-input'>
             <div className='search-icon'>
                 <BiSearch/>

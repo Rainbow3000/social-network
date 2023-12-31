@@ -4,6 +4,7 @@ const _accountRepository = require('../repository/accountRepository')
 const _userRepository = require('../repository/userRepository')
 const validateError = require('../utils/validateError');
 const mongoose = require('mongoose');
+const userRepository = require("../repository/userRepository");
 
 module.exports = {
   login: (data) => {
@@ -27,6 +28,9 @@ module.exports = {
             );
             const { password, ...subInfoUser } = account._doc;
             const _account = { ...subInfoUser, accessToken };
+
+            const user = await _userRepository.get(account._id);
+            _account.avatar = user.avatar;
             resolve({
               success:true,
               message:"Đăng nhập thành công",

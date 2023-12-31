@@ -1,13 +1,23 @@
 const env = require('dotenv'); 
 env.config(); 
 const express = require('express'); 
-const cors = require('cors'); 
+const { Server } = require('socket.io');
 const app = express(); 
+var server = require("http").Server(app);
+const cors = require('cors'); 
 const PORT = process.env.PORT || 5000
 const connectDatabase = require('./src/database/connect');
 app.use(express.json());
 app.use(cors()); 
 connectDatabase(); 
+const io = new Server(server, {
+    cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+        transports: ['websocket', 'polling'],
+        credentials: true
+    }
+});
 
 const postRouter = require('./src/router/postRouter'); 
 const authRouter = require('./src/router/accountRouter'); 
@@ -19,5 +29,10 @@ app.use(authRouter);
 app.use(commentRouter); 
 app.use(userRouter); 
 
-app.listen(PORT,()=>console.log(`server is runing at http://localhost:${PORT}`))
+io.on('connection', (socket) => {
+   
+});
 
+
+
+server.listen(PORT,()=>console.log(`server is runing at http://localhost:${PORT}`))
