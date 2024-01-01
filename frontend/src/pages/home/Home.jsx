@@ -14,23 +14,22 @@ import { LiaBirthdayCakeSolid } from "react-icons/lia";
 import Recommend from '../../components/recommend/Recommend'
 import { useNavigate } from 'react-router-dom'
 import PostAction from '../../components/postAction/PostAction'
+import { ToastContainer, toast } from 'react-toastify';
+import {getUserInfo} from '../../store/slice/userSlice'
+import 'react-toastify/dist/ReactToastify.css';
 const Home = () => {
 
   const {postList} = useSelector(state => state.post); 
   const {user} = useSelector(state => state.user); 
   const dispatch = useDispatch(); 
   const navigate = useNavigate(); 
-  const getPosts = async()=>{
-    try {
-      dispatch(getPostList()); 
-    } catch (error) {
-      
-    }
-  }
-
+  const notify = () => toast.info("Wow so easy!");
   
+
+
   useEffect(()=>{
-    getPosts(); 
+    dispatch(getPostList());
+    dispatch(getUserInfo(user.data._id))
   },[])
 
 
@@ -40,6 +39,7 @@ const Home = () => {
   }
   return (
     <div className='home-container'>
+        <ToastContainer />
         <div className="home-main">
             <div className="left">
              <PostAction/>
@@ -60,7 +60,7 @@ const Home = () => {
                 <div className="right-recommend">
                     <div className='top'>
                       <span>Sinh nhật</span>
-                      <span>Xem thêm</span>
+                      <span onClick={notify}>Xem thêm</span>
                     </div>
                     <div className='center'>           
                         <img className='dob-user-img' src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />            
@@ -95,8 +95,7 @@ const Home = () => {
             </div>
         </div>
      
-        <div className="right-bar">
-             
+        <div className="right-bar">   
             <RightBar/>
         </div>
     </div>

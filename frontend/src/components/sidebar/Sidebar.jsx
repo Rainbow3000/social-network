@@ -13,6 +13,7 @@ import { MdOutlineLogout } from "react-icons/md";
 import {userLogout} from '../../store/slice/userSlice'
 const Sidebar = () => {
   const {user} = useSelector(state => state.user); 
+  const {unReadNumber} = useSelector(state => state.notification); 
   const navigate = useNavigate();
   const dispatch = useDispatch(); 
   const handleLogout = ()=>{
@@ -49,7 +50,8 @@ const Sidebar = () => {
             </li>
 
             <li>
-              <Link className='link' to="/notification">
+              <Link className='link notifi' to="/notification">
+                <div className='notifi-number'>{unReadNumber}</div>
                 <BiBell/>
                  <span>&nbsp;&nbsp; Thông báo</span>
               </Link>

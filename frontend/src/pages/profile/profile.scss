@@ -5,6 +5,7 @@
     flex-direction: column;
     align-items: center;
     padding-top: 20px;
+   
     .profile-top{
         width: 90%;
         height: auto;
@@ -256,6 +257,29 @@
         cursor: pointer;
         display: flex;
         align-items: center;
+        .profile-options-icon:hover .profile-options{
+            display: block;
+        }
+        .profile-options{
+            list-style: none;
+            position: absolute;
+            width: max-content;
+            height: auto;
+            padding: 10px;
+            background-color: #EEEEEE;
+            border-radius: 5px;
+            display: none;
+            li{
+                width: 100%;
+                margin-top: 10px;
+                cursor: pointer;
+                font-size: 14px;
+                color: #4E5D78;
+                &:hover{
+                    color:#4e5d78b9;
+                }
+            }
+        }
         .hr{
             width: 1px;
             height: 40px;

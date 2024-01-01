@@ -19,20 +19,20 @@ const io = new Server(server, {
     }
 });
 
+const {getInstanceSocketIo} = require('./src/socket')
+getInstanceSocketIo(io);
+
 const postRouter = require('./src/router/postRouter'); 
 const authRouter = require('./src/router/accountRouter'); 
-const commentRouter = require('./src/router/commentRouter')
-const userRouter = require('./src/router/userRouter')
+const commentRouter = require('./src/router/commentRouter');
+const userRouter = require('./src/router/userRouter');
+const notificationRouter = require('./src/router/notificationRouter'); 
 
 app.use(postRouter); 
 app.use(authRouter); 
 app.use(commentRouter); 
 app.use(userRouter); 
-
-io.on('connection', (socket) => {
-   
-});
-
+app.use(notificationRouter)
 
 
 server.listen(PORT,()=>console.log(`server is runing at http://localhost:${PORT}`))

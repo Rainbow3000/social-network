@@ -31,6 +31,19 @@ module.exports = {
             throw error;
         }
     },
+
+    getByUserId: async(id)=>{
+        try {
+            return await Notification.find({user:id}).limit(20).populate(
+                {
+                    path:'fromUser',
+                    populate: { path: '_id' }
+                },
+            )
+        } catch (error) {
+            throw error;
+        }
+    },
     getAll: async()=>{
         try {
             return await Notification.find().populate({
@@ -48,24 +61,13 @@ module.exports = {
     create: async(data)=>{
         try {
             const notification = new Notification(data);
-            return await notification.save(); 
-            // return await Notification.findById({_id:commentCreated._id}).populate(
-            //     {
-            //         path:'user',
-            //         populate: { path: '_id' }
-            //     },
-            // ).populate(
-            //     {
-            //         path:'children',
-            //         populate:{
-            //             path:'user',
-            //             populate:{
-            //                 path:'_id'
-            //             }
-            //         }
-                    
-            //     }
-            // );
+            const notificationCreated =  await notification.save();
+            return notificationCreated.populate(
+                {
+                    path:'fromUser',
+                    populate: { path: '_id' }
+                },
+            );
         } catch (error) {
             console.log(error);
             throw error;

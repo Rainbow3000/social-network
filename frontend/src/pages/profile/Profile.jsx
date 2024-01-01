@@ -120,20 +120,23 @@ const Profile = () => {
                 }
 
                 <div className='user-info'>
-                    <input type="file" id='avatar-update' onChange={handleChooseImage}/>
-                    <label htmlFor='avatar-update' className='upload-icon' ><IoCloudUploadOutline/></label>
+                    {
+                        userId === ownUserId && (
+                            <>
+                            <input type="file" id='avatar-update' onChange={handleChooseImage}/>
+                            <label htmlFor='avatar-update' className='upload-icon' ><IoCloudUploadOutline/></label>
+                            </>
+                        )
+                    }
                     <img src={userInfo?.avatar} alt="" />
                     <span className='user-name'>{userInfo?._id?.userName}</span>
                     <span>{userInfo?.career}</span>
                 </div>
                 {
                     userId !== ownUserId && (
-
-
                         <div className='profile-btn-list'>
-
                                     {
-                                        userInfo?.friends?.find(item => item === ownUserId) !== undefined && (
+                                        userInfo?.friends?.find(item => item._id?._id === ownUserId) !== undefined && (
                                             <button className='primary-btn' ><LiaUserFriendsSolid/> &nbsp; Bạn bè</button>
                                         )
                                     }
@@ -142,7 +145,7 @@ const Profile = () => {
                                     {
                                         userInfo?.requestAddFriendFromUser?.find(item => item === ownUserId) === undefined &&  userInfo?.requestAddFriend?.find(item => item === ownUserId) === undefined &&
                                         
-                                        userInfo?.friends?.find(item => item === userId) === undefined && userInfo?.friends?.find(item => item === ownUserId) === undefined && (
+                                        userInfo?.friends?.find(item => item._id._id === userId) === undefined && userInfo?.friends?.find(item => item._id?._id === ownUserId) === undefined && (
                                             <button className='primary-btn' onClick={handleAddFriend}><FaPlus/> &nbsp; Kết bạn</button>
                                         )                                    
                                     }
@@ -170,7 +173,13 @@ const Profile = () => {
 
                             <button><PiMessengerLogoBold/> &nbsp; Nhắn tin</button>
                             <button><FiRadio/>&nbsp; Theo dõi</button>
-                            <span><HiDotsHorizontal/></span>
+                            <span className='profile-options-icon'><HiDotsHorizontal/>
+                                <ul className='profile-options'>
+                                    <li onClick={handleCancelAddFriend}>Hủy kết bạn</li>
+                                    <li>Tố cáo</li>
+                                    <li>Chặn</li>
+                                </ul>
+                            </span>
                         </div>
                     )
                 }
@@ -187,19 +196,25 @@ const Profile = () => {
                 }
 
 
-                <input type="file" id='cover-avatar-update' onChange={handleChooseCoverImage} />
-                <label htmlFor='cover-avatar-update' className='edit-cover-photo'>
-                    <IoCloudUploadOutline/>
-                    &nbsp;
-                    <span>Cập nhật ảnh bìa</span>
-                </label>
+                {
+                    userId === ownUserId && (
+                        <>
+                            <input type="file" id='cover-avatar-update' onChange={handleChooseCoverImage} />
+                            <label htmlFor='cover-avatar-update' className='edit-cover-photo'>
+                                <IoCloudUploadOutline/>
+                                &nbsp;
+                                <span>Cập nhật ảnh bìa</span>
+                            </label>
+                        </>
+                    )
+                }
+
             </div>
 
         </div>
         <div className="profile-center">
 
-            <div className='profile-intro'>
-                
+            <div className='profile-intro'>             
                 <ul>
                     <li>Giới thiệu</li>
                     <li><BsGenderAmbiguous/> &nbsp;&nbsp;{GenderEnum[userInfo?.gender]}</li>

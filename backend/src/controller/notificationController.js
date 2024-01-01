@@ -20,6 +20,14 @@ module.exports = {
             
         }
     },
+    getByUserId: async(req,res,next)=>{
+        try {
+            const result = await notificationService.getByUserId(req.params?.id); 
+            res.status(result.statusCode).json(result); 
+        } catch (error) {
+            
+        }
+    },
 
     getAll: async(req,res,next)=>{
         try { 

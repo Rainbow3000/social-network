@@ -1,11 +1,23 @@
 const mongoose = require('mongoose')
-const validateEmail = require('../utils/validateEmail')
 const notificationSchema = new mongoose.Schema(
   {
+    notifiType:{
+      type:String,
+      required:true
+    },
+    isReaded:{
+      type:Boolean,
+      default:false
+    },
     user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',
         required:true
+    },
+    fromUser:{
+      type:mongoose.Schema.Types.ObjectId,
+      ref:'User',
+      required:true
     },
     content:{
         type:String
@@ -15,6 +27,10 @@ const notificationSchema = new mongoose.Schema(
       required:true,
       default:1,
     },
+    createdAt:{
+      type:String,
+      required:true
+    }
 
   },{timestamps:true})
 

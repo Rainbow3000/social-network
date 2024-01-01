@@ -1,6 +1,9 @@
 const _userRepository = require('../repository/userRepository');
+const _notitficationRepository = require('../repository/notificationRepository');
 const validateError = require('../utils/validateError');
 const mongoose = require('mongoose'); 
+const moment = require('moment')
+const {getSocketIo}  = require('../../src/socket')
 module.exports = {
     get: async(id)=>{
         try {
@@ -166,6 +169,25 @@ module.exports = {
             }
 
             const userUpdated =  await _userRepository.addFriend(data,id);
+
+            const notificationCreated = await _notitficationRepository.create({
+                notifiType:'ADD_FRIEND',
+                content:`đã gửi cho bạn lời mời kết bạn`,
+                fromUser:id,
+                createdAt:moment().format(),
+                user:data.userId
+            })
+
+            const {ioObject,socketObject,userOnline} = getSocketIo();
+
+            if(ioObject && socketObject){  
+                
+                if(userOnline.has(data.userId)){
+                    const socketId = userOnline.get(data.userId);
+                    socketObject.join(socketId)
+                    ioObject.to(socketId).emit("notifi-add-friend-single-user",notificationCreated);               
+                } 
+            }
             return {
                 success:true,
                 message:"Cập nhật người dùng thành công",
@@ -207,6 +229,28 @@ module.exports = {
             }
 
             const userUpdated =  await _userRepository.acceptAddFriend(data,id);
+
+            const notificationCreated = await _notitficationRepository.create({
+                notifiType:'ACCEPT_ADD_FRIEND',
+                content:`đã chấp nhận lời mời mời kết bạn`,
+                fromUser:data.userId,
+                createdAt:moment().format(),
+                user:id
+            })
+
+            const {ioObject,socketObject,userOnline} = getSocketIo();
+
+            if(ioObject && socketObject){  
+                
+                if(userOnline.has(id)){
+                    const socketId = userOnline.get(id);
+                    socketObject.join(socketId)
+                    ioObject.to(socketId).emit("notifi-accept-add-friend-single-user",notificationCreated);               
+                } 
+            }
+
+
+
             return {
                 success:true,
                 message:"Cập nhật người dùng thành công",

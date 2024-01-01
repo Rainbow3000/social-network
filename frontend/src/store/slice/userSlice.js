@@ -1,6 +1,8 @@
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit'
 import { _publicRequest } from '../../requestMethod'
+import {createInstanceSocket} from '../../utils/socket' 
 
+const socket = createInstanceSocket(); 
 
 export const userRegister = createAsyncThunk(
   'users/register',
@@ -115,9 +117,11 @@ export const userSlice = createSlice({
       state.isError = false; 
       if(action.payload.data.type !== undefined && action.payload.data.type === 2){
         state.userInfo.requestAddFriend = action.payload.data.requestAddFriend;
+        state.userInfo.friends = action.payload.data.friends;
         return;
       }
-      state.userInfo.requestAddFriendFromUser = action.payload.data;
+      state.userInfo.requestAddFriendFromUser = action.payload.data.requestAddFriendFromUser;
+      state.userInfo.friends = action.payload.data.friends
     })
     builder.addCase(userCancelAddFriend.rejected, (state, action) => {
       state.user = null;

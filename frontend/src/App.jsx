@@ -8,25 +8,42 @@ import PostAction from './components/postAction/PostAction';
 import Chat from './pages/chat/Chat'
 import Popup from './components/popup/Popup';
 import { Routes, Route } from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import Rightbar from './components/rightbar/Rightbar';
 import Community from './pages/community/Community';
 import Auth from './pages/auth/Auth';
 import Setting from './pages/setting/Setting';
 import Notification from './pages/notification/Notification';
-import { io } from "socket.io-client";
-import { useEffect } from 'react';
+import {createInstanceSocket} from '../src/utils/socket'
+import { useEffect,useRef } from 'react';
+import {getNotificationByUser} from './store/slice/notificationSlice'
+import {getUserInfo} from './store/slice/userSlice'
+import {addNotifi} from '../src/store/slice/notificationSlice'
 function App() {
-  const socket = io(process.env.REACT_APP_SOCKET_URL_SERVER);
   const {isShowOverlay} = useSelector(state=> state.app);
   const {isShowCreatePost} = useSelector(state=> state.post);
   const {isShowLoginForm} = useSelector(state => state.user); 
+  const dispatch = useDispatch(); 
   const {user} = useSelector(state => state.user); 
-
+  const socket = useRef(); 
   useEffect(()=>{
-    socket.on("connect", () => {
-      console.log(socket.id); 
-    });
+    socket.current = createInstanceSocket();
+    if(socket.current){
+      socket.current.on("connect", () => {
+         socket.current.emit('user-connected',user.data._id); 
+      });
+
+      socket.current.on('notifi-add-friend-single-user',(notifi)=>{
+        dispatch(addNotifi(notifi));
+     })
+     socket.current.on('notifi-accept-add-friend-single-user',(notifi)=>{
+         dispatch(addNotifi(notifi));
+      })
+
+
+    }
+
+    dispatch(getNotificationByUser(user.data._id)); 
   },[])
   return (
     <div id="app">

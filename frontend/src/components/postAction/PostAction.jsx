@@ -13,9 +13,10 @@ import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import {createPost} from '../../store/slice/postSlice'
 import { validateEmpty } from '../../helper/validateHelper';
 import { FaCloudUploadAlt } from "react-icons/fa";
-
+import EmojiPicker from "emoji-picker-react";
 let flag = 0;
 const PostAction = () => {
+  const [emojiShow, setEmojiShow] = useState(false);
   const [images,setImages] = useState([]); 
   const [video,setVideo] = useState(""); 
   const [content,setContent] = useState(""); 

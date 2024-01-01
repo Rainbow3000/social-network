@@ -2,11 +2,11 @@
 const express = require('express'); 
 const router = express.Router(); 
 
-const accountontroller = require('../controller/accountController'); 
+const accountController = require('../controller/accountController'); 
 
 
-router.post('/api/account/register',accountontroller.register); 
-router.post('/api/account/login',accountontroller.login); 
+router.post('/api/account/register',accountController.register); 
+router.post('/api/account/login',accountController.login); 
  
 module.exports = router; 
 

@@ -2,10 +2,19 @@ const User = require('../model/userModel');
 module.exports = {
     get: async(id)=>{
         try {
-            return await User.findById(id).populate({
-                path:'_id',
-                select:'-password'
-            }); 
+            return await User.findById(id).populate(
+                {
+                    path:'_id',
+                    select:'-password',
+                },
+            ).populate({
+                path:'friends',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
+            })
         } catch (error) {
             throw error;
         }
@@ -93,9 +102,16 @@ module.exports = {
 
             const requestAddFriendUpdated =  await User.findByIdAndUpdate({_id:id},userSendRequest,{
                 new:true
+            }).populate({
+                path:'friends',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
             });
 
-
+    
             const userReceiveRequest  = await User.findById({_id:data.userId}); 
 
             if(userReceiveRequest){
@@ -135,6 +151,7 @@ module.exports = {
                     userSendRequest.requestAddFriend = userSendRequest.requestAddFriend.filter(item => !item.equals(data.userId));                  
                 }
 
+            userSendRequest.friends = userSendRequest.friends.filter(item => !item.equals(data.userId))
             const requestAddFriendUpdated =  await User.findByIdAndUpdate({_id:id},userSendRequest,{
                 new:true
             });
@@ -143,22 +160,26 @@ module.exports = {
             if(userRecieveRequest){              
                 userRecieveRequest.requestAddFriendFromUser = userRecieveRequest.requestAddFriendFromUser.filter(item => !item.equals(id));               
             }
+            userRecieveRequest.friends = userRecieveRequest.friends.filter(item => !item.equals(id))
 
             const requestAddFriendFromUserUpdated = await User.findByIdAndUpdate({_id:data.userId},userRecieveRequest,{
                 new:true
             });
 
+
             if(data.type !== undefined && data.type === 2){
                 return {
                     type:2,
-                    requestAddFriend:requestAddFriendUpdated.requestAddFriendFromUser
+                    requestAddFriend:requestAddFriendUpdated.requestAddFriendFromUser,
+                    friends:requestAddFriendUpdated.friends
                 }
             }
-
-            return requestAddFriendFromUserUpdated.requestAddFriendFromUser
+            return {
+                requestAddFriendFromUser:requestAddFriendFromUserUpdated.requestAddFriendFromUser,
+                friends:requestAddFriendFromUserUpdated.friends
+            }
             
         } catch (error) {
-            console.log(error);
             throw error;
         }
     },

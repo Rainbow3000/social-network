@@ -39,19 +39,61 @@
             height: 100%;
             overflow-y: auto;
             .notifi-item{
+                
+                .state{
+                    width: 10px;
+                    height: 10px;
+                    background-color: red;
+                    border-radius: 50%;
+                    position: absolute;
+                    right: 10px;
+                    top: 10px;
+                }
+                cursor: pointer;
+                position: relative;
+                width: 100%;
                 border-top: 1px solid #EEEEEE;
                 display: flex;
                 align-items: center;
+                justify-content: space-between;
                 padding: 10px 20px;
                 margin-top: 10px;
                 justify-content: space-between;
                 .content{
+                    width: 100%;
                     display: flex;
                     align-items: center;
+                    flex: 2;
+                }
+                .notifi-item-btn{
+                    flex: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-end;
+                    .btn-item{
+                        margin-right: 10px;
+                        width: 120px;
+                        height: 40px;
+                        padding: 5px 10px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border: 0.5px solid #EEEEEE;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        &:first-child{
+                            background-color: #377DFF;
+                            color: #FFFFFF;
+                        }
+                    }
+                    
                 }
                 .notifi-type-icon{
-                    width: max-content;
-                    height: max-content;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                     padding: 3px;
                     background-color: #eeeeee81;
                     border-radius: 50%;
@@ -83,6 +125,15 @@
                     background-color: #eeeeee81;
                     border-radius: 50%;
                     color: #377DFF;
+                }
+
+                .notifi-type-icon.hand-shake{
+                    width: max-content;
+                    height: max-content;
+                    padding: 3px;
+                    background-color: #eeeeee81;
+                    border-radius: 50%;
+                    color: green;
                 }
 
                 .notifi-type-icon.share{
@@ -126,6 +177,7 @@
                     background-color: #377DFF;
                     color: #FFFFFF;
                 }
+                
 
                 .notifi-user{
                     display: flex;
@@ -145,12 +197,21 @@
                         margin-left: 10px;
                         span{
                             &:first-child{
-                                font-weight: 500;
+                                display: flex;
+                                align-items: center;
                             }
+                        }
+                        .time{
+                            font-size: 12px;
+                        }
+                        .content{
+                            font-weight: normal;
+                            font-size: 14px;
                         }
                     }
                 }
             }
+            
         }
     }
 }

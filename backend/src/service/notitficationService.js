@@ -10,7 +10,7 @@ module.exports = {
             if(!notification){
                 return {
                     success:false,
-                    message:"thông báo không tồn tại",
+                    message:"Thông báo không tồn tại",
                     statusCode:404,
                     data:null
                 }
@@ -32,7 +32,28 @@ module.exports = {
             if(!notification){
                 return {
                     success:false,
-                    message:"thông báo không tồn tại",
+                    message:"Thông báo không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+            return {
+                    success:true,
+                    message:"Lấy thông báo thành công",
+                    statusCode:200,
+                    data:notification
+            };
+        } catch (error) {
+            
+        }
+    },
+    getByUserId: async(userId)=>{
+        try {
+            const notification =  await _notificationRepository.getByUserId(userId); 
+            if(!notification){
+                return {
+                    success:false,
+                    message:"Thông báo không tồn tại",
                     statusCode:404,
                     data:null
                 }
@@ -118,7 +139,7 @@ module.exports = {
             if(!notificationExisted){
                 return {
                     success:false,
-                    message:"thông báo không tồn tại",
+                    message:"Thông báo không tồn tại",
                     statusCode:404,
                     data:null
                 }
@@ -142,7 +163,7 @@ module.exports = {
             if(!notificationExisted){
                 return {
                     success:false,
-                    message:"thông báo không tồn tại",
+                    message:"Thông báo không tồn tại",
                     statusCode:403,
                     data:null
                 }

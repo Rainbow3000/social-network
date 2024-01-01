@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import './notification.scss'
 import { IoSettingsOutline } from "react-icons/io5";
 import Rightbar from '../../components/rightbar/Rightbar';
@@ -7,7 +7,30 @@ import { MdPerson } from "react-icons/md";
 import UserChat from '../../components/userChat/UserChat';
 import { IoHeart } from "react-icons/io5";
 import { IoMdImages } from "react-icons/io";
-const Notification = () => {
+import { useDispatch, useSelector } from 'react-redux';
+import {getNotificationByUser} from '../../store/slice/notificationSlice'
+import moment from 'moment/dist/moment';
+import 'moment/dist/locale/vi'
+import {createInstanceSocket} from '../../utils/socket'
+import {addNotifi} from '../../store/slice/notificationSlice'
+import {Link} from 'react-router-dom'
+import { PiHandshake } from "react-icons/pi";
+moment.locale('vi');
+
+const Notification = () => { 
+  const socket = useRef(); 
+  const {notificationList} = useSelector(state => state.notification)
+  const {user} = useSelector(state => state.user)
+  const dispatch = useDispatch(); 
+
+  useEffect(()=>{
+    socket.current = createInstanceSocket(); 
+    if(socket.current){
+        
+      
+    }
+
+  },[])
   return (
     <div className='notification-container'>
         <div className="left">
@@ -18,43 +41,76 @@ const Notification = () => {
                 </div>
 
                 <div className='notifi-list'>
-                    <div className="notifi-item">
-                        <div className='content'>
-                            <span className='notifi-type-icon comment'>                      
-                                <MdPerson/>
-                            </span>
-                            <div className='notifi-user'>
-                                <img src="https://picture.dzogame.vn/Img/minato2_pp_518.jpg" alt="" />
-                                <div className='user-name'>
-                                    <span>Nguyễn Đức Thịnh đã bình luận bài viết của bạn</span>
-                                    <span>4 phút trước</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div className='notifi-follow unfollow'>
-                            <span>Theo dõi</span>
-                        </div>
-                    </div>
+                    {
+                        notificationList.length > 0  &&  notificationList.map(item =>{
+                            if(item.notifiType === 'ADD_FRIEND'){
+                                return (
+                                    <Link to={`/profile/${item.fromUser._id._id}`} className='link'>
+                                        <div className="notifi-item">
+                                        <div className='content'>
+                                            <span className='notifi-type-icon follow'>   
+                                                <MdPerson/>                   
+                                                {/* <MdOutlineChatBubbleOutline/>
+                                                <IoHeart/>
+                                                <IoMdImages/> */}
+                                            </span>
+                                            <div className='notifi-user'>
+                                                <img src={item.fromUser?.avatar} alt="" />
+                                                <div className='user-name'>
+                                                    <span><b>{item.fromUser?._id?.userName}</b>&nbsp;<span className='content'>{item.content}</span></span>
+                                                    <span className='time'>{moment(item?.createdAt).calendar()}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className='notifi-item-btn'>
+                                            <div className='btn-item'>
+                                                <span>Chấp nhận</span>
+                                            </div>
+        
+                                            <div className='btn-item'>
+                                                <span>Hủy</span>
+                                            </div>
+                                        </div>
+                                        <div className='state'>
+                                            
+                                        </div>
+                                        </div>
+                                    </Link>
+                                   
+                                )
+                            }
 
-                    <div className="notifi-item">
-                        <div className='content'>
-                            <span className='notifi-type-icon comment'>                      
-                                <MdPerson/>
-                            </span>
-                            <div className='notifi-user'>
-                                <img src="https://picture.dzogame.vn/Img/minato2_pp_518.jpg" alt="" />
-                                <div className='user-name'>
-                                    <span>Nguyễn Đức Thịnh đã bình luận bài viết của bạn</span>
-                                    <span>4 phút trước</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div className='notifi-follow unfollow'>
-                            <span>Theo dõi</span>
-                        </div>
-                    </div>
+                            if(item.notifiType === 'ACCEPT_ADD_FRIEND'){
+                                return (
+                                <Link to={`/profile/${item.fromUser._id._id}`} className='link'>
+                                        <div className="notifi-item">
+                                        <div className='content'>
+                                            <span className='notifi-type-icon hand-shake'>   
+                                                <PiHandshake/>                   
+                                                {/* <MdOutlineChatBubbleOutline/>
+                                                <IoHeart/>
+                                                <IoMdImages/> */}
+                                            </span>
+                                            <div className='notifi-user'>
+                                                <img src={item.fromUser?.avatar} alt="" />
+                                                <div className='user-name'>
+                                                    <span><b>{item.fromUser?._id?.userName}</b>&nbsp;<span className='content'>{item.content}</span></span>
+                                                    <span className='time'>{moment(item?.createdAt).calendar()}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                       
+                                        <div className='state'>
+                                            
+                                        </div>
+                                        </div>
+                                    </Link>
+                                )
+                            }
+                        })
+                    }                  
                 </div>
 
             </div>
