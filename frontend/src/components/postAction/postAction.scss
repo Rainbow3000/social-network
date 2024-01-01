@@ -1,3 +1,4 @@
+
 .post-form-create{
     width: 528px;
     height: auto;
@@ -122,4 +123,20 @@
         cursor: pointer;
         margin-top: 10px;
     }
+}
+
+.post-media{
+    width: 100%;
+    position: relative;
+    .emoji{
+        position: absolute;
+        top: 50px;
+        left: 0;
+        z-index: 9999;
+    }
+    .Flex.epr-preview.FlexRow{
+        display: none;
+    }
+  
+    
 }

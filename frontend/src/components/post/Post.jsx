@@ -169,7 +169,6 @@ const handleGetCommentByPost = (postId)=>{
             }
 
             {
-                item?.thumb !== undefined && item?.thumb !== null & item.thumb !== "" && (
                     item?.images?.length === 0  && (
                         <div className='post-video'>
                             <video width="100%" height="100%" controls ref={videoRef} poster={item.thumb} >
@@ -178,7 +177,7 @@ const handleGetCommentByPost = (postId)=>{
                             </video>
                         </div>
                     )
-                )
+                
 
                 
             }

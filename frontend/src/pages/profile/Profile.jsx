@@ -29,6 +29,7 @@ import {userAddFriend,userCancelAddFriend,userAcceptAddFriend} from '../../store
 import { LuPenSquare } from "react-icons/lu";
 import { MdClear } from "react-icons/md";
 import { LiaUserFriendsSolid } from "react-icons/lia";
+import {setUserChatCurrent} from '../../store/slice/chatSlice'
 
 const Profile = () => {
     const dispatch = useDispatch(); 
@@ -93,6 +94,10 @@ const Profile = () => {
             type:2
         }
         dispatch(userCancelAddFriend({userData,id:userId})) 
+    }
+
+    const handleSetUserChat = ()=>{
+        dispatch(setUserChatCurrent(userInfo))
     }
     
 
@@ -169,9 +174,11 @@ const Profile = () => {
                                       }
                                          
 
-
-
-                            <button><PiMessengerLogoBold/> &nbsp; Nhắn tin</button>
+                            <button onClick={handleSetUserChat}>
+                                <Link to="/chat" className='link'>
+                                    <PiMessengerLogoBold/> &nbsp;Nhắn tin
+                                </Link>
+                            </button>
                             <button><FiRadio/>&nbsp; Theo dõi</button>
                             <span className='profile-options-icon'><HiDotsHorizontal/>
                                 <ul className='profile-options'>

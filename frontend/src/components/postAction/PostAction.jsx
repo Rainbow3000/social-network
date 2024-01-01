@@ -14,6 +14,7 @@ import {createPost} from '../../store/slice/postSlice'
 import { validateEmpty } from '../../helper/validateHelper';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import EmojiPicker from "emoji-picker-react";
+import { BsEmojiSmile } from "react-icons/bs";
 let flag = 0;
 const PostAction = () => {
   const [emojiShow, setEmojiShow] = useState(false);
@@ -68,6 +69,12 @@ const handleChooseImageForVideo = (event)=>{
         })
     })
 }
+
+
+const onEmojiClick = (object) => {
+  let text = content + object.emoji;
+  setContent(text);
+};
 
 
 const handleSubmitForm = (e)=>{
@@ -163,15 +170,21 @@ return (
         </div>
       </div>
 
-  <div className='post-media'>
+  <div className='post-media'>   
+      {emojiShow && (
+              <div className="emoji">
+                <EmojiPicker theme='light' onEmojiClick={onEmojiClick} />
+              </div>
+            )}
     <div className='media-action'>
       <span className='text-error media'>{mediaErr}</span>
       <ul>
         <li><label htmlFor="post-file"><IoMdImages/>&nbsp; Ảnh/Video</label></li>
-        <li><FaRegFaceSmile/>&nbsp; Biểu tượng</li>
+        <li><FaRegFaceSmile  onClick={() => setEmojiShow(!emojiShow)}
+          />&nbsp; Biểu tượng</li>
       </ul>            
     </div>             
-    <button type='submit'>Đăng</button>
+    <button className='btn-create-post' type='submit'>Đăng</button>
   </div>
 </form>
 
