@@ -3,6 +3,7 @@ const _postRepository = require('../repository/postRepository')
 const validateError = require('../utils/validateError');
 const mongoose = require('mongoose'); 
 const moment = require('moment')
+const {getSocketIo}  = require('../../src/socket')
 module.exports = {
     get: async(id)=>{
         try {
@@ -68,6 +69,23 @@ module.exports = {
         try {
             data.createdDate = moment().format();
             const chatCreated = await _chatRepository.create(data);   
+      
+
+            const {ioObject,socketObject,userOnline} = getSocketIo();
+
+            if(ioObject && socketObject){  
+                const fromId = chatCreated.to?._id?._id.toString();
+               
+                if(userOnline.has(fromId)){
+                    const socketId = userOnline.get(fromId);
+                    socketObject.join(socketId)
+                    ioObject.to(socketId).emit("receive-message-single-user",chatCreated);               
+                } 
+            }
+
+
+
+
             return {
                 success:true,
                 message:"Tạo chat thành công",

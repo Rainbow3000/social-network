@@ -19,6 +19,8 @@ import { useEffect,useRef } from 'react';
 import {getNotificationByUser} from './store/slice/notificationSlice'
 import {getUserInfo} from './store/slice/userSlice'
 import {addNotifi} from '../src/store/slice/notificationSlice'
+import {addChatCreated} from '../src/store/slice/chatSlice'
+
 function App() {
   const {isShowOverlay} = useSelector(state=> state.app);
   const {isShowCreatePost} = useSelector(state=> state.post);
@@ -30,7 +32,7 @@ function App() {
     socket.current = createInstanceSocket();
     if(socket.current){
       socket.current.on("connect", () => {
-         socket.current.emit('user-connected',user.data._id); 
+         socket.current.emit('user-connected',user?.data?._id); 
       });
 
       socket.current.on('notifi-add-friend-single-user',(notifi)=>{
@@ -40,10 +42,16 @@ function App() {
          dispatch(addNotifi(notifi));
       })
 
+      socket.current.on('receive-message-single-user',(msg)=>{
+        dispatch(addChatCreated(msg));
+     })
+
+
+      
 
     }
 
-    dispatch(getNotificationByUser(user.data._id)); 
+    dispatch(getNotificationByUser(user?.data?._id)); 
   },[])
   return (
     <div id="app">

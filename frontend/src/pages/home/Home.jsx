@@ -29,7 +29,7 @@ const Home = () => {
 
   useEffect(()=>{
     dispatch(getPostList());
-    dispatch(getUserInfo(user.data._id))
+    dispatch(getUserInfo(user?.data?._id))
   },[])
 
 

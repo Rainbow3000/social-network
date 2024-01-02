@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react'
+import React,{useEffect, useState,useRef} from 'react'
 import UserChat from '../../components/userChat/UserChat';
 import { FaRegFaceSmile } from "react-icons/fa6";
 import { FaRegImage } from "react-icons/fa";
@@ -16,6 +16,10 @@ import storage from '../../firebase';
 import {ref as refStorage,uploadBytes, getDownloadURL} from 'firebase/storage'
 import EmojiPicker from "emoji-picker-react";
 import {createChat,getChatListByUser} from '../../store/slice/chatSlice'
+import moment from 'moment/dist/moment';
+import 'moment/dist/locale/vi'
+moment.locale('vi');
+
 
 const Chat = () => {
   const [content,setContent] = useState("");
@@ -25,8 +29,23 @@ const Chat = () => {
   const [emojiShow, setEmojiShow] = useState(false);
   const {user} = useSelector(state => state.user); 
   const {userChatCurrent,chatList} = useSelector(state => state.chat); 
-
+  const scrollRef = useRef();
+  const inputRef = useRef(); 
   const dispatch = useDispatch(); 
+
+
+  useEffect(() => {
+    const scrollToBottomWithSmoothScroll = () => {
+      scrollRef.current?.scrollTo({
+        top: scrollRef.current?.scrollHeight,
+        behavior: "smooth",
+      });
+    };
+    scrollToBottomWithSmoothScroll();
+
+  }, [chatList.length]);
+
+
 
   const handleChooseImage = (event)=>{
     const file = event.target.files[0]; 
@@ -60,6 +79,8 @@ const Chat = () => {
     }
 }
 
+
+
 const handleCreateMessage = ()=>{
     const data = {
         content,
@@ -70,12 +91,22 @@ const handleCreateMessage = ()=>{
         to: userChatCurrent._id._id
     }
     dispatch(createChat(data))
+    setContent("");
+    setVideo("");
+    setFile("");
+    setImage("");
+    setEmojiShow(false); 
 }
 
 const onEmojiClick = (object) => {
     let text = content + object.emoji;
     setContent(text);
 };
+
+const handleSubmitForm = (e)=>{
+    e.preventDefault(); 
+    handleCreateMessage();
+}
 
 useEffect(()=>{
     dispatch(getChatListByUser({id:user.data._id,friendId:userChatCurrent?._id._id}))
@@ -90,7 +121,7 @@ useEffect(()=>{
                     <div className='search-icon'>
                         <BiSearch />
                     </div>
-                    <input type="text" />      
+                    <input type="text" placeholder='Tìm kiếm người liên hệ' />      
                 </div>
 
                 <div className='option-icon'>
@@ -123,7 +154,7 @@ useEffect(()=>{
             <div className="chat-top">
                  <img src={ userChatCurrent?.avatar} alt="" />
                  <div className='user-name'>
-                    <span>Nguyễn Đức Thịnh</span>
+                    <span>{userChatCurrent?._id.userName}</span>
                     <span>Đang hoạt động</span>
                  </div>
                  <div className='pen-icon'>
@@ -133,16 +164,26 @@ useEffect(()=>{
                  </div>
             </div>
             <div className="chat-bottom">
-                <div className='chat-welcome'>
-                    <span>Bắt đầu cuộc trò chuyện của bạn với Lan</span>
-                </div>
 
-                <div className='chat-content'>
+                {
+                    chatList.length  === 0 ? (
+                        <div className='chat-welcome'>
+                            <span>Bắt đầu cuộc trò chuyện của bạn với {userChatCurrent?._id.userName}</span>
+                        </div>
+                    ):(
+                        <div className='chat-welcome'>
+                            <span></span>
+                        </div>
+                    )
+                }
+
+
+                <div className='chat-content' ref={scrollRef}>
                     {
                         chatList.length > 0 && chatList.map(item =>{
                             return (
-                                <div className={item.from._id._id === user.data._id ? 'chat-item right' : 'chat-item left'}>
-                                <img src={item.from._id._id === user.data._id ? item.from.avatar : item.to.avatar} alt="" />
+                                <div className={item?.from._id._id === user.data._id ? 'chat-item right' : 'chat-item left'}>
+                                <img src={item?.from._id._id === user.data._id ? item?.from.avatar : item?.to?.avatar} alt="" />                       
                                 <div className='content-wrapper'>
                                     <div className='content-item'>
                                         <div className='content'>
@@ -151,7 +192,7 @@ useEffect(()=>{
                                             &nbsp;&nbsp;
                                         <BiDotsHorizontal className='option-icon'/>
                                     </div>
-                                    <span className='time'>9 giờ trước</span>
+                                    <span className='time'>{moment(item?.createdDate).calendar()}</span>
                                 </div>
                                 </div>
                             )
@@ -164,8 +205,8 @@ useEffect(()=>{
                 </div>
 
                 <div className='chat-input'>
-                    <div className='input-wrapper'>
-                        <input onChange={(e)=> setContent(e.target.value)}  value={content} type="text" placeholder='Nhập tin nhắn của bạn ...'/>
+                    <form className='input-wrapper' onSubmit={handleSubmitForm}>
+                        <input  onChange={(e)=> setContent(e.target.value)} ref={inputRef}  value={content} type="text" placeholder='Nhập tin nhắn của bạn ...'/>
                         <div className='icon-wrapper'>
                             {emojiShow && (
                                 <div className="emoji">
@@ -179,7 +220,7 @@ useEffect(()=>{
                                 <IoImageOutline className='icon'/>
                             </label>
                         </div>
-                    </div>
+                    </form>
 
                     <div className='send-btn' onClick={handleCreateMessage}>
                         <RiSendPlane2Line/>

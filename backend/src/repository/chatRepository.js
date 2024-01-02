@@ -21,7 +21,7 @@ module.exports = {
 
     getByUser: async(id,otherId)=>{
         try {
-            return await Chat.find({from:id,to:otherId})
+            return await Chat.find( { $or: [{from:id,to:otherId}, {from:otherId,to:id}] })
             .populate(
                 {
                     path:'from',

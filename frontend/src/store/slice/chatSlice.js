@@ -29,7 +29,7 @@ export const updatePostByOtherUser = createAsyncThunk(
 
 const chatState = {
   chatList:[],
-  userChatCurrent:null,
+  userChatCurrent:JSON.parse(localStorage.getItem('user-chat')) !== null ? JSON.parse(localStorage.getItem('user-chat')) : null,
   isSuccess:false,
   isLoading:false,
   isError:false,
@@ -50,6 +50,10 @@ export const chatSlice = createSlice({
 
     setUserChatCurrent:(state,action)=>{
         state.userChatCurrent = action.payload; 
+    },
+
+    addChatCreated:(state,action)=>{
+      state.chatList = [...state.chatList,action.payload]; 
     }
   },
   extraReducers:(builder)=>{
@@ -62,7 +66,6 @@ export const chatSlice = createSlice({
         state.isLoading = false;
         state.error = null; 
         state.isError = false;
-        state.chatList = [...state.chatList,action.payload.data];
       })
       builder.addCase(createChat.rejected, (state, action) => {
         state.isError = true;
@@ -115,6 +118,6 @@ export const chatSlice = createSlice({
   }
 })
 
-export const { showCreatePost,hiddenShowCreatePost,setUserChatCurrent } = chatSlice.actions
+export const { showCreatePost,hiddenShowCreatePost,setUserChatCurrent,addChatCreated } = chatSlice.actions
 
 export default chatSlice.reducer

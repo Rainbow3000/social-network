@@ -98,6 +98,7 @@ const Profile = () => {
 
     const handleSetUserChat = ()=>{
         dispatch(setUserChatCurrent(userInfo))
+        localStorage.setItem('user-chat',JSON.stringify(userInfo)); 
     }
     
 
