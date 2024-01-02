@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema(
     instagramLink:{
       type:String
     },
-    LinkedInLink:{
+    linkedInLink:{
     type:String
   },
 
@@ -75,6 +75,13 @@ const userSchema = new mongoose.Schema(
     required:true,
     default:1,
   },
+  chats:{
+    type:[mongoose.Schema.Types.ObjectId],
+    ref:'User',
+  },
+  timeDisconnect:{
+    type:String
+  }
 
   },{timestamps:true})
 

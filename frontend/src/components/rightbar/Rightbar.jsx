@@ -7,7 +7,7 @@ import {Link} from 'react-router-dom'
 const Rightbar = () => {
 
   const {userInfo} = useSelector(state => state.user); 
-
+  
   return (
     <div className='right-container'>
         <div className='search-input'>

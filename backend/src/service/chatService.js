@@ -1,5 +1,5 @@
 const _chatRepository = require('../repository/chatRepository');
-const _postRepository = require('../repository/postRepository')
+const _userRepository = require('../repository/userRepository')
 const validateError = require('../utils/validateError');
 const mongoose = require('mongoose'); 
 const moment = require('moment')
@@ -69,22 +69,58 @@ module.exports = {
         try {
             data.createdDate = moment().format();
             const chatCreated = await _chatRepository.create(data);   
-      
+            
+            const fromUser = await _userRepository.get(chatCreated.from._id._id); 
+
+            if(!fromUser){
+                return {
+                    success:false,
+                    message:"Người dùng không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+
+            if(fromUser.chats.find(item => item.equals(chatCreated.to._id._id)) === undefined){
+                fromUser.chats = fromUser.chats.push(chatCreated.to._id._id); 
+            }
+           
+
+            await _userRepository.update(fromUser,chatCreated.from._id._id);
+
+
+            const toUser = await _userRepository.get(chatCreated.to._id._id); 
+
+            if(!toUser){
+                return {
+                    success:false,
+                    message:"Người dùng không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+
+            if(toUser.chats.find(item => item.equals(chatCreated.from._id._id)) === undefined){
+                toUser.chats = toUser.chats.push(chatCreated.from._id._id); 
+            }
+            
+
+            await _userRepository.update(toUser,chatCreated.to._id._id);
+
+
+
 
             const {ioObject,socketObject,userOnline} = getSocketIo();
 
             if(ioObject && socketObject){  
-                const fromId = chatCreated.to?._id?._id.toString();
+                const toId = chatCreated.to?._id?._id.toString();
                
-                if(userOnline.has(fromId)){
-                    const socketId = userOnline.get(fromId);
+                if(userOnline.has(toId)){
+                    const socketId = userOnline.get(toId);
                     socketObject.join(socketId)
                     ioObject.to(socketId).emit("receive-message-single-user",chatCreated);               
                 } 
             }
-
-
-
 
             return {
                 success:true,

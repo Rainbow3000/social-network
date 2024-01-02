@@ -10,6 +10,14 @@ export const getChatListByUser = createAsyncThunk(
   }
 )
 
+export const getUserChatList = createAsyncThunk(
+  'chat/getUserChatList',
+   async (userId) => {
+    const response = await _userRequest.get(`chat/userchatlist/${userId}`); 
+    return response.data
+  }
+)
+
 export const createChat = createAsyncThunk(
     'chat/create',
      async (chatData) => {
@@ -27,9 +35,14 @@ export const updatePostByOtherUser = createAsyncThunk(
 )
 
 
+
+
+
+
 const chatState = {
   chatList:[],
   userChatCurrent:JSON.parse(localStorage.getItem('user-chat')) !== null ? JSON.parse(localStorage.getItem('user-chat')) : null,
+  userChatList:[],
   isSuccess:false,
   isLoading:false,
   isError:false,
@@ -57,6 +70,27 @@ export const chatSlice = createSlice({
     }
   },
   extraReducers:(builder)=>{
+
+
+
+    builder.addCase(getUserChatList.pending, (state, action) => {
+      state.isLoading = true; 
+      state.isSuccess = false;
+    })
+    builder.addCase(getUserChatList.fulfilled,(state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false;
+      state.userChatList = action.payload.data; 
+    })
+    builder.addCase(getUserChatList.rejected, (state, action) => {
+      state.isError = true;
+      state.isSuccess = false;
+      state.error = action.payload;
+      state.isLoading = false;
+    })
+
+
 
     builder.addCase(createChat.pending, (state, action) => {
         state.isLoading = true; 

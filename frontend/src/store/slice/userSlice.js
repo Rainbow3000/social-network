@@ -82,7 +82,8 @@ const userState = {
   isError:false,
   user: JSON.parse(localStorage.getItem('user'))  || null,
   userInfo:null,
-  error:null
+  error:null,
+  activeList: [],
 }
 
 export const userSlice = createSlice({
@@ -102,6 +103,9 @@ export const userSlice = createSlice({
     userLogout:(state,action)=>{
         state.user = null; 
         localStorage.removeItem('user'); 
+    },
+    setUserActive:(state,action)=>{
+     state.activeList = action.payload;
     }
   },
 
@@ -235,6 +239,6 @@ export const userSlice = createSlice({
 })
 
 
-export const { showLoginForm,hiddenLoginForm,setTypePopupForm,userLogout} = userSlice.actions
+export const { showLoginForm,hiddenLoginForm,setTypePopupForm,userLogout,setUserActive} = userSlice.actions
 
 export default userSlice.reducer

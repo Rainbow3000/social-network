@@ -1,12 +1,26 @@
 import React from 'react'
 import './userChat.scss'
-const UserChat = () => {
+import { useDispatch, useSelector } from 'react-redux'
+import {getChatListByUser,setUserChatCurrent} from '../../store/slice/chatSlice'
+const UserChat = ({item}) => {
+
+  const dispatch = useDispatch(); 
+  const {user} = useSelector(state => state.user); 
+
+
+  const handleGetChatUser = (item)=>{
+    dispatch(getChatListByUser({id:user?.data._id,friendId:item?._id._id}))
+    dispatch(setUserChatCurrent(item))
+    localStorage.setItem('user-chat',JSON.stringify(item)); 
+  }
+
+
   return (
-    <div className='user-chat-container'>
+    <div className='user-chat-container' onClick={()=>handleGetChatUser(item)}>
         <div className='left'>
-            <img src="https://picture.dzogame.vn/Img/minato2_pp_518.jpg" alt="" />
+            <img src={item.avatar} alt="" />
             <div className='chat-content'>
-                <span>Minato Kazaige</span>
+                <span>{item._id.userName}</span>
                 <span>Chúng tôi cần bạn trợ giúp...</span>
             </div>
         </div>

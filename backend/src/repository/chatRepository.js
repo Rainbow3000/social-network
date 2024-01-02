@@ -40,6 +40,7 @@ module.exports = {
             throw error;
         }
     },
+
     getAll: async()=>{
         try {
             return await Chat.find().populate({

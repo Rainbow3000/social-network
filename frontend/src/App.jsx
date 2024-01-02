@@ -7,7 +7,7 @@ import Profile from './pages/profile/Profile';
 import PostAction from './components/postAction/PostAction';
 import Chat from './pages/chat/Chat'
 import Popup from './components/popup/Popup';
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
 import Rightbar from './components/rightbar/Rightbar';
 import Community from './pages/community/Community';
@@ -17,7 +17,7 @@ import Notification from './pages/notification/Notification';
 import {createInstanceSocket} from '../src/utils/socket'
 import { useEffect,useRef } from 'react';
 import {getNotificationByUser} from './store/slice/notificationSlice'
-import {getUserInfo} from './store/slice/userSlice'
+import {getUserInfo,setUserActive} from './store/slice/userSlice'
 import {addNotifi} from '../src/store/slice/notificationSlice'
 import {addChatCreated} from '../src/store/slice/chatSlice'
 
@@ -26,14 +26,23 @@ function App() {
   const {isShowCreatePost} = useSelector(state=> state.post);
   const {isShowLoginForm} = useSelector(state => state.user); 
   const dispatch = useDispatch(); 
-  const {user} = useSelector(state => state.user); 
+  const {user,activeList} = useSelector(state => state.user); 
   const socket = useRef(); 
+  const navigate = useNavigate(); 
   useEffect(()=>{
+    if(user === null){
+      navigate('/auth')
+      return;
+    }
     socket.current = createInstanceSocket();
     if(socket.current){
-      socket.current.on("connect", () => {
+      socket.current.on('connect', () => {
          socket.current.emit('user-connected',user?.data?._id); 
       });
+
+      socket.current.on('user-online',(data)=>{
+            dispatch(setUserActive(data));         
+      })
 
       socket.current.on('notifi-add-friend-single-user',(notifi)=>{
         dispatch(addNotifi(notifi));
@@ -44,15 +53,11 @@ function App() {
 
       socket.current.on('receive-message-single-user',(msg)=>{
         dispatch(addChatCreated(msg));
-     })
-
-
-      
-
+     })   
     }
-
+    dispatch(getUserInfo(user?.data?._id))
     dispatch(getNotificationByUser(user?.data?._id)); 
-  },[])
+  },[user,socket])
   return (
     <div id="app">
             {

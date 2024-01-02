@@ -14,6 +14,14 @@ module.exports = {
                     path:'_id',
                     select:'-password -email -role -status -createdAt -updatedAt'
                 }
+            }).
+            populate({
+                path:'chats',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
             })
         } catch (error) {
             throw error;
