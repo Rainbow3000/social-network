@@ -6,7 +6,7 @@ const moment = require('moment')
 module.exports = {
     get: async(id)=>{
         try {
-            const comment =  await _commentRepository.findById(id); 
+            const comment =  await _commentRepository.get(id); 
             if(!comment){
                 return {
                     success:false,
@@ -19,7 +19,7 @@ module.exports = {
                     success:true,
                     message:"Lấy bình luận thành công",
                     statusCode:200,
-                    data:comment
+                    data:comment.children
             };
         } catch (error) {
             

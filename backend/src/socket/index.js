@@ -16,10 +16,11 @@ module.exports = {
                     userOnline.set(data,socket.id); 
                     online.push(data); 
                 }  
-                socket.emit('user-online',online)           
+                socket.broadcast.emit('user-online',online)           
             })
 
-            socket.on('disconnect', () => {       
+            socket.on('disconnect', () => {     
+                
                const keys = Array.from(userOnline.keys()); 
                let keyDisconnected = null; 
                
@@ -29,9 +30,9 @@ module.exports = {
                 }
                })
                online = online.filter(item => item !== keyDisconnected); 
-               socket.emit('user-online',online)
+               socket.broadcast.emit('user-online',online)
                userOnline.delete(keyDisconnected);
-
+               
             });
             
             socketObject = socket; 

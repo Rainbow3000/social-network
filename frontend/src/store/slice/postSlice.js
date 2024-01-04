@@ -1,6 +1,6 @@
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit'
 import { _userRequest } from '../../requestMethod'
-
+import {findComment,addComment} from '../../helper/commentHelper'
 export const createPost = createAsyncThunk(
   'post/create',
    async (data) => {
@@ -31,8 +31,8 @@ export const getPostList = createAsyncThunk(
 
 export const updatePostByOtherUser = createAsyncThunk(
   'post/updatePostByOtherUser',
-   async ({postId,userId}) => {
-    const response = await _userRequest.put(`post/update/byotheruser/${postId}`,{userId}); 
+   async ({postId,userId,type}) => {
+    const response = await _userRequest.put(`post/update/byotheruser/${postId}`,{userId,type}); 
     return response.data
   }
 )
@@ -44,6 +44,18 @@ export const getCommentByPost = createAsyncThunk(
     return {commentData:response.data,postId}
   }
 )
+
+export const getCommentByParent = createAsyncThunk(
+  'comment/getCommentByParent',
+   async ({commentId,postId}) => {
+    const response = await _userRequest.get(`comment/${commentId}`); 
+    const {data} = response.data; 
+    return {commentId,postId,data}
+  }
+)
+
+
+
 
 export const getPostByUser= createAsyncThunk(
   'comment/getPostByUser',
@@ -57,6 +69,7 @@ const postState = {
   isShowCreatePost:false,
   postList:[],
   postOfUser:[],
+  commentIdList:[],
   isSuccess:false,
   isLoading:false,
   isError:false,
@@ -77,18 +90,34 @@ export const postSlice = createSlice({
     setChildrentComment:(state,action)=>{
       state.postList = state.postList.map(post =>{
         if(post._id === action.payload.postId){
-          const childComment =  post.commentList?.filter(comment =>{
-            if(action.payload.children.includes(comment._id)){
-              return comment;
-            }
-          });
+          let childComment = null; 
+        
+          childComment =  post.commentList?.filter(comment =>{
+              if(action.payload.children.includes(comment._id)){
+                return comment;
+              }
+            });   
+          
          
           post.commentList = post.commentList.map(comment=>{
+
             if(comment._id === action.payload.commentId){
-               comment.children = childComment; 
+               if(state.commentIdList.find(item => item === action.payload.commentId) === undefined){
+                 comment.children = childComment; 
+                 state.commentIdList = [...state.commentIdList,action.payload.commentId]
+               }else {              
+                comment.children = action.payload.children.map(item => item._id)   
+                state.commentIdList = state.commentIdList.filter(comId => comId !== action.payload.commentId); 
+               }
             }
+
+            
+    
             return comment;
           })
+
+          
+
         }
         return post;
       })
@@ -114,6 +143,49 @@ export const postSlice = createSlice({
     }
   },
   extraReducers:(builder)=>{
+
+
+    builder.addCase(getCommentByParent.pending, (state, action) => {
+      state.isLoading = true; 
+      state.isSuccess = false; 
+    })
+    builder.addCase(getCommentByParent.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.isSuccess = true;
+     
+      state.postList = state.postList.map(post => {
+        if(post._id === action.payload.postId){
+            post.commentList = post.commentList.map(comment =>{
+              findComment(comment,action.payload.commentId,action.payload.data);           
+              return comment; 
+            })
+        }
+        return post; 
+      })
+
+
+      state.postOfUser = state.postOfUser.map(post => {
+        if(post._id === action.payload.postId){
+            post.commentList = post.commentList.map(comment =>{
+              findComment(comment,action.payload.commentId,action.payload.data);           
+              return comment; 
+            })
+        }
+        return post; 
+      })
+   
+    })
+    builder.addCase(getCommentByParent.rejected, (state, action) => {
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
+
+
+
+
     builder.addCase(createPost.pending, (state, action) => {
       state.isLoading = true; 
       state.isSuccess = false; 
@@ -233,36 +305,51 @@ export const postSlice = createSlice({
       state.error = null; 
       state.isError = false; 
       state.isSuccess = true; 
-      if(action.payload.data?.parent === null){
-         state.postList = state.postList.map(item =>{
-          if(item._id === action.payload.data?.post){
-            if(item.commentList === undefined){
-              item.commentList = []; 
+     
+      state.postList = state.postList.map(post =>{
+        if(post._id === action.payload.data.post){
+          post.comment.number ++; 
+
+          if(action.payload.data.parent === null){
+          if(post.commentList === undefined){
+              post.commentList = []; 
             }
-            item.commentList.push(action.payload.data); 
-          }
-          return item; 
-         })
-      }else {
-        state.postList = state.postList.map(item=>{
-          if(item._id === action.payload.data?.post){
-            item.commentList = item.commentList.map(comment =>{
-              if(comment._id === action.payload.data.parent){
-                  comment.children.push(action.payload.data); 
-                }
-                return comment; 
+            post.commentList = [...post.commentList,action.payload.data]; 
+          }else{
+            post.commentList = post.commentList.map(comment =>{
+              addComment(comment,action.payload.data.parent,action.payload.data); 
+              return comment; 
             })
           }
-          return item; 
-        })
-      }
 
-      state.postList = state.postList.map(item =>{
-        if(item._id === action.payload.data?.post){
-            item.comment.number ++; 
         }
-        return item; 
-      }) 
+
+        return post; 
+      })
+
+
+      state.postOfUser = state.postOfUser.map(post =>{
+        if(post._id === action.payload.data.post){
+          post.comment.number ++; 
+
+          if(action.payload.data.parent === null){
+          if(post.commentList === undefined){
+              post.commentList = []; 
+            }
+            post.commentList = [...post.commentList,action.payload.data]; 
+          }else{
+            post.commentList = post.commentList.map(comment =>{
+              addComment(comment,action.payload.data.parent,action.payload.data); 
+              return comment; 
+            })
+          }
+
+        }
+
+        return post; 
+      })
+
+    
     })
     builder.addCase(createComment.rejected, (state, action) => {
       state.isError = true;

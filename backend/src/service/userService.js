@@ -303,7 +303,7 @@ module.exports = {
             if(error instanceof mongoose.Error.ValidationError){  
                 return {
                     success:false,
-                    message:"Cập nhật người dùng dùng thất bại",
+                    message:"Cập nhật người dùng thất bại",
                     statusCode:400,
                     data:null,
                     errors:validateError(error)

@@ -60,8 +60,17 @@ const postSchema = new mongoose.Schema(
         default:0
       },
       userShared:{
-        type:[mongoose.Schema.Types.ObjectId],
-        ref:"User"
+        type:[{
+              user:{
+                type:mongoose.Schema.Types.ObjectId,
+                ref:"User"
+              },
+              timeShare:{
+                type:String
+              }
+        }
+        ],   
+       
       }
     },
     status: {

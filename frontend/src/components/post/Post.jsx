@@ -16,9 +16,8 @@ import { CiImageOn } from "react-icons/ci";
 import { VscSmiley } from "react-icons/vsc";
 import {getCommentByPost} from '../../store/slice/postSlice'
 import { LuHeartCrack } from "react-icons/lu";
-import { IoTimeOutline } from "react-icons/io5";
 import { RiSendPlane2Line } from "react-icons/ri";
-
+import EmojiPicker from "emoji-picker-react";
 import moment from 'moment/dist/moment';
 import 'moment/dist/locale/vi'
 moment.locale('vi');
@@ -26,19 +25,25 @@ moment.locale('vi');
 
 const Post = ({item}) => {
   const [isLike,setIsLike] = useState(false)
+ 
   const [likeNumber,setLikeNumber] = useState(item?.like?.number);
+  const [shareNumber,setShareNumber] = useState(item?.share?.number);
   const [content,setContent] = useState(""); 
   const [image,setImage] = useState(""); 
   const [video,setVideo] = useState(""); 
   const [parent,setParent] = useState(null); 
   const [indexChildShow,setIndexChildShow] = useState([]); 
   const [isShowActionActive,setIsShowActionActive] = useState(false); 
+  const [emojiShow, setEmojiShow] = useState(false);
   const [parentName,setParentName] = useState('')
   const [level,setLevel] = useState(0); 
   const dispatch = useDispatch(); 
   const {user}= useSelector(state => state.user); 
   const inputRef = useRef(); 
   const videoRef = useRef();
+
+  const [userShare,setUserShare] = useState(null); 
+
   const handleLikePost = (postId)=>{
     if(isLike === false){
         setLikeNumber(item?.like?.number + 1)
@@ -48,8 +53,22 @@ const Post = ({item}) => {
         setIsLike(!isLike)
     }
     const userId = JSON.parse(localStorage.getItem('user'))?.data?._id; 
-    dispatch(updatePostByOtherUser({postId,userId})); 
+    dispatch(updatePostByOtherUser({postId,userId,type:1})); 
   }
+
+  const handleSharePost = (postId)=>{
+    setShareNumber(item?.share?.number + 1); 
+    const userId = JSON.parse(localStorage.getItem('user'))?.data?._id; 
+    dispatch(updatePostByOtherUser({postId,userId,type:2})); 
+  }
+
+
+  const onEmojiClick = (object) => {
+    let text = content + object.emoji;
+    setContent(text);
+  };
+
+
   const handleChooseImage = (event)=>{
         const file = event.target.files[0]; 
         const fileNameExtension = file.name?.split('.')[1]; 
@@ -92,6 +111,7 @@ const handleSubmitForm = (e)=>{
     setVideo("");
     setImage("");
     setParent(null); 
+    setEmojiShow(false)
 }
 
 const handleSetReplyComment = (userName,parent,level)=>{
@@ -116,18 +136,33 @@ const handleGetCommentByPost = (postId)=>{
 // }
 
 
+useEffect(()=>{
+    if(item.type !== undefined && item.type === 'SHARE'){
+        const shareFilter = item.share.userShared.filter(item => item.user._id._id === user.data._id)
+        const share = shareFilter.length > 0 && shareFilter[shareFilter.length - 1]
+        setUserShare(share); 
+    }
+},[])
+
+
   return (
     <div className='post-container'>
-        <div className="post-top">
-            <img src={item?.user?.avatar} alt="" />
+        {
+            item?.type === 'SHARE'  ? (
+                <>
+                {
+                   
+                }
+                    <div className="post-top">
+            <img src={userShare?.user?.avatar} alt="" />
              <ul>
-                <li>{item?.user?._id?.userName}</li>
-                <li>{moment(item?.createdDate).calendar()}</li>
+                <li>{userShare?.user._id.userName} <span style={{fontWeight:'normal'}}>đã chia sẻ một bài viết</span></li>
+                <li>{moment(userShare?.timeShare).calendar()}</li>
              </ul>
              <ul>
                 
              </ul>
-             <span className='post-follow'>Theo dõi</span>
+           
              {
                  user?.data._id === item?.user?._id?._id && (
                      <HiOutlineDotsHorizontal className='post-action' onClick={()=>setIsShowActionActive(active => !active)}/>
@@ -141,9 +176,7 @@ const handleGetCommentByPost = (postId)=>{
                     <span>Chỉnh sửa đối tượng xem </span>             
             </div>
         </div>
-        <div className='post-content'>
-            {item?.content}
-        </div>
+       
         <div className="post-center">
             {
                 item?.images.length === 1 && (
@@ -195,12 +228,31 @@ const handleGetCommentByPost = (postId)=>{
                 )
             }
 
+                    <div className="post-top">
+                        <img src={item?.user?.avatar} alt="" />
+                        <ul>
+                            <li>{item?.user?._id?.userName}</li>
+                            <li>{moment(item?.createdDate).calendar()}</li>
+                        </ul>
+                        <ul>
+                            
+                        </ul>
+                        <span style={{textAlign:'right',position:'absolute',right:0}} className='post-follow'>Theo dõi</span>
+                      
+                      
+                    </div>
+
+                    <div className='post-content'>
+                        {item?.content}
+                    </div>
+
+
 
 
             <ul className='post-center-action'>
                 <li onClick={()=>handleLikePost(item?._id)}><LuHeartCrack/>&nbsp;Thích&nbsp;( {likeNumber} )</li>
                 <li className='post-comment' onClick={()=> handleGetCommentByPost(item?._id)}><FaRegCommentDots/>&nbsp;Bình Luận&nbsp;( {item?.comment?.number} )</li>
-                <li><CiShare2/>&nbsp;Chia sẻ&nbsp;( {item?.share?.number} )</li>
+                <li onClick={()=>handleSharePost(item?._id)}><CiShare2/>&nbsp;Chia sẻ&nbsp;( {shareNumber} )</li>
             </ul>
         </div>
         <div className="post-bottom">
@@ -216,10 +268,37 @@ const handleGetCommentByPost = (postId)=>{
                                     <Comment level={0} key={index}   index = {index} handleSetReplyComment = {handleSetReplyComment} comment =  {comment}/>
                                     <div className='child-comment'>
                                         {
-                                            comment?.children?.length > 0 && comment?.children.map((child,index) =>{
+                                            comment?.children?.length > 0 && comment?.children?.map((child,indexTwo) =>{
                                                 if(typeof child !== 'string'){
-                                                    return (                                               
-                                                        <Comment level={1} key={index}  index = {index}  handleSetReplyComment = {handleSetReplyComment} comment = {child}/>   
+                                                    return ( 
+                                                        <>
+                                                            <Comment level={1} key={indexTwo}  index = {indexTwo}  handleSetReplyComment = {handleSetReplyComment} comment = {child}/>  
+                                                            <div className='child-comment'>
+                                                            {
+                                                                child?.children?.length > 0 && child?.children.map((childTwo,indexThree) =>{
+                                                                    if(typeof childTwo !== 'string'){
+                                                                        return (   
+                                                                            <>
+                                                                                <Comment level={2} key={indexThree}  index = {indexThree}  handleSetReplyComment = {handleSetReplyComment} comment = {childTwo}/>  
+                                                                                <div className='child-comment'>
+                                                                                {
+                                                                                    childTwo?.children?.length > 0 && childTwo?.children.map((childThree,indexFour) =>{
+                                                                                        if(typeof childThree !== 'string'){
+                                                                                            return (                                               
+                                                                                                <Comment level={3} key={indexFour}  index = {indexFour}  handleSetReplyComment = {handleSetReplyComment} comment = {childThree}/>  
+                                                                                                
+                                                                                                )
+                                                                                        }
+                                                                                    })
+                                                                                }
+                                                                                </div>      
+                                                                            </>                                            
+                                                                            )
+                                                                    }
+                                                                })
+                                                            }
+                                                            </div>      
+                                                        </>                                              
                                                         )
                                                 }
                                             })
@@ -262,18 +341,219 @@ const handleGetCommentByPost = (postId)=>{
             <div className='post-user-input'>
                 <img src={user.data?.avatar} alt="" />
                 <form  onSubmit={handleSubmitForm}>
+                {emojiShow && (
+                    <div className="emoji">
+                        <EmojiPicker theme='light' onEmojiClick={onEmojiClick} />
+                    </div>
+                 )}
                     <input value={content} type="text" ref={inputRef} placeholder='Viết bình luận của bạn ...' onChange={(e)=>setContent(e.target.value)} />
                     <label htmlFor="" className='post-input icon'>
-                        <VscSmiley/>
+                        <VscSmiley onClick={() => setEmojiShow(!emojiShow)}/>
                     </label>
                     <label className='post-input image' htmlFor="input-file"><CiImageOn/></label>
                     <input type="file" id='input-file' onChange={handleChooseImage} />
                 </form>
-                <div className='send-icon'>
+                <div className='send-icon' onClick={handleSubmitForm}>
                     <RiSendPlane2Line/>
                 </div>
             </div>
         </div>
+                </>
+            ):(
+
+                <>
+                    <div className="post-top">
+                        <img src={item?.user?.avatar} alt="" />
+                        <ul>
+                            <li>{item?.user?._id?.userName}</li>
+                            <li>{moment(item?.createdDate).calendar()}</li>
+                        </ul>
+                        <ul>
+                            
+                        </ul>
+                        <span className='post-follow'>Theo dõi</span>
+                        {
+                            user?.data._id === item?.user?._id?._id && (
+                                <HiOutlineDotsHorizontal className='post-action' onClick={()=>setIsShowActionActive(active => !active)}/>
+                                )
+                                }
+                        <HiOutlineDotsHorizontal className='post-action' onClick={()=>setIsShowActionActive(active => !active)}/>
+
+                        <div className={ isShowActionActive === true ? 'post-action-item-wrapper':'post-action-item-wrapper'}>            
+                                <span>Ẩn bài viết</span>
+                                <span>Xóa bài viết</span>
+                                <span>Chỉnh sửa đối tượng xem </span>             
+                        </div>
+                    </div>
+                    <div className='post-content'>
+                        {item?.content}
+                    </div>
+                    <div className="post-center">
+                        {
+                            item?.images.length === 1 && (
+                            <div className='post-img-single'>
+                                <img src={item?.images[0]} alt="" />
+                            </div>
+                            )
+                        }
+
+                        {
+                            item?.images.length > 1 && (
+                                <div className='post-img-list'>
+                                    {
+                                        item.images?.map(item =>{
+                                            return (
+                                                <img src={item} alt="" />
+                                            )
+                                        })
+                                    }
+                    
+                                </div>
+                            )
+                        }
+
+                        {
+                                item?.images?.length === 0  && (
+                                    <div className='post-video'>
+                                        <video width="100%" height="100%" controls ref={videoRef} poster={item.thumb} >
+                                            <source src={item.video} type="video/mp4"/>
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                )
+                            
+
+                            
+                        }
+
+                        {
+                            (item?.thumb === undefined || item?.thumb === null || item.thumb === "") && (
+                                item?.images?.length === 0  && (
+                                    <div className='post-video'>
+                                        <video width="100%" height="100%" controls ref={videoRef} >
+                                            <source src={item.video} type="video/mp4"/>
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                )
+                            )
+                        }
+
+
+
+                        <ul className='post-center-action'>
+                            <li onClick={()=>handleLikePost(item?._id)}><LuHeartCrack/>&nbsp;Thích&nbsp;( {likeNumber} )</li>
+                            <li className='post-comment' onClick={()=> handleGetCommentByPost(item?._id)}><FaRegCommentDots/>&nbsp;Bình Luận&nbsp;( {item?.comment?.number} )</li>
+                            <li onClick={()=>handleSharePost(item?._id)}><CiShare2/>&nbsp;Chia sẻ&nbsp;( {shareNumber} )</li>
+                        </ul>
+                    </div>
+                    <div className="post-bottom">
+
+                        <div className='post-comment-list'>
+                            {
+                                item?.commentList?.length > 0 && item?.commentList.map((comment,index)=>{
+                                    return (
+                                        <>
+                                        {
+                                            comment.parent === null && (
+                                                <>
+                                                <Comment level={0} key={index}   index = {index} handleSetReplyComment = {handleSetReplyComment} comment =  {comment}/>
+                                                <div className='child-comment'>
+                                                    {
+                                                        comment?.children?.length > 0 && comment?.children?.map((child,indexTwo) =>{
+                                                            if(typeof child !== 'string'){
+                                                                return ( 
+                                                                    <>
+                                                                        <Comment level={1} key={indexTwo}  index = {indexTwo}  handleSetReplyComment = {handleSetReplyComment} comment = {child}/>  
+                                                                        <div className='child-comment'>
+                                                                        {
+                                                                            child?.children?.length > 0 && child?.children.map((childTwo,indexThree) =>{
+                                                                                if(typeof childTwo !== 'string'){
+                                                                                    return (   
+                                                                                        <>
+                                                                                            <Comment level={2} key={indexThree}  index = {indexThree}  handleSetReplyComment = {handleSetReplyComment} comment = {childTwo}/>  
+                                                                                            <div className='child-comment'>
+                                                                                            {
+                                                                                                childTwo?.children?.length > 0 && childTwo?.children.map((childThree,indexFour) =>{
+                                                                                                    if(typeof childThree !== 'string'){
+                                                                                                        return (                                               
+                                                                                                            <Comment level={3} key={indexFour}  index = {indexFour}  handleSetReplyComment = {handleSetReplyComment} comment = {childThree}/>  
+                                                                                                            
+                                                                                                            )
+                                                                                                    }
+                                                                                                })
+                                                                                            }
+                                                                                            </div>      
+                                                                                        </>                                            
+                                                                                        )
+                                                                                }
+                                                                            })
+                                                                        }
+                                                                        </div>      
+                                                                    </>                                              
+                                                                    )
+                                                            }
+                                                        })
+                                                    }
+                                                </div>          
+                                                </>
+                                            )
+                                        }
+                                        </>
+                                
+                                    )
+                                })
+                            }
+                            {
+                                item?.commentList?.length > 0 && (
+                                <div className='more-comment'>
+                                    <span>Xem các bình luận trước</span>
+                                </div>
+                                )
+                            }
+                            
+                        </div>
+                        {
+                            image.trim() !== "" && (
+                                <div className='preview-img'>
+                                    <img src={image} alt="" />
+                                </div>
+                            )            
+                        }
+                        {
+                            video.trim() !== "" && (
+                                <div className='video-preview'> 
+                                    <video width="30%" height="30%" controls>
+                                        <source src={`${video}`} type="video/mp4"/>
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            )
+                        }
+                        <div className='post-user-input'>
+                            <img src={user.data?.avatar} alt="" />
+                            <form  onSubmit={handleSubmitForm}>
+                            {emojiShow && (
+                                <div className="emoji">
+                                    <EmojiPicker theme='light' onEmojiClick={onEmojiClick} />
+                                </div>
+                            )}
+                                <input value={content} type="text" ref={inputRef} placeholder='Viết bình luận của bạn ...' onChange={(e)=>setContent(e.target.value)} />
+                                <label htmlFor="" className='post-input icon'>
+                                    <VscSmiley onClick={() => setEmojiShow(!emojiShow)}/>
+                                </label>
+                                <label className='post-input image' htmlFor="input-file"><CiImageOn/></label>
+                                <input type="file" id='input-file' onChange={handleChooseImage} />
+                            </form>
+                            <div className='send-icon' onClick={handleSubmitForm}>
+                                <RiSendPlane2Line/>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )
+        }
+
     </div>
   )
 }

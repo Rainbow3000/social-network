@@ -33,8 +33,8 @@ import {setUserChatCurrent} from '../../store/slice/chatSlice'
 
 const Profile = () => {
     const dispatch = useDispatch(); 
-    const location = useLocation(); 
     const navigate = useNavigate(); 
+    const location = useLocation(); 
     const userId = location.pathname.split('/')[2]; 
     const ownUserId = JSON.parse(localStorage.getItem('user')).data._id;
     const {userInfo} = useSelector(state => state.user); 
@@ -226,7 +226,7 @@ const Profile = () => {
                 <ul>
                     <li>Giới thiệu</li>
                     <li><BsGenderAmbiguous/> &nbsp;&nbsp;{GenderEnum[userInfo?.gender]}</li>
-                    <li><LiaBirthdayCakeSolid/>&nbsp;&nbsp;{userInfo?.dob}</li>
+                    <li><LiaBirthdayCakeSolid/>&nbsp;&nbsp;{userInfo?.dob.split('-').reverse().join('-')}</li>
                     <li><IoLocationOutline/>&nbsp;&nbsp;{userInfo?.address !== null && userInfo?.address !== undefined ? userInfo?.address :'Chưa cập nhật'}</li>
                     <li><RiFacebookBoxLine/>&nbsp;&nbsp;{userInfo?.facebookLink !== null && userInfo?.facebookLink !== undefined ? userInfo?.facebookLink :'Chưa cập nhật'}</li>
                     <li><FiTwitter/>&nbsp;&nbsp;{userInfo?.twitterLink !== null && userInfo?.twitterLink !== undefined ? userInfo?.twitterLink :'Chưa cập nhật'}</li>
@@ -238,18 +238,27 @@ const Profile = () => {
             </div>
 
             <div className='profile-post'>
+
                 <div className='post-list'>
-                    { <div className="profile-center-bottom">
-                        {
-                            postOfUser?.length > 0 && postOfUser.map(item=>{
-                                return (
-                                    <Post item= {item}/>
+                {
+                    postOfUser?.length > 0 ? (
+                             <div className="profile-center-bottom">
+                                {
+                                    postOfUser?.length > 0 && postOfUser.map(item=>{
+                                        return (
+                                            <Post item= {item}/>
+                                        )
+                                    })
+                                }
+                            
+                            </div> 
+                            
+                            ):(
+                                <span style={{textAlign:'center', alignItems:'center'}}>Người dùng chưa có bài viết !</span>
                                 )
-                            })
-                        }
-                    
-                    </div> }
-                </div>
+                            }
+                            </div>
+
                 <div className='recommend'>
                     <Recommend/>
                 </div>

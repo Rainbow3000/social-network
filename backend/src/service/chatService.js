@@ -114,9 +114,15 @@ module.exports = {
 
             if(ioObject && socketObject){  
                 const toId = chatCreated.to?._id?._id.toString();
-               
+                const fromId = chatCreated.from?._id?._id.toString(); 
                 if(userOnline.has(toId)){
                     const socketId = userOnline.get(toId);
+                    socketObject.join(socketId)
+                    ioObject.to(socketId).emit("receive-message-single-user",chatCreated);               
+                } 
+
+                if(userOnline.has(fromId)){
+                    const socketId = userOnline.get(fromId);
                     socketObject.join(socketId)
                     ioObject.to(socketId).emit("receive-message-single-user",chatCreated);               
                 } 

@@ -5,6 +5,7 @@ const commentService = require('../service/commentService')
 module.exports = {
     get: async(req,res,next)=>{
         try {
+           
             const result = await commentService.get(req.params?.id); 
             res.status(result.statusCode).json(result); 
         } catch (error) {

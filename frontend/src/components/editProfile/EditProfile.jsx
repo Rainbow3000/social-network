@@ -1,16 +1,18 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import './editProfile.scss'
 import { IoCloudUploadOutline } from "react-icons/io5";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import uuid from 'react-uuid';
 import storage from '../../firebase'; 
 import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
-
+import {updateUserInfo,getUserInfo} from '../../store/slice/userSlice'
+import { useNavigate } from 'react-router-dom';
 
 const EditProfile = () => {
 
     const [userName,setUserName] = useState(""); 
     const [avatar,setAvatar] = useState(""); 
+    const [avatarPreview,setAvatarPreview] = useState(""); 
     const [gender,setGender] = useState(""); 
     const [dob,setDob] = useState(""); 
     const [address,setAddress] = useState(""); 
@@ -21,8 +23,9 @@ const EditProfile = () => {
     const [instagramLink,setInstagramLink] = useState(""); 
     const [linkedInLink,setLinkedInLink] = useState(""); 
 
-    const {user} = useSelector(state => state.user); 
-
+    const {user,userInfo} = useSelector(state => state.user); 
+    const dispatch = useDispatch(); 
+    const navigate = useNavigate(); 
 
     const handleChooseImage = (event)=>{
         const file = event.target.files[0]; 
@@ -30,15 +33,53 @@ const EditProfile = () => {
               const storageRef = refStorage(storage,fileName); 
               uploadBytes(storageRef,file).then((snapshot)=>{
                   getDownloadURL(refStorage(storage,fileName)).then(downloadUrl =>{
-                    setAvatar(`${downloadUrl}@-@${fileName}`)       
+                    setAvatar(`${downloadUrl}@-@${fileName}`)    
+                    setAvatarPreview(`${downloadUrl}@-@${fileName}`)              
                   })
               })
     }
 
+    const handleSubmitForm = (e)=>{
+        e.preventDefault(); 
+        const data = {
+            userName,
+            avatar,
+            gender,
+            dob,
+            address,
+            career,
+            phoneNumber,
+            facebookLink,
+            twitterLink,
+            instagramLink,
+            linkedInLink
+        }
+        dispatch(updateUserInfo({userData:data,userId:user?.data._id})) 
+        setAvatarPreview("");
+    }
+
+    useEffect(()=>{
+        dispatch(getUserInfo(user?.data._id));
+    },[])
+
+    useEffect(()=>{
+        setUserName(userInfo?._id?.userName);
+        setPhoneNumber(userInfo?.phoneNumber);
+        setGender(userInfo?.gender);
+        setDob(userInfo?.dob)
+        setCareer(userInfo?.career)
+        setAddress(userInfo?.address)
+        setFacebookLink(userInfo?.facebookLink)
+        setTwitterLink(userInfo?.twitterLink)
+        setInstagramLink(userInfo?.instagramLink)
+        setLinkedInLink(userInfo?.linkedInLink)
+        setAvatar(userInfo?.avatar)
+    },[userInfo])
+
 
   return (
     <div className='edit-profile-container'>
-        <form>
+        <form onSubmit={handleSubmitForm}>
             <div className='image-upload'>
                 <img src={user?.data?.avatar} alt="" />
                 <input id='file-upload' type="file" onChange={handleChooseImage} />
@@ -46,9 +87,9 @@ const EditProfile = () => {
                     <label htmlFor="file-upload"><IoCloudUploadOutline/></label>
                 </div>
                 {
-                    avatar.trim() !== "" && (
+                    avatarPreview.trim() !== "" && (
                         <div className='preview-avatar'>
-                            <img width={180} height={180} src={avatar} alt="" />
+                            <img width={180} height={180} src={avatarPreview} alt="" />
                         </div>
                     )
                 }
@@ -74,16 +115,16 @@ const EditProfile = () => {
                     <label htmlFor="">Giới tính</label>
                     <div className='gender-wrapper'>
                         <div className='gender-item'>
-                            <input checked  onChange={e => setGender(e.target.value)} type="radio" value="Nam" name="gender"  />
+                            <input checked  onChange={e => setGender(e.target.value)} type="radio" value={gender !== "" ? gender : 'Nam'} name="gender"  />
                             <label htmlFor="">Nam</label>
                         </div>
 
                         <div className='gender-item'>
-                            <input onChange={e => setGender(e.target.value)} type="radio" value="Nữ" name="gender"  />
+                            <input onChange={e => setGender(e.target.value)} type="radio" value={gender !== "" ? gender : 'Nữ'} name="gender"  />
                             <label htmlFor="">Nữ</label>
                         </div>
                         <div className='gender-item'>    
-                            <input onChange={e => setGender(e.target.value)} type="radio" value="Khác" name="gender"  />
+                            <input onChange={e => setGender(e.target.value)} type="radio" value={gender !== "" ? gender : 'Khác'} name="gender"  />
                             <label htmlFor="">Khác</label>
                         </div>
                     </div>
@@ -120,7 +161,7 @@ const EditProfile = () => {
                 </div>
                 
                 <div className='input-item'>
-                    <button className='btn-update'>Cập nhật</button>
+                    <button type="submit" className='btn-update'>Cập nhật</button>
                 </div>
             </div>
         </form>

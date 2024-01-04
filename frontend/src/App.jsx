@@ -34,6 +34,12 @@ function App() {
       navigate('/auth')
       return;
     }
+
+    if(activeList.find(item => item !== user.data._id) === undefined){
+        const newActiveList = [...activeList,user.data._id]; 
+        dispatch(setUserActive(newActiveList)); 
+    }
+
     socket.current = createInstanceSocket();
     if(socket.current){
       socket.current.on('connect', () => {
@@ -57,7 +63,7 @@ function App() {
     }
     dispatch(getUserInfo(user?.data?._id))
     dispatch(getNotificationByUser(user?.data?._id)); 
-  },[user,socket])
+  },[])
   return (
     <div id="app">
             {

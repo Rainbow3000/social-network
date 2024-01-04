@@ -3,7 +3,7 @@ import { IoTimeOutline } from "react-icons/io5";
 import moment from 'moment/dist/moment';
 import './comment.scss'
 import 'moment/dist/locale/vi'
-import {setChildrentComment} from '../../store/slice/postSlice'
+import {setChildrentComment,getCommentByParent} from '../../store/slice/postSlice'
 import { useDispatch } from 'react-redux';
 
 moment.locale('vi');
@@ -11,17 +11,15 @@ const Comment = ({comment,handleSetReplyComment,index,level}) => {
 
 const dispatch = useDispatch(); 
 
- const handleShowCommentChild = (commentId,postId,children)=>{
-    if(children.length > 0){
-        dispatch(setChildrentComment({commentId,postId,children}));
-    }
+ const handleShowCommentChild = (commentId,postId,children)=>{   
+    dispatch(getCommentByParent({commentId,postId}));  
  }
 
 
   return (
     <div className='post-comment'>
     <div className='post-comment-item'>
-        <img src={comment.user?.avatar} alt="" />
+        <img src={comment?.user?.avatar} alt="" />
         <div className= 'comment-content'>
             <div className={comment.image !== "" || comment.video !== "" ?"comment-content-main outline":"comment-content-main"}>
                 <div className='comment-top'>

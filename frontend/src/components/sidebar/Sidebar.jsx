@@ -17,7 +17,7 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch(); 
   const handleLogout = ()=>{
-    dispatch(userLogout());
+    dispatch(userLogout(user.data._id));
   }
 
   if(user === null){

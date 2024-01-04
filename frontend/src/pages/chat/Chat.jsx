@@ -44,12 +44,12 @@ const Chat = () => {
     scrollToBottomWithSmoothScroll();
 
   }, [chatList.length]);
-
+  
 
 
   const handleChooseImage = (event)=>{
     const file = event.target.files[0]; 
-    const fileNameExtension = file.name?.split('.')[1]; 
+    const fileNameExtension = file?.name?.split('.')[1]; 
 
     if(fileNameExtension === "doc"){
         const fileName =  `words/${uuid()}-${file.name}`; 
@@ -162,7 +162,7 @@ useEffect(()=>{
                         <img src={ userChatCurrent?.avatar} alt="" />
                         <div className='user-name'>
                             <span>{userChatCurrent?._id.userName}<span className={activeList?.find(item => item === userChatCurrent?._id._id) !== undefined ? 'status on':'status off'}></span></span>                         
-                            <span>{activeList?.find(item => item === userChatCurrent?._id._id) !== undefined ? 'Đang hoạt động':'Không trực tuyến'}</span>
+                            <span>{activeList?.find(item => item === userChatCurrent?._id._id) !== undefined ? 'Đang hoạt động':'Không hoạt động'}</span>
                         </div>
                         <div className='pen-icon'>
                             <LuPenSquare/>

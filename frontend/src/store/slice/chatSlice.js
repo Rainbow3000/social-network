@@ -66,7 +66,9 @@ export const chatSlice = createSlice({
     },
 
     addChatCreated:(state,action)=>{
-      state.chatList = [...state.chatList,action.payload]; 
+      if(state.chatList.find(item => item._id === action.payload._id) === undefined){
+        state.chatList = [...state.chatList,action.payload]; 
+      } 
     }
   },
   extraReducers:(builder)=>{

@@ -1,4 +1,5 @@
 const Post = require('../model/postModel'); 
+const User = require('../model/userModel'); 
 module.exports = {
     get: async(id)=>{
         try {
@@ -10,14 +11,37 @@ module.exports = {
 
     getByUser: async(id)=>{
         try {
-            return await Post.find({user:id}).populate({
+            let postShare = await Post.find({'share.userShared.user':id}).populate({
                 path: 'user',
                 populate: {
                     path:'_id',
                     select:'userName'
                 }
-              }); 
+              }).populate({
+                path:'share.userShared.user',
+                populate: {
+                    path:'_id',
+                    select:'userName'
+                }
+              })
+
+            
+
+              const postList =  await Post.find({user:id}).populate({
+                  path: 'user',
+                  populate: {
+                      path:'_id',
+                      select:'userName'
+                  }
+                }); 
+
+           
+
+
+              
+            return {postShare,postList}
         } catch (error) {
+        console.log('eee',error); 
             throw error;
         }
     },

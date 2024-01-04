@@ -103,6 +103,7 @@ export const userSlice = createSlice({
     userLogout:(state,action)=>{
         state.user = null; 
         localStorage.removeItem('user'); 
+        state.activeList = state.activeList.filter(item => item !== action.payload); 
     },
     setUserActive:(state,action)=>{
      state.activeList = action.payload;

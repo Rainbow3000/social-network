@@ -2,6 +2,7 @@ const Comment = require('../model/commentModel');
 module.exports = {
     get: async(id)=>{
         try {
+            console.log(id)
             return await Comment.findById(id).populate(
                 {
                     path:'children',
@@ -21,7 +22,7 @@ module.exports = {
 
     getByPost: async(id)=>{
         try {
-            return await Comment.find({post:id}).limit(10).populate(
+            return await Comment.find({post:id,parent:null}).populate(
                 {
                     path:'user',
                     populate: { path: '_id' }
@@ -31,6 +32,9 @@ module.exports = {
             throw error;
         }
     },
+
+
+
     getAll: async()=>{
         try {
             return await Comment.find().populate({

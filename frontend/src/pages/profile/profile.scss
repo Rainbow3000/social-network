@@ -99,6 +99,12 @@
         
     }
     .profile-center{
+        .profile-center-bottom{
+            background-color: #F9FAFB;
+        }
+        .post-container{
+            margin-bottom: 30px;
+        }
         margin-top: 30px;
         width: 100%;
         display: flex;
@@ -134,9 +140,25 @@
             flex: 3;
             display: flex;
             justify-content: space-between;
+            
             .post-list{
                 flex: 2;
                 margin:0 20px;
+                width: 100%;
+                height: auto;
+                min-height: 500px;
+                background-color: #FFFFFF;
+                border-radius: 5px;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                span{
+                    margin-top: 20px;
+                }
+                .post-follow{
+                    margin-top: 0 !important;
+                }
             }
             .recommend{
                 flex: 1;
@@ -297,11 +319,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            color: #4E5D78;
+            font-size: 16px;
         }
     }
 
     .primary-btn{
         background-color: #377DFF;
-        color: white;
+        color: white !important;
     }
 }

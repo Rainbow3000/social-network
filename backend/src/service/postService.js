@@ -1,4 +1,5 @@
 const _postRepository = require('../repository/postRepository');
+const _userRepository = require('../repository/userRepository');
 const validateError = require('../utils/validateError');
 const moment = require('moment')
 const mongoose = require('mongoose'); 
@@ -27,8 +28,20 @@ module.exports = {
 
     getByUser: async(id)=>{
         try {
-            const post =  await _postRepository.getByUser(id); 
-            if(!post){
+
+            
+
+            let {postList,postShare} =  await _postRepository.getByUser(id);
+            
+            postShare = postShare.map(item =>{
+                item._doc.type = 'SHARE'
+                return item; 
+            })
+
+            const newData = [...postList,...postShare]
+
+
+            if(!postList || !postShare){
                 return {
                     success:false,
                     message:"Bài viết không tồn tại",
@@ -40,10 +53,10 @@ module.exports = {
                     success:true,
                     message:"Lấy bài viết thành công",
                     statusCode:200,
-                    data:post
+                    data:newData
             };
         } catch (error) {
-            
+            console.log(error); 
         }
     },
     getAll: async()=>{
@@ -127,15 +140,26 @@ module.exports = {
                     data:null
                 }
             }
-        
-            const userLiked = postExisted.like.userLiked.find(item => mongoose.Types.ObjectId(item).equals(mongoose.Types.ObjectId(data.userId)));
-            if(userLiked === undefined){
-                postExisted.like.userLiked.push(data.userId); 
-                postExisted.like.number ++; 
-            }else{
-                postExisted.like.userLiked = postExisted.like.userLiked.filter(item => !mongoose.Types.ObjectId(item).equals(mongoose.Types.ObjectId(data.userId)))
-                postExisted.like.number --; 
+            if(data.type === 1){
+                const userLiked = postExisted.like.userLiked.find(item => mongoose.Types.ObjectId(item).equals(mongoose.Types.ObjectId(data.userId)));
+                if(userLiked === undefined){
+                    postExisted.like.userLiked.push(data.userId); 
+                    postExisted.like.number ++; 
+                }else{
+                    postExisted.like.userLiked = postExisted.like.userLiked.filter(item => !mongoose.Types.ObjectId(item).equals(mongoose.Types.ObjectId(data.userId)))
+                    postExisted.like.number --; 
+                }
             }
+
+            if(data.type === 2){
+                postExisted.share.number ++;
+                postExisted.share?.userShared.push({
+                    user:data.userId,
+                    timeShare:moment().format()
+                })
+                         
+            }
+
             const postUpdated =  await _postRepository.update(postId,postExisted);
             return {
                 success:true,

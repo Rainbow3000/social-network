@@ -98,7 +98,7 @@
         align-items: center;
         .post-img-single{
             width: 100%;
-            height: 400px;
+            height: 450px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -299,6 +299,15 @@
             height: 50px;
             display: flex;
             align-items: center;
+            position: relative;
+            .emoji{
+                position: absolute;
+                top: -455px;
+                z-index: 9999;
+            }
+            .Flex.epr-preview.FlexRow{
+                display: none;
+            }
             img{
                 width: 45px;
                 height: 45px;
@@ -374,4 +383,16 @@
             margin-top: 10px;
         }
     }
+}
+
+
+
+.emoji{
+    position: absolute;
+    top: 50px;
+    left: 0;
+    z-index: 9999;
+}
+.Flex.epr-preview.FlexRow{
+    display: none;
 }

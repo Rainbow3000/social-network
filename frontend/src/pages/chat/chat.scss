@@ -172,6 +172,7 @@ body{
                     justify-content: center;
                     flex-direction: column;
                     align-items: flex-end;
+                   
                     .time{
                         font-size: 12px;
                         margin-top: 10px;
@@ -219,16 +220,24 @@ body{
                 .content-wrapper{
                     align-items: flex-start;
                     margin-left: 0;
+                    width: 70%;
                     .content{
+                        width: 100%;
                         background-color: #F0F0F0;
                         color: #4E5D78;
+                        display: flex !important;
+                        flex-direction: row !important;
+                        align-items: center;
+                    }
+                    .content-item{
+                        display: flex !important;
+                        flex-direction: row !important;
+                        align-items: center;
+                        
                     }
                 }
-                .content-item{
-                    display: flex;
-                    
-                }
                 .item-wrapper{
+                    width: 100%;
                     display: flex;
                     flex-direction: column;
                     align-items: flex-start;
@@ -240,13 +249,22 @@ body{
                 justify-content: flex-start ;
                 flex-direction: row-reverse;
                 .content-item{
-                    display: flex;
-                    flex-direction: row-reverse;
+                  display: flex !important;
+                  flex-direction:row-reverse !important;
+                  
                 }
                 .item-wrapper{
+                    width: 100%;
                     display: flex;
                     flex-direction: column;
                     align-items: flex-end;
+                }
+                .content-wrapper{
+                   width: 70%;
+                }
+                .option-icon{
+                    font-size: 28px;
+                    cursor: pointer;
                 }
             }
         }
@@ -287,9 +305,8 @@ body{
                 }
                 .emoji{
                     position: absolute;
-                    bottom: 50px;
-                    right: 0;
                     z-index: 9999;
+                    top: -455px;
                     .Flex.epr-preview.FlexRow{
                         display: none;
                     }
