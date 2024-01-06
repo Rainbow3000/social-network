@@ -15,6 +15,7 @@ import {createInstanceSocket} from '../../utils/socket'
 import {addNotifi} from '../../store/slice/notificationSlice'
 import {Link} from 'react-router-dom'
 import { PiHandshake } from "react-icons/pi";
+import { IoMdEye } from "react-icons/io";
 moment.locale('vi');
 
 const Notification = () => { 
@@ -64,12 +65,10 @@ const Notification = () => {
                                         </div>
                                         
                                         <div className='notifi-item-btn'>
-                                            <div className='btn-item'>
-                                                <span>Chấp nhận</span>
-                                            </div>
+                                          
         
-                                            <div className='btn-item'>
-                                                <span>Hủy</span>
+                                            <div className='btn-item eye'>
+                                                <span><IoMdEye/></span>
                                             </div>
                                         </div>
                                         <div className='state'>

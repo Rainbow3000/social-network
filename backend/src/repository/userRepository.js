@@ -1,5 +1,27 @@
 const User = require('../model/userModel'); 
+const mongoose = require('mongoose')
 module.exports = {
+
+    getBlockingUser:async(id)=>{
+        try {
+            return await User.findById(id).populate(
+                {
+                    path:'_id',
+                    select:'-password',
+                },
+            ).populate({
+                path:'blocking',
+                populate:{
+                    path:'_id',
+                    select:'-password',
+                }
+            })
+        } catch (error) {
+            
+        }
+    },
+
+
     get: async(id)=>{
         try {
             return await User.findById(id).populate(
@@ -22,6 +44,21 @@ module.exports = {
                     path:'_id',
                     select:'-password -email -role -status -createdAt -updatedAt'
                 }
+            }).populate({
+                path:'requestAddFriendFromUser',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
+            })
+            .populate({
+                path:'requestAddFriend',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
             })
         } catch (error) {
             throw error;
@@ -29,7 +66,28 @@ module.exports = {
     },
     getAll: async()=>{
         try {
-            return await User.find();
+            return await User.find().populate(
+                {
+                    path:'_id',
+                    select:'-password -role',
+                    
+                },
+            ).populate({
+                path:'friends',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
+            }).
+            populate({
+                path:'chats',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt '
+                }
+            }).select('-requestAddFriend -requestAddFriendFromUser -blocking -chats -friends -followings -followers -dob');
         } catch (error) {
             throw error;
         }
@@ -46,9 +104,32 @@ module.exports = {
 
     update: async(data,id)=>{
         try {
-            return await User.findByIdAndUpdate({_id:id},data,{
+            const user =  await User.findByIdAndUpdate({_id:mongoose.Types.ObjectId(id)},data,{
                 new:true
-            });
+            })
+
+            return await User.findById(user._id).populate(
+                {
+                    path:'_id',
+                    select:'-password',
+                },
+            ).populate({
+                path:'friends',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
+            }).
+            populate({
+                path:'chats',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
+            })
+            
             
         } catch (error) {
             throw error;
@@ -81,6 +162,21 @@ module.exports = {
 
             const requestAddFriendFromUserUpdated =  await User.findByIdAndUpdate({_id:data.userId},userReceiveRequest,{
                 new:true
+            }).populate({
+                path:'requestAddFriendFromUser',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
+            })
+            .populate({
+                path:'requestAddFriend',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
             });
 
 
@@ -112,6 +208,21 @@ module.exports = {
                 new:true
             }).populate({
                 path:'friends',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
+            }).populate({
+                path:'requestAddFriendFromUser',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
+            })
+            .populate({
+                path:'requestAddFriend',
                 select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
                 populate:{
                     path:'_id',
@@ -164,7 +275,22 @@ module.exports = {
                 new:true
             });
 
-            const userRecieveRequest = await User.findById({_id:data.userId}); 
+            const userRecieveRequest = await User.findById({_id:data.userId}).populate({
+                path:'requestAddFriendFromUser',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
+            })
+            .populate({
+                path:'requestAddFriend',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
+            }); 
             if(userRecieveRequest){              
                 userRecieveRequest.requestAddFriendFromUser = userRecieveRequest.requestAddFriendFromUser.filter(item => !item.equals(id));               
             }
@@ -172,6 +298,21 @@ module.exports = {
 
             const requestAddFriendFromUserUpdated = await User.findByIdAndUpdate({_id:data.userId},userRecieveRequest,{
                 new:true
+            }).populate({
+                path:'requestAddFriendFromUser',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
+            })
+            .populate({
+                path:'requestAddFriend',
+                select:'-requestAddFriend -requestAddFriendFromUser -friends -blocking -followers -followings -createdAt -updatedAt -status',
+                populate:{
+                    path:'_id',
+                    select:'-password -email -role -status -createdAt -updatedAt'
+                }
             });
 
 

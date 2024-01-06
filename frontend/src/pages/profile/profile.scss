@@ -327,5 +327,11 @@
     .primary-btn{
         background-color: #377DFF;
         color: white !important;
+        .link{
+            display: flex;
+            align-items: center;
+        }
     }
+
+  
 }

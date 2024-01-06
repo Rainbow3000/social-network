@@ -46,9 +46,11 @@ const Home = () => {
               <div className='post-list'>
                   {
                     postList && postList.map((item,index)=>{
-                      return (
-                        <Post key={item._id} item = {item}/>
-                      )
+                    
+                        return (
+                          <Post key={item._id} item = {item}/>
+                        )
+                      
                     })
                   }
               </div>
@@ -56,7 +58,7 @@ const Home = () => {
             </div>
             <div className="right">
                     
-                <Recommend/>
+          
                 <div className="right-recommend">
                     <div className='top'>
                       <span>Sinh nhật</span>

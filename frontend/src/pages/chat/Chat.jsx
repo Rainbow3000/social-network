@@ -1,9 +1,6 @@
 import React,{useEffect, useState,useRef} from 'react'
 import UserChat from '../../components/userChat/UserChat';
 import { FaRegFaceSmile } from "react-icons/fa6";
-import { FaRegImage } from "react-icons/fa";
-import { PiNotePencilLight } from "react-icons/pi";
-import { GoArrowRight } from "react-icons/go";
 import { BiDotsHorizontal, BiSearch } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
 import { LuPenSquare } from "react-icons/lu";
@@ -16,6 +13,7 @@ import storage from '../../firebase';
 import {ref as refStorage,uploadBytes, getDownloadURL} from 'firebase/storage'
 import EmojiPicker from "emoji-picker-react";
 import {createChat,getChatListByUser} from '../../store/slice/chatSlice'
+import {getUserInfo} from '../../store/slice/userSlice'
 import moment from 'moment/dist/moment';
 import 'moment/dist/locale/vi'
 moment.locale('vi');
@@ -42,7 +40,6 @@ const Chat = () => {
       });
     };
     scrollToBottomWithSmoothScroll();
-
   }, [chatList.length]);
   
 
@@ -110,8 +107,14 @@ const handleSubmitForm = (e)=>{
 
 
 useEffect(()=>{
-    dispatch(getChatListByUser({id:user?.data._id,friendId:userChatCurrent?._id._id}))
-},[])
+    if(userChatCurrent !== null){
+        dispatch(getChatListByUser({id:user?.data._id,friendId:userChatCurrent?._id._id}))
+    }
+    dispatch(getUserInfo(user.data._id)); 
+},[chatList.length])
+
+
+
   
 
   return (
@@ -129,16 +132,21 @@ useEffect(()=>{
                     <BsThreeDots/>
                 </div>
             </div>
-            <div className='user-list-chat' >
-                {
-                    userInfo?.chats.length > 0  && userInfo.chats.map(item =>{
-                        return (
-                            <UserChat item={item}/>
-                        )
-                    })
-                }
-               
-            </div>
+
+            {
+                userInfo?.chats.length > 0 && (
+                    <div className='user-list-chat' >
+                        {
+                            userInfo.chats.map(item =>{
+                                return (
+                                    <UserChat activeList={activeList} chatLengh = {chatList?.length} item={item}/>
+                                )
+                            })
+                        }
+                    
+                    </div>
+                )
+            }
         </div>
         <div className="chat-right">
             {
@@ -171,7 +179,6 @@ useEffect(()=>{
                         </div>
                     </div>
                     <div className="chat-bottom">
-
                         {
                             chatList.length  === 0 ? (
                                 <div className='chat-welcome'>

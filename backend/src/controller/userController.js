@@ -12,6 +12,15 @@ module.exports = {
         }
     },
 
+    getBlockingUser: async(req,res,next)=>{
+        try {
+            const result = await userService.getBlockingUser(req.params?.id); 
+            res.status(result.statusCode).json(result); 
+        } catch (error) {
+            
+        }
+    },
+
     getAll: async(req,res,next)=>{
         try { 
             const result =  await userService.getAll(); 
@@ -33,6 +42,15 @@ module.exports = {
     update: async(req,res,next)=>{
         try {
             const result = await userService.update(req.body,req.params?.id); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
+    updateBlock: async(req,res,next)=>{
+        try {
+            const result = await userService.updateBlock(req.body,req.params?.id); 
             res.status(result.statusCode).json(result);
         } catch (error) {
             

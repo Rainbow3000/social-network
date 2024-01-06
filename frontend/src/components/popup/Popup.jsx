@@ -5,7 +5,6 @@ import Register from '../register/Register'
 import ProfileAction from '../profileAction/ProfileAction'
 import { IoCloseSharp } from "react-icons/io5";
 import {hiddenLoginForm} from '../../store/slice/userSlice'
-import {hiddenOverlay} from '../../store/slice/appSlice'
 import { useDispatch,useSelector } from 'react-redux';
 import {setTypePopupForm} from '../../store/slice/userSlice'
 
@@ -19,7 +18,6 @@ const Popup = () => {
 
     const handleClosePopupForm = ()=>{
         dispacth(hiddenLoginForm());
-        dispacth(hiddenOverlay()); 
     }
   return (
     <div className='popup-container'>

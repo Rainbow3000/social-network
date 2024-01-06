@@ -70,6 +70,10 @@ const userSchema = new mongoose.Schema(
     type:[mongoose.Schema.Types.ObjectId],
     ref:'User'
   },
+  postNumber:{
+    type:Number,
+    default:0
+  },
   status: {
     type:Number,
     required:true,
@@ -79,6 +83,7 @@ const userSchema = new mongoose.Schema(
     type:[mongoose.Schema.Types.ObjectId],
     ref:'User',
   },
+
   timeDisconnect:{
     type:String
   }

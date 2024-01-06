@@ -84,7 +84,13 @@ module.exports = {
                     path:'_id',
                     select:'userName'
                 }
-              });
+              }).populate({
+                path:'share.userShared.user',
+                populate: {
+                    path:'_id',
+                    select:'userName'
+                }
+              })
             
         } catch (error) {
             throw error;

@@ -7,7 +7,8 @@ import storage from '../../firebase';
 import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
 import {updateUserInfo,getUserInfo} from '../../store/slice/userSlice'
 import { useNavigate } from 'react-router-dom';
-
+import {toggleOverlay} from '../../store/slice/appSlice'
+import { ToastContainer, toast } from 'react-toastify';
 const EditProfile = () => {
 
     const [userName,setUserName] = useState(""); 
@@ -39,8 +40,11 @@ const EditProfile = () => {
               })
     }
 
+    const notify = () => toast.info("Cập nhật thông tin thành công!");
+
     const handleSubmitForm = (e)=>{
         e.preventDefault(); 
+        dispatch(toggleOverlay(true))
         const data = {
             userName,
             avatar,
@@ -56,7 +60,12 @@ const EditProfile = () => {
         }
         dispatch(updateUserInfo({userData:data,userId:user?.data._id})) 
         setAvatarPreview("");
+        notify(); 
     }
+
+    useEffect(()=>{
+        dispatch(toggleOverlay(false)); 
+    },[userInfo])
 
     useEffect(()=>{
         dispatch(getUserInfo(user?.data._id));
@@ -79,6 +88,7 @@ const EditProfile = () => {
 
   return (
     <div className='edit-profile-container'>
+        <ToastContainer style={{marginTop:60}}/>
         <form onSubmit={handleSubmitForm}>
             <div className='image-upload'>
                 <img src={user?.data?.avatar} alt="" />
@@ -93,6 +103,7 @@ const EditProfile = () => {
                         </div>
                     )
                 }
+                 
             </div>
             <div className='input-list-wrapper'>
                 <div className='input-item'>

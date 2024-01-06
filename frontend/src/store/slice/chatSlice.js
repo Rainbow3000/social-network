@@ -69,7 +69,9 @@ export const chatSlice = createSlice({
       if(state.chatList.find(item => item._id === action.payload._id) === undefined){
         state.chatList = [...state.chatList,action.payload]; 
       } 
-    }
+    },
+
+    chatReset: () => chatState
   },
   extraReducers:(builder)=>{
 
@@ -102,6 +104,10 @@ export const chatSlice = createSlice({
         state.isLoading = false;
         state.error = null; 
         state.isError = false;
+        if(state.chatList.find(item => item._id === action.payload.data._id) === undefined){
+          state.chatList =[...state.chatList,action.payload.data]; 
+        } 
+      
       })
       builder.addCase(createChat.rejected, (state, action) => {
         state.isError = true;
@@ -154,6 +160,6 @@ export const chatSlice = createSlice({
   }
 })
 
-export const { showCreatePost,hiddenShowCreatePost,setUserChatCurrent,addChatCreated } = chatSlice.actions
+export const { showCreatePost,hiddenShowCreatePost,setUserChatCurrent,addChatCreated,chatReset } = chatSlice.actions
 
 export default chatSlice.reducer

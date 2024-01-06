@@ -21,6 +21,15 @@ module.exports = {
         }
     },
 
+    getOneByUser: async(req,res,next)=>{
+        try {
+            const result = await chatService.getOneByUser(req.params?.id); 
+            res.status(result.statusCode).json(result); 
+        } catch (error) {
+            
+        }
+    },
+
     getAll: async(req,res,next)=>{
         try { 
             const result =  await chatService.getAll(); 

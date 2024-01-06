@@ -11,66 +11,84 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { TbUsersGroup } from "react-icons/tb";
 import { MdOutlineLogout } from "react-icons/md";
 import {userLogout} from '../../store/slice/userSlice'
+import { notifiReset } from '../../store/slice/notificationSlice';
+import {updateUserInfo} from '../../store/slice/userSlice'
+import {chatReset} from '../../store/slice/chatSlice'
 const Sidebar = () => {
-  const {user} = useSelector(state => state.user); 
+  const {user,userInfo} = useSelector(state => state.user); 
   const {unReadNumber} = useSelector(state => state.notification); 
+  const [pageRender,setPageRender] = useState(1); 
   const navigate = useNavigate();
   const dispatch = useDispatch(); 
+
+
   const handleLogout = ()=>{
-    dispatch(userLogout(user.data._id));
+    const userId = user.data._id
+    const userData = {timeDisconnect:1}
+    dispatch(updateUserInfo({userId,userData}));
+    dispatch(userLogout());
+    dispatch(notifiReset())
+    dispatch(chatReset()); 
   }
 
   if(user === null){
     navigate('/auth')
   }
+
+
+  const handleChangePage = (value)=>{
+    setPageRender(value); 
+  }
+
+
   return (
     <div className='sidebar'>
         <div id='logo'>
         <Link className='link' to="/"><h1>K2 Meet</h1></Link>
         </div>
         <ul className='sidebar-action-list'>
-            <li>
+            <li className={pageRender === 1 ?'active':''} onClick={()=>handleChangePage(1)}>
               <Link className='link' to='/'>
                 <BiCategory/>
                  <span>&nbsp;&nbsp; Bảng tin</span>
               </Link>
             </li>
-            <li>
+            <li className={pageRender === 2 ?'active':''} onClick={()=>handleChangePage(2)}>
               <Link className='link' to="/chat">
                 <BiMessage/>
                  <span>&nbsp;&nbsp; Tin nhắn</span>
               </Link>
             </li>
 
-            <li>
+            <li className={pageRender === 3 ?'active':''} onClick={()=>handleChangePage(3)}>
               <Link className='link' to="/community">
                 <TbUsersGroup/>
                  <span>&nbsp;&nbsp; Mọi người</span>
               </Link>
             </li>
 
-            <li>
+            <li className={pageRender === 4 ?'active':''} onClick={()=>handleChangePage(4)}>
               <Link className='link notifi' to="/notification">
                 <div className='notifi-number'>{unReadNumber}</div>
                 <BiBell/>
                  <span>&nbsp;&nbsp; Thông báo</span>
               </Link>
             </li>
-            <li>
+            <li className={pageRender === 5 ?'active':''} onClick={()=>handleChangePage(5)}>
               <Link className='link' to={user?.data ? `/profile/${user.data._id}`:`/profile/un-auth`}>
                 <FaWpexplorer/>
                  <span>&nbsp;&nbsp; Khám phá</span>
               </Link>
             </li>
 
-            <li>
+            <li className={pageRender === 6 ?'active':''} onClick={()=>handleChangePage(6)}>
               <Link className='link' to={`/profile/${user?.data._id}`}>
                 <RxPerson/>
                  <span>&nbsp;&nbsp; Hồ sơ</span>
               </Link>
             </li>
 
-            <li>
+            <li className={pageRender === 7 ?'active':''} onClick={()=>handleChangePage(7)}>
               <Link className='link' to="/setting">
                 <IoSettingsOutline/>
                  <span>&nbsp;&nbsp; Cài đặt</span>
@@ -79,7 +97,7 @@ const Sidebar = () => {
             
               {
                 user !== null && (
-                <li>
+                <li className={pageRender === 8 ?'active':''} onClick={()=>handleChangePage(8)}>
                     <Link className='link' to="/auth" onClick={handleLogout}>
                       <MdOutlineLogout/>
                       <span>&nbsp;&nbsp; Thoát</span>

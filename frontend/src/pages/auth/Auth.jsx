@@ -10,6 +10,7 @@ import { validateEmail, validateEmpty, validateMinLenght } from '../../helper/va
 import { useDispatch,useSelector } from 'react-redux';
 import { userLogin, userRegister } from '../../store/slice/userSlice';
 import { useNavigate } from 'react-router-dom';
+import {toggleOverlay} from '../../store/slice/appSlice'
 let flag = 0; 
 const Auth = () => {
 
@@ -55,6 +56,7 @@ const Auth = () => {
     try {
         
     e.preventDefault(); 
+    dispatch(toggleOverlay(true))
     if(validateEmpty(email)){
         setEmailErr('Email không được bỏ trống')
         flag = 1
@@ -88,8 +90,7 @@ const Auth = () => {
         dob
     }
 
-    if(flag === 1) return; 
-    
+    if(flag === 1) return;   
     dispatch(userRegister(data)); 
 } catch (error) {
     console.log(error);  
@@ -98,6 +99,7 @@ const Auth = () => {
 
 const handleSubmitLoginForm = (e)=>{
     e.preventDefault(); 
+    dispatch(toggleOverlay(true))
     if(validateEmpty(email)){
         setEmailErr('Email không được bỏ trống')
         flag = 1
@@ -123,17 +125,22 @@ const handleSubmitLoginForm = (e)=>{
         password
     }
     dispatch(userLogin(data)); 
+
+
 }
 
 useEffect(()=>{
     if(error !== null){
         if(error?.message?.split(':')[0] === "Email"){
             setEmailErr(error?.message?.split(':')[1]); 
+            dispatch(toggleOverlay(false)); 
         }
     }
     if(user !== null && (user.statusCode === 200 || user.statusCode === 201)){
+        dispatch(toggleOverlay(false)); 
         navigate('/'); 
     }    
+    
 },[error,user])
 
 
@@ -146,6 +153,41 @@ useEffect(()=>{
             </div>
             <div className="form-container">
                 <div className={formState !== 1 ? "form-slice active":"form-slice"}>
+                <div className='form-wrapper'>
+                        <form onSubmit={handleSubmitLoginForm}>
+                            <div className='input-item'>
+                            <span className="error-text">{emailErr}</span>
+                            <div className='input-main'>
+                                <MdAlternateEmail className='icon'/>
+                                <input value={email} type="text" placeholder='Email' onChange={e => setEmail(e.target.value)} />
+                            </div>
+                            </div>
+                            <div className='input-item'>
+                                <span className="error-text">{passwordErr}</span>
+                                <div className="input-main">
+                                    <FiLock className='icon'/>
+                                    <input value={password} type="password" placeholder='Mật khẩu' onChange={e => setPassword(e.target.value)} />
+                                    <FaRegEyeSlash className='icon'/>
+                                </div>
+                            </div>
+                            <div className='input-wrapper'>
+                                <div className='forget-pass'>
+                                    <span>Quên mật khẩu ?</span>
+                                    <span>Cấp lại mật khẩu</span>
+                                </div>
+                            </div>
+                            <button className='form-btn'>
+                                <span>Đăng Nhập</span>
+                            </button>
+                            <div className='login-link'>
+                                <span>Bạn chưa có tài khoản ?</span>
+                                &nbsp;
+                                &nbsp;
+                                <span onClick={()=>handleChangeStateForm(2)}>Đăng ký</span>
+                            </div>
+                        </form>
+                        
+                    </div>
                     <div className='form-wrapper'>
                         <form onSubmit={handleSubmitRegisterForm}>
                             <div className='input-item'>
@@ -205,46 +247,12 @@ useEffect(()=>{
                                 <span>Bạn đã có tài khoản ?</span>
                                 &nbsp;
                                 &nbsp;
-                                <span onClick={()=>handleChangeStateForm(2)} >Đăng nhập</span>
+                                <span onClick={()=>handleChangeStateForm(1)} >Đăng nhập</span>
                             </div>
                         </form>
                         
                     </div>
-                    <div className='form-wrapper'>
-                        <form onSubmit={handleSubmitLoginForm}>
-                            <div className='input-item'>
-                            <span className="error-text">{emailErr}</span>
-                            <div className='input-main'>
-                                <MdAlternateEmail className='icon'/>
-                                <input value={email} type="text" placeholder='Email' onChange={e => setEmail(e.target.value)} />
-                            </div>
-                            </div>
-                            <div className='input-item'>
-                                <span className="error-text">{passwordErr}</span>
-                                <div className="input-main">
-                                    <FiLock className='icon'/>
-                                    <input value={password} type="password" placeholder='Mật khẩu' onChange={e => setPassword(e.target.value)} />
-                                    <FaRegEyeSlash className='icon'/>
-                                </div>
-                            </div>
-                            <div className='input-wrapper'>
-                                <div className='forget-pass'>
-                                    <span>Quên mật khẩu ?</span>
-                                    <span>Cấp lại mật khẩu</span>
-                                </div>
-                            </div>
-                            <button className='form-btn'>
-                                <span>Đăng Nhập</span>
-                            </button>
-                            <div className='login-link'>
-                                <span>Bạn chưa có tài khoản ?</span>
-                                &nbsp;
-                                &nbsp;
-                                <span onClick={()=>handleChangeStateForm(1)}>Đăng ký</span>
-                            </div>
-                        </form>
-                        
-                    </div>
+                   
                 </div>
             </div>
         </div>

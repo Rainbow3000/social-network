@@ -24,17 +24,23 @@
                 border-radius: 10px;
                 border: 1px solid rgba(128, 128, 128, 0.329);
                 color: #4E5D78;
-                &:first-child{
-                    background-color: #377DFF;
-                    color: #FFFFFF;
-                    border: none;
-                }
+              
+            }
+            .top-btn.active{
+                background-color: #377DFF;
+                color: #FFFFFF;
+                border: none;
             }
         }
         .community-center{
+            .right-recommend{
+                width: 31% !important;
+                margin: 0 1% !important;
+                margin-bottom: 20px !important;
+            }
             width: 100%;
             display: flex;
-            justify-content: space-around;
+            justify-content: flex-start;
             height: auto;
             align-items: center;
             height: auto;

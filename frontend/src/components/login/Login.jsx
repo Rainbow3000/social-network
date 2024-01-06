@@ -3,7 +3,6 @@ import './login.scss'
 import { useDispatch,useSelector } from 'react-redux';
 import { userLogin } from '../../store/slice/userSlice';
 import {hiddenLoginForm} from '../../store/slice/userSlice'
-import {hiddenOverlay} from '../../store/slice/appSlice'
 const Login = () => {
 
   const [email,setEmail] = useState("");
@@ -21,7 +20,7 @@ const Login = () => {
 
   if(user !== null && user.statusCode === 200){
     dispatch(hiddenLoginForm());
-    dispatch(hiddenOverlay()); 
+   
   }
   return (
     <form className='login-form' onSubmit={handleSubmitForm}>

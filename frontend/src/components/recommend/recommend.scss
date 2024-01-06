@@ -5,10 +5,37 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    justify-content: center;
     background-color: #FFFFFF;
     padding:20px;
     color: #4E5D78;
     margin-bottom: 20px;
+    .dob-upcomming{
+        margin-top: 20px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        .dob-icon{
+            width: 100px;
+            height:50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #FFEECC;
+            border-radius: 10px;
+            font-size: 30px;
+        }
+        .dob-info{
+            display: flex;
+            flex-direction: column;
+            margin-left: 10px;
+            span{
+                &:first-child{
+                    font-weight: bold;
+                }
+            }
+        }
+    }
     .top.hidden{
         display: none;
     }
@@ -30,7 +57,7 @@
         justify-content: space-between;
         padding: 10px 0;
         border-bottom: 0.5px solid #4e5d786b;
-       
+
     }
 
     .center{
@@ -77,6 +104,14 @@
         display: flex;
         justify-content: space-between;
         margin-top: 20px;
+        position: relative;
+        .eye-icon{
+            position: absolute;
+            right: 5px;
+            cursor: pointer;
+            font-size: 20px;
+            bottom: 3px;
+        }
         .dob-send-input{
             display: flex;
             align-items: center;

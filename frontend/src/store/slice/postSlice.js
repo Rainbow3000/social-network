@@ -18,6 +18,15 @@ export const createComment = createAsyncThunk(
   }
 )
 
+export const deletePost = createAsyncThunk(
+  'comment/deletePost',
+   async (postId) => {
+    const response = await _userRequest.delete(`post/${postId}`); 
+    const {data} = response.data; 
+    return {data,postId}
+  }
+)
+
 
 
 export const getPostList = createAsyncThunk(
@@ -31,11 +40,25 @@ export const getPostList = createAsyncThunk(
 
 export const updatePostByOtherUser = createAsyncThunk(
   'post/updatePostByOtherUser',
-   async ({postId,userId,type}) => {
+   async ({postId,userId,type,isShare}) => {
     const response = await _userRequest.put(`post/update/byotheruser/${postId}`,{userId,type}); 
-    return response.data
+    if(isShare === true){
+      response.data.type = 'SHARE'
+    }
+    return response.data; 
   }
 )
+
+
+export const updateStatusPost = createAsyncThunk(
+  'post/updateStatusPost',
+   async ({postId,status}) => {
+    const response = await _userRequest.put(`post/status/${postId}`,{status}); 
+    return response.data; 
+  }
+)
+
+
 
 export const getCommentByPost = createAsyncThunk(
   'comment/getCommentByPost',
@@ -184,6 +207,56 @@ export const postSlice = createSlice({
     })
 
 
+    builder.addCase(updateStatusPost.pending, (state, action) => {
+      state.isLoading = true; 
+      state.isSuccess = false; 
+    })
+    builder.addCase(updateStatusPost.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.isSuccess = true;
+      state.postList = state.postList.map(item =>{
+        if(item._id === action.payload._id){
+            item = action.payload.data; 
+        }
+        return item; 
+      })
+      state.postOfUser = state.postOfUser.map(item =>{
+        if(item._id === action.payload._id){
+            item = action.payload.data; 
+        }
+        return item; 
+      })
+
+    })
+    builder.addCase(updateStatusPost.rejected, (state, action) => {
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
+
+
+
+    builder.addCase(deletePost.pending, (state, action) => {
+      state.isLoading = true; 
+      state.isSuccess = false; 
+    })
+    builder.addCase(deletePost.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.isSuccess = true;
+      state.postList = state.postList.filter(item => item._id !== action.payload.postId); 
+      state.postOfUser = state.postOfUser.filter(item => item._id !== action.payload.postId); 
+      
+    })
+    builder.addCase(deletePost.rejected, (state, action) => {
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
+
 
 
     builder.addCase(createPost.pending, (state, action) => {
@@ -204,6 +277,10 @@ export const postSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false; 
     })
+    
+
+
+
 
     builder.addCase(getPostList.pending, (state, action) => {
       state.isLoading = true; 
@@ -281,12 +358,44 @@ export const postSlice = createSlice({
       state.isLoading = false;
       state.error = null; 
       state.isError = false;
-      // state.postList =  state.postList.map(item=>{
-      //    if(item._id === action.payload?.data?._id){
-      //       item = action.payload?.data;
-      //    }
-      //    return item; 
-      // })
+      
+      if(action.payload.type === 'SHARE'){
+          state.postOfUser = state.postOfUser.map(item=>{     
+            if(item._id === action.payload?.data?._id && item.type === 'SHARE'){  
+              item = action.payload.data;
+              item.type = 'SHARE'
+            }else {
+              item.like = action.payload.data.like
+              item.share = action.payload.data.share
+              
+            }   
+            return item; 
+        }) 
+        
+        
+      }else {   
+        state.postOfUser = state.postOfUser.map(item=>{     
+          if(item._id === action.payload?.data?._id){  
+            item.like = action.payload.data.like;
+            item.share = action.payload.data.share
+          }   
+          return item; 
+        })  
+        
+        
+        state.postList =  state.postList.map(item=>{
+           if(item._id === action.payload?.data?._id){     
+              item = action.payload?.data;
+           }
+           return item; 
+        })
+      }
+
+
+
+
+  
+     
       
     })
     builder.addCase(updatePostByOtherUser.rejected, (state, action) => {

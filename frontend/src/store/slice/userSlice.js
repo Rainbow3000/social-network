@@ -54,6 +54,16 @@ export const userCancelAddFriend = createAsyncThunk(
   }
 )
 
+export const updateBlock = createAsyncThunk(
+  'users/updateBlock',
+  async (data) => {
+    const {id,userData} = data; 
+    const response = await _publicRequest.put(`user/block/${id}`,userData); 
+    return response.data
+  }
+)
+
+
 
 
 
@@ -65,12 +75,45 @@ export const getUserInfo = createAsyncThunk(
   }
 )
 
+export const getBlockingUser = createAsyncThunk(
+  'users/getBlockingUser',
+  async (userId) => {
+    const response = await _publicRequest.get(`user/block/${userId}`); 
+    return response.data
+  }
+)
+
+
+export const getUserList = createAsyncThunk(
+  'users/getUserList',
+  async () => {
+    const response = await _publicRequest.get('user'); 
+    return response.data
+  }
+)
+
+
+
 export const updateUserInfo = createAsyncThunk(
   'users/updateUserInfo',
   async (data) => {
     const {userId,userData} = data; 
     const response = await _publicRequest.put(`user/${userId}`,userData); 
     return response.data
+  }
+)
+
+export const updatePassword = createAsyncThunk(
+  'users/updatePassword',
+  async (data) => {
+    try {
+      const {accountId,accountData} = data; 
+      const response = await _publicRequest.put(`account/password/${accountId}`,accountData); 
+      return response.data    
+    } catch (error) {
+      console.log(123,error); 
+      throw error?.response?.data
+    }
   }
 )
 
@@ -83,7 +126,10 @@ const userState = {
   user: JSON.parse(localStorage.getItem('user'))  || null,
   userInfo:null,
   error:null,
+  success:null,
   activeList: [],
+  userList:[],
+  blockingUser:[]
 }
 
 export const userSlice = createSlice({
@@ -102,15 +148,93 @@ export const userSlice = createSlice({
     },
     userLogout:(state,action)=>{
         state.user = null; 
-        localStorage.removeItem('user'); 
+        localStorage.clear(); 
         state.activeList = state.activeList.filter(item => item !== action.payload); 
     },
     setUserActive:(state,action)=>{
      state.activeList = action.payload;
-    }
+    },
+    setEmptyUserChat:(state,action)=>{
+        state.userInfo = {...state.userInfo,chats:[]}
+    },
   },
 
   extraReducers: (builder) => {
+
+
+    builder.addCase(updatePassword.pending, (state, action) => {
+      state.isLoading = true; 
+    })
+    builder.addCase(updatePassword.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.success = true; 
+      // state.blockingUser = action.payload.data; 
+
+    })
+    builder.addCase(updatePassword.rejected, (state, action) => {
+      state.isError = true;
+      state.error = action.error;
+      state.isLoading = false; 
+      state.success = false; 
+    })
+
+
+    
+    builder.addCase(updateBlock.pending, (state, action) => {
+      state.isLoading = true; 
+    })
+    builder.addCase(updateBlock.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.blockingUser = action.payload.data; 
+
+    })
+    builder.addCase(updateBlock.rejected, (state, action) => {
+      state.user = null;
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
+
+
+    builder.addCase(getBlockingUser.pending, (state, action) => {
+      state.isLoading = true; 
+    })
+    builder.addCase(getBlockingUser.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.blockingUser = action.payload.data; 
+    })
+    builder.addCase(getBlockingUser.rejected, (state, action) => {
+      state.user = null;
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
+
+
+
+    builder.addCase(getUserList.pending, (state, action) => {
+      state.isLoading = true; 
+    })
+    builder.addCase(getUserList.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.userList = action.payload.data; 
+    })
+    builder.addCase(getUserList.rejected, (state, action) => {
+      state.user = null;
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
+
+
 
 
     builder.addCase(userCancelAddFriend.pending, (state, action) => {
@@ -180,8 +304,12 @@ export const userSlice = createSlice({
       state.isLoading = false;
       state.error = null; 
       state.isError = false; 
-      state.userInfo = action.payload.data; 
-      state.user.data.avatar = action.payload.data.avatar; 
+      state.userInfo = action.payload?.data; 
+    
+      if(state.user !== null){
+        state.user.data.avatar = action.payload?.data?.avatar; 
+        state.user.data.userName = action.payload?.data?._id.userName
+      }
       localStorage.removeItem('user'); 
       localStorage.setItem('user',JSON.stringify(state.user)); 
     })
@@ -240,6 +368,6 @@ export const userSlice = createSlice({
 })
 
 
-export const { showLoginForm,hiddenLoginForm,setTypePopupForm,userLogout,setUserActive} = userSlice.actions
+export const { showLoginForm,hiddenLoginForm,setTypePopupForm,userLogout,setUserActive,setEmptyUserChat} = userSlice.actions
 
 export default userSlice.reducer

@@ -41,6 +41,28 @@ module.exports = {
         }
     },
 
+    getOneByUser: async(id,otherId)=>{
+        try {
+            return await Chat.find( { $or: [{from:id,to:otherId}, {from:otherId,to:id}] }).sort({"createdDate": -1}).limit(1)
+            .populate(
+                {
+                    path:'from',
+                    populate: { path: '_id' }
+                },
+            ).populate(
+                {
+                    path:'to',
+                    populate:{
+                        path:'_id',                   
+                    }
+                    
+                }
+            );
+        } catch (error) {
+            throw error;
+        }
+    },
+
     getAll: async()=>{
         try {
             return await Chat.find().populate({

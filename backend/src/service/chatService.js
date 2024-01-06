@@ -51,6 +51,31 @@ module.exports = {
             
         }
     },
+
+    getOneByUser: async(idParams)=>{
+        const paramsSplit = idParams.split('&');
+        const id = paramsSplit[0];
+        const otherId =paramsSplit[1]; 
+        try {
+            const chat =  await _chatRepository.getOneByUser(id,otherId); 
+            if(!chat){
+                return {
+                    success:false,
+                    message:"Chat không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+            return {
+                    success:true,
+                    message:"Lấy chat thành công",
+                    statusCode:200,
+                    data:chat
+            };
+        } catch (error) {
+            
+        }
+    },
     getAll: async()=>{
         try { 
             const chatList =  await _chatRepository.getAll(); 

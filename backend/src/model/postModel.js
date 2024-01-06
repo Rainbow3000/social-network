@@ -4,11 +4,11 @@ const postSchema = new mongoose.Schema(
   {
     content: {
       type:String,
-      required:true
+      required:[function(){ return this.video?.trim().length === 0 && this.images.length === 0},"Nội dung bài viết phải được cung cấp"]
     },
     images:{
       type:[String],
-      required:[function(){ return this.video?.trim().length === 0},"Ảnh hoặc video phải được cung cấp"],
+      required:[function(){ return this.video?.trim().length === 0 && this.content.trim().length === 0},"Ảnh hoặc video phải được cung cấp"],
       validate: {
         validator: function(value) {
             for (var i = 0; i < value.length; i++) {
@@ -23,7 +23,7 @@ const postSchema = new mongoose.Schema(
     },
     video:{
       type:String,
-      required:[function(){ return this.images.length === 0},"Ảnh hoặc video phải được cung cấp"],
+      required:[function(){ return this.images.length === 0 && this.content.trim().length === 0},"Ảnh hoặc video phải được cung cấp"],
     },
     thumb:{
       type:String
@@ -53,7 +53,6 @@ const postSchema = new mongoose.Schema(
         ref:"User",
       }
     },
-
     share:{
       number:{
         type:Number,

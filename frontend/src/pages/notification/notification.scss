@@ -21,6 +21,8 @@
         width: 100%;
         height: 100%;
         background-color: #FFFFFF;    
+        overflow: hidden;
+        padding-bottom: 60px;
         .top-left{
             padding:20px;
             width: 100%;
@@ -84,6 +86,21 @@
                         &:first-child{
                             background-color: #377DFF;
                             color: #FFFFFF;
+                        }
+                    }
+
+                    .btn-item.eye{
+                        background-color: transparent;
+                        width: max-content;
+                        height: max-content;
+                        padding: 5px 10px;
+                        color: #4E5D78;
+                        cursor: pointer;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        span{
+                            display: flex;
                         }
                     }
                     

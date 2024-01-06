@@ -2,7 +2,6 @@ import React from 'react'
 import { PiNotePencilLight } from "react-icons/pi";
 import './header.scss'
 import { Link } from 'react-router-dom';
-import {showOverlay} from '../../store/slice/appSlice'
 import {showCreatePost} from '../../store/slice/postSlice'
 import {showLoginForm, userLogout} from '../../store/slice/userSlice'
 import { CiLogout } from "react-icons/ci";
@@ -14,12 +13,12 @@ const Header = () => {
   const {user} = useSelector(state => state.user); 
 
   const handleClick = ()=>{
-    dispatch(showOverlay());
+    
     dispatch(showCreatePost());
   }
   const handleShowLoginForm = (type)=>{
     dispatch(showLoginForm(type)); 
-    dispatch(showOverlay());
+    
   }
 
   const handleLogoutForm = ()=>{

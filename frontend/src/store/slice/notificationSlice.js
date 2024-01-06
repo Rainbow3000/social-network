@@ -40,7 +40,8 @@ export const notificationSlice = createSlice({
     addNotifi:(state,action)=>{
       state.notificationList = [action.payload,...state.notificationList];
       state.unReadNumber = state.unReadNumber + 1;
-    }
+    },
+    notifiReset: () => notificationState
   },
 
   extraReducers: (builder) => {
@@ -77,6 +78,6 @@ export const notificationSlice = createSlice({
 })
 
 
-export const { addNotifi } = notificationSlice.actions
+export const { addNotifi,notifiReset } = notificationSlice.actions
 
 export default notificationSlice.reducer

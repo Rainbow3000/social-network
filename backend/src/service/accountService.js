@@ -112,5 +112,58 @@ module.exports = {
               message:error?.message
           }
     }
-},
+  },
+
+  updatePassword:async(data,id)=>{
+    try {
+      const account = await _accountRepository.get(id); 
+
+      if (account) {
+        const decryptPass = CryptoJS.AES.decrypt(
+          account.password,
+          process.env.AES_SECRET
+        );
+        
+        const originPass = decryptPass.toString(CryptoJS.enc.Utf8); 
+        if (originPass === data.password) {
+          
+          const hashPassword = CryptoJS.AES.encrypt(data.newPassword,process.env.AES_SECRET).toString();
+          account.password = hashPassword;   
+          
+          await _accountRepository.update(account,account._id); 
+          
+          return({
+            success:true,
+            message:"Cập nhật mật khẩu thành công",
+            statusCode:200,
+            data:null,
+        });
+        } else {        
+          return({
+              success:false,
+              message:"Password:Mật khẩu không chính xác",
+              statusCode:401,
+              data:null,
+          });
+        }
+      } 
+      
+    } catch (error) {
+      if(error instanceof mongoose.Error.ValidationError){  
+        return {
+            success:false,
+            statusCode:400,
+            data:null,
+            message:validateError(error)
+        };
+      }
+      return {
+          success:false,
+          statusCode:500,
+          data:null,
+          message:error?.message
+      }
+    }
+  }
+
 };

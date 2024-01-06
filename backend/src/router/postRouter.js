@@ -10,6 +10,7 @@ router.get('/api/post',postController.getAll);
 router.get('/api/post/getbyuser/:id',postController.getByUser); 
 router.post('/api/post',postController.create); 
 router.put('/api/post/:id',postController.update); 
+router.put('/api/post/status/:id',postController.updateStatus); 
 router.put('/api/post/update/byotheruser/:id',postController.updatePostByOtherUser); 
 router.delete('/api/post/:id',postController.delete); 
 

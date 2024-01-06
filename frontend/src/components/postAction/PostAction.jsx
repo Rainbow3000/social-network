@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './postAction.scss'
 import { IoCloseSharp } from "react-icons/io5";
-import {hiddenOverlay} from '../../store/slice/appSlice'
 import {hiddenShowCreatePost} from '../../store/slice/postSlice'
 import {useDispatch, useSelector} from 'react-redux'
 import { IoMdImages } from "react-icons/io";
@@ -30,7 +29,6 @@ const PostAction = () => {
   const [thumb,setThumb] = useState("");
 
   const handleCloseCreatePost = ()=>{
-    dispacth(hiddenOverlay()); 
     dispacth(hiddenShowCreatePost()); 
   }
   const handleChooseImage = (event)=>{
@@ -80,13 +78,9 @@ const onEmojiClick = (object) => {
 const handleSubmitForm = (e)=>{
   e.preventDefault(); 
 
-  if(validateEmpty(content)){
-    setContentErr('Vui lòng nhập nội dung cho bài viết')
-    flag = 1;
-  }
 
-  if(video.trim() === "" && images.length  === 0){
-    setMediaErr("Vui lòng chọn ảnh hoặc video cho bài viết")
+  if(video.trim() === "" && images.length  === 0 && validateEmpty(content)){
+    setContentErr('Vui lòng nhập nội dung cho bài viết')
     flag = 1;
   }
 
@@ -107,6 +101,7 @@ const handleSubmitForm = (e)=>{
   setContent("");
   setVideo("");
   setImages([]);
+  setEmojiShow(false)
 }
 
 useEffect(()=>{
@@ -181,7 +176,7 @@ return (
       <ul>
         <li><label htmlFor="post-file"><IoMdImages/>&nbsp; Ảnh/Video</label></li>
         <li><FaRegFaceSmile  onClick={() => setEmojiShow(!emojiShow)}
-          />&nbsp; Biểu tượng</li>
+          />&nbsp; Cảm xúc</li>
       </ul>            
     </div>             
     <button className='btn-create-post' type='submit'>Đăng</button>

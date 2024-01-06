@@ -7,7 +7,7 @@ import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'fire
 import { MdOutlineDateRange } from "react-icons/md";
 import {updateUserInfo} from '../../store/slice/userSlice'
 import {hiddenLoginForm} from '../../store/slice/userSlice'
-import {hiddenOverlay} from '../../store/slice/appSlice'
+import {toggleOverlay} from '../../store/slice/appSlice'
 
 const ProfileAction = () => {
     const [phoneNumber,setPhoneNumber] = useState(""); 
@@ -19,6 +19,7 @@ const ProfileAction = () => {
     const  {userInfo} = useSelector(state => state.user); 
     const handleSubmitForm = (e)=>{
         e.preventDefault(); 
+        dispatch(toggleOverlay(true)); 
         const userId = JSON.parse(localStorage.getItem('user'))?.data?._id;  
         const userData = {
             avatar,
@@ -33,7 +34,6 @@ const ProfileAction = () => {
 
     if(userInfo !== null && userInfo !== undefined){
         dispatch(hiddenLoginForm())
-        dispatch(hiddenOverlay())
     }
     
 

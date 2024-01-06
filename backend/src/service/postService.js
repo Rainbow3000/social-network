@@ -77,6 +77,11 @@ module.exports = {
         try {
             data.createdDate = moment().format();
             const postCreated = await _postRepository.create(data);
+            const userExisted = await _userRepository.get(data.user); 
+            if(userExisted){
+                userExisted.postNumber++; 
+                await _userRepository.update(userExisted,data.user);
+            } 
             return {
                 success:true,
                 message:"Tạo bài viết thành công",
@@ -129,6 +134,32 @@ module.exports = {
         }
     },
 
+    updateStatus: async(data,id)=>{
+
+        try {
+            const postExisted = await _postRepository.get(id); 
+            if(!postExisted){
+                return {
+                    success:false,
+                    message:"Bài viết không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+
+            postExisted.status = data.status; 
+            const postUpdated = await _postRepository.update(id,postExisted);
+            return {
+                success:true,
+                message:"Cập nhật bài viết thành công",
+                statusCode:200,
+                data:postUpdated
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
     updatePostByOtherUser:async(data,postId)=>{
         try {
             const postExisted = await _postRepository.get(postId); 
@@ -161,6 +192,8 @@ module.exports = {
             }
 
             const postUpdated =  await _postRepository.update(postId,postExisted);
+
+
             return {
                 success:true,
                 message:"Cập nhật bài viết thành công",
@@ -175,7 +208,6 @@ module.exports = {
 
     delete: async(id)=>{
         try {
-            const {id} = data; 
             const postExisted = await _postRepository.get(id); 
             if(!postExisted){
                 return {

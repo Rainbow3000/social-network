@@ -34,8 +34,9 @@ module.exports = {
     },
 
     update: async(data,id)=>{
+   
         try {
-            return await Account.findByIdAndUpdate({id},data,{
+            return await Account.findByIdAndUpdate({_id:id},data,{
                 new:true
             });
         } catch (error) {

@@ -9,6 +9,7 @@
     background-color: #FFFFFF;
     border-radius: 10px;
     color:#4E5D78 ;
+    text-wrap: wrap;
     &:hover{
         background-color: #EEEEEE;
         cursor: pointer;
@@ -25,19 +26,20 @@
             object-fit: cover;
         }
         .chat-content{
+            width: 100%;
             display: flex;
             flex-direction: column;
             margin-left: 10px;
             font-weight: bold;
             span{
                 &:last-child{
-                    font-weight: 300;
                     white-space: nowrap; 
-                    width: 100%; 
+                    max-width: 250px; 
                     overflow: hidden;
                     text-overflow: ellipsis; 
                     font-size: 14px;
                     margin-top: 5px;
+                    font-weight: 500;
                 }
             }
         }
@@ -50,6 +52,13 @@
         justify-content: center;
         align-items: flex-end;
         font-size: 12px;     
+        .user-active{
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: block;
+            background-color: rgb(29, 209, 29);
+        }
         .mess-num{
             span{
                 display: block;

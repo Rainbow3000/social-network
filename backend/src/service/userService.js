@@ -1,4 +1,5 @@
 const _userRepository = require('../repository/userRepository');
+const _accountRepository = require('../repository/accountRepository');
 const _notitficationRepository = require('../repository/notificationRepository');
 const validateError = require('../utils/validateError');
 const mongoose = require('mongoose'); 
@@ -84,7 +85,17 @@ module.exports = {
                     data:null
                 }
             }
+            if(data.timeDisconnect === 1){
+                data.timeDisconnect = moment().format(); 
+            }
 
+            if(data.userName?.trim() !== ""){
+                const account = await _accountRepository.get(id); 
+                account.userName = data.userName; 
+                const {_id, ...accountData}= account._doc; 
+                await _accountRepository.update(accountData,account._id); 
+             
+            }
             const userUpdated =  await _userRepository.update(data,id);
             return {
                 success:true,
@@ -156,6 +167,53 @@ module.exports = {
         }
     },
 
+    getBlockingUser:async(id)=>{
+        try {
+            const {blocking} =  await _userRepository.getBlockingUser(id);          
+            return {
+                    success:true,
+                    message:"Lấy danh sách chặn thành công",
+                    statusCode:200,
+                    data:blocking
+            };
+        } catch (error) {
+            
+        }
+    },
+
+    updateBlock:async(data,id)=>{
+        try {
+            const userExisted = await _userRepository.get(data.userId); 
+            if(!userExisted){
+                return {
+                    success:false,
+                    message:"Người dùng không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+            console.log(data); 
+          
+            if(userExisted.blocking.find(item => item.equals(id)) === undefined){
+                userExisted.blocking.push(id); 
+            }else {
+                userExisted.blocking = userExisted.blocking.filter(item => !item.equals(id)); 
+            }
+
+            const userUpdated =  await _userRepository.update(userExisted,data.userId);
+
+            return {
+                success:true,
+                message:"Cập nhật người dùng thành công",
+                statusCode:200,
+                data:userUpdated
+            }
+
+        } catch (error) {
+            
+        }
+    },
+
     addFriend: async(data,id)=>{
         try {
             const userExisted = await _userRepository.get(id); 
@@ -169,7 +227,6 @@ module.exports = {
             }
 
             const userUpdated =  await _userRepository.addFriend(data,id);
-
             const notificationCreated = await _notitficationRepository.create({
                 notifiType:'ADD_FRIEND',
                 content:`đã gửi cho bạn lời mời kết bạn`,

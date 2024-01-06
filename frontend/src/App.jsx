@@ -20,13 +20,13 @@ import {getNotificationByUser} from './store/slice/notificationSlice'
 import {getUserInfo,setUserActive} from './store/slice/userSlice'
 import {addNotifi} from '../src/store/slice/notificationSlice'
 import {addChatCreated} from '../src/store/slice/chatSlice'
+import HashLoader from 'react-spinners/HashLoader'
 
 function App() {
-  const {isShowOverlay} = useSelector(state=> state.app);
-  const {isShowCreatePost} = useSelector(state=> state.post);
-  const {isShowLoginForm} = useSelector(state => state.user); 
+
   const dispatch = useDispatch(); 
   const {user,activeList} = useSelector(state => state.user); 
+  const {isShowOverlay} = useSelector(state => state.app); 
   const socket = useRef(); 
   const navigate = useNavigate(); 
   useEffect(()=>{
@@ -61,11 +61,18 @@ function App() {
         dispatch(addChatCreated(msg));
      })   
     }
-    dispatch(getUserInfo(user?.data?._id))
+    // dispatch(getUserInfo(user?.data?._id))
     dispatch(getNotificationByUser(user?.data?._id)); 
   },[])
   return (
     <div id="app">
+      {
+        isShowOverlay === true && (
+          <div className='overlay'>       
+            <HashLoader color="#36d7b7" />
+          </div>
+        )
+      }
             {
               user !== null &&  (
                 <div className="app-left">

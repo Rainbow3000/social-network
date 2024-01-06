@@ -15,5 +15,14 @@ module.exports = {
         } catch (error) {
             res.status(error.statusCode).json(error); 
         }
-    }
+    },
+
+    updatePassword:async(req,res,next)=>{
+        try {
+            const result = await _accountService.updatePassword(req.body,req.params.id); 
+            res.status(result.statusCode).json(result); 
+        } catch (error) {
+            res.status(error.statusCode).json(error); 
+        }
+    },
 }
