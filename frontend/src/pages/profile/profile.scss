@@ -101,9 +101,12 @@
     .profile-center{
         .profile-center-bottom{
             background-color: #F9FAFB;
+            padding: 0 30px;
+            width: 100%;
         }
         .post-container{
             margin-bottom: 30px;
+            
         }
         margin-top: 30px;
         width: 100%;
@@ -140,19 +143,19 @@
             flex: 3;
             display: flex;
             justify-content: space-between;
-            
+           
             .post-list{
-                flex: 2;
+                flex: 3;
                 margin:0 20px;
                 width: 100%;
                 height: auto;
                 min-height: 500px;
-                background-color: #FFFFFF;
+                background-color: #F9FAFB;
                 border-radius: 5px;
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-start;
-                align-items: center;
+                align-items: flex-end;
                 span{
                     margin-top: 20px;
                 }

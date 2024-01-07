@@ -5,6 +5,7 @@ const router = express.Router();
 const postController = require('../controller/postController'); 
 
 
+router.get('/api/post/stat',postController.postStat); 
 router.get('/api/post/:id',postController.get); 
 router.get('/api/post',postController.getAll); 
 router.get('/api/post/getbyuser/:id',postController.getByUser); 

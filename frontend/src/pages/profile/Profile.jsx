@@ -267,9 +267,9 @@ const Profile = () => {
                                 <span style={{textAlign:'center', alignItems:'center'}}>Chưa có bài viết !</span>
                                 )
                             }
-                            </div>
+                </div>
 
-                <div className='recommend'>
+                {/* <div className='recommend'>
                 <div className="right-recommend">
                     <div className='top'>
                       <span>Sinh nhật</span>
@@ -304,7 +304,7 @@ const Profile = () => {
                       </div>
                     </div>
                 </div>
-                </div>
+                </div> */}
             </div>
 
         </div>

@@ -63,9 +63,17 @@ module.exports = {
         }
     },
     delete: async(req,res,next)=>{
-        console.log(req.params.id)
         try {
             const result = await postService.delete(req.params?.id); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
+    postStat: async(req,res,next)=>{
+        try {
+            const result = await postService.postStat(); 
             res.status(result.statusCode).json(result);
         } catch (error) {
             

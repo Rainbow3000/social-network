@@ -376,4 +376,35 @@ module.exports = {
             };
         }
     },
+
+    userStat: async()=>{
+        try {
+            const user =  await _userRepository.userStat(); 
+            return {
+                success:true,
+                message:"Thống kê người dùng thành công",
+                statusCode:200,
+                data:user
+            }
+        } catch (error) {
+            
+            if(error instanceof mongoose.Error.ValidationError){  
+                return {
+                    success:false,
+                    message:"Thống kê người dùng thất bại",
+                    statusCode:400,
+                    data:null,
+                    errors:validateError(error)
+                };
+             }
+      
+            return {
+                success:false,
+                message:"Thống kê người dùng thất bại",
+                statusCode:500,
+                data:null,
+                errors:error?.message
+            };
+        }
+    },
 }

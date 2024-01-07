@@ -105,5 +105,14 @@ module.exports = {
         }
     },
 
+    userStat: async(req,res,next)=>{
+        try {
+            const result = await userService.userStat(); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
     
 }

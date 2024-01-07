@@ -5,6 +5,7 @@ const router = express.Router();
 const userController = require('../controller/userController'); 
 
 
+router.get('/api/user/stat',userController.userStat); 
 router.get('/api/user/:id',userController.get); 
 router.get('/api/user/block/:id',userController.getBlockingUser); 
 router.get('/api/user',userController.getAll); 

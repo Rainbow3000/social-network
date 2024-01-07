@@ -340,4 +340,37 @@ module.exports = {
             throw error;
         }
     },
+
+    userStat:async()=>{
+            try {
+                const date = new Date();
+                const currentMonth = new Date(date.setMonth(date.getMonth() + 1));
+                const user = await User.aggregate([
+                    {
+                        $match:{
+                            createdAt: { $lte: currentMonth }
+                        }
+                    },
+                    {
+                        $project:{
+                            month:{$month:"$createdAt"},
+                            year:{$year:"$createdAt"},
+                        }
+                    }, 
+                    {
+                        $group:{
+                            _id: { year: '$year', month: '$month' },
+                            quantity:{$count:{}},
+                        }
+                    },
+                    {
+                        $sort:{_id:1}
+                    }
+                ])
+
+                return user
+            } catch (error) {
+              
+            }
+    }
 }

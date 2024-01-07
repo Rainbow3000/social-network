@@ -202,7 +202,7 @@ module.exports = {
             }
 
         } catch (error) {
-            console.log(error.message);
+            
         }
     },
 
@@ -224,6 +224,21 @@ module.exports = {
                 message:"Xóa bài viết thành công",
                 statusCode:200,
                 data:postDeleted
+            }
+
+        } catch (error) {
+            
+        }
+    },
+
+    postStat: async()=>{
+        try {
+            const post = await _postRepository.postStat(); 
+            return {
+                success:true,
+                message:"Thống kê bài viết thành công",
+                statusCode:200,
+                data:post
             }
 
         } catch (error) {
