@@ -17,7 +17,7 @@ import Notification from './pages/notification/Notification';
 import {createInstanceSocket} from '../src/utils/socket'
 import { useEffect,useRef } from 'react';
 import {getNotificationByUser} from './store/slice/notificationSlice'
-import {getUserInfo,setUserActive} from './store/slice/userSlice'
+import {getUserInfo,setUserActive,getUserDob} from './store/slice/userSlice'
 import {addNotifi} from '../src/store/slice/notificationSlice'
 import {addChatCreated} from '../src/store/slice/chatSlice'
 import HashLoader from 'react-spinners/HashLoader'
@@ -51,6 +51,7 @@ function App() {
       })
 
       socket.current.on('notifi-add-friend-single-user',(notifi)=>{
+        console.log(notifi); 
         dispatch(addNotifi(notifi));
      })
      socket.current.on('notifi-accept-add-friend-single-user',(notifi)=>{
@@ -61,9 +62,10 @@ function App() {
         dispatch(addChatCreated(msg));
      })   
     }
-    // dispatch(getUserInfo(user?.data?._id))
+   
+    dispatch(getUserDob(user?.data?._id))
     dispatch(getNotificationByUser(user?.data?._id)); 
-  },[])
+  },[user])
   return (
     <div id="app">
       {

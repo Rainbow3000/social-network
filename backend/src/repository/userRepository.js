@@ -1,4 +1,5 @@
 const User = require('../model/userModel'); 
+const moment = require('moment')
 const mongoose = require('mongoose')
 module.exports = {
 
@@ -87,7 +88,7 @@ module.exports = {
                     path:'_id',
                     select:'-password -email -role -status -createdAt -updatedAt '
                 }
-            }).select('-requestAddFriend -requestAddFriendFromUser -blocking -chats -friends -followings -followers -dob');
+            }).select('-requestAddFriend -requestAddFriendFromUser -blocking -chats -friends -followings -followers ');
         } catch (error) {
             throw error;
         }
@@ -372,5 +373,35 @@ module.exports = {
             } catch (error) {
               
             }
-    }
+    },
+    userDob:async()=>{
+        try {
+       
+            const currentMonth = moment().format();  
+            
+            const getFullDate = currentMonth.toString().split('T')[0]
+
+           
+            const user = await User.aggregate([            
+                {
+                    $match:{
+                        dob: { $lte: getFullDate }
+                    }
+                },
+                {
+                    $project:{
+                        avatar:1,   
+                        friends:1                    
+                    }
+                }, 
+               
+                {
+                    $sort:{_id:1}
+                }
+            ])
+            return user
+        } catch (error) {
+            console.log(error); 
+        }
+}
 }

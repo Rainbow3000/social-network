@@ -280,8 +280,6 @@ export const postSlice = createSlice({
     
 
 
-
-
     builder.addCase(getPostList.pending, (state, action) => {
       state.isLoading = true; 
       state.isSuccess = false;

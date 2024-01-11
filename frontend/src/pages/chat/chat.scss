@@ -80,9 +80,10 @@ body{
 .chat-right{
     flex: 3;
     height: 100%;
-    border-left: 0.5px solid #EEEEEE;
     overflow: hidden;
     position: relative;
+    margin-left: 10px;
+    border-radius: 10px;
     .preview-image{
         position: absolute;
         bottom: 70px;

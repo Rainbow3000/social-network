@@ -17,6 +17,7 @@ module.exports = {
                     online.push(data); 
                 }  
                 socket.broadcast.emit('user-online',online)           
+                console.log('online',userOnline)
             })
 
             socket.on('disconnect', () => {     

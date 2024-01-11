@@ -5,7 +5,8 @@ const _userRepository = require('../repository/userRepository')
 const validateError = require('../utils/validateError');
 const mongoose = require('mongoose');
 const userRepository = require("../repository/userRepository");
-
+const {generateRandomPassword} = require('../utils/randomPassword')
+const {sendMailRecoverPassword} = require('../utils/sendMail')
 module.exports = {
   login: (data) => {
     return new Promise(async (resolve, reject) => {
@@ -131,7 +132,7 @@ module.exports = {
           account.password = hashPassword;   
           
           await _accountRepository.update(account,account._id); 
-          
+        
           return({
             success:true,
             message:"Cập nhật mật khẩu thành công",
@@ -164,6 +165,49 @@ module.exports = {
           message:error?.message
       }
     }
-  }
+  },
+
+  resetPassword: async(data) => {
+    try {
+           const accountExisted =  await _accountRepository.getByEmail(data?.email); 
+            if(accountExisted === null){
+                return {
+                    success:false,
+                    message:"Email:Email không tồn tại trong hệ thống",
+                    statusCode:400,
+                    data:null              
+                 }; 
+            }  
+
+            const newPassword = generateRandomPassword(10); 
+
+            const hashPassword = CryptoJS.AES.encrypt(newPassword,process.env.AES_SECRET).toString();
+            accountExisted.password = hashPassword;
+            const account = await _accountRepository.update(accountExisted,accountExisted._id); 
+            sendMailRecoverPassword(account.email,newPassword)
+              return {
+                success:true,
+                message:"Khôi phục mật khẩu thành công",
+                statusCode:201,
+                data:account,
+              }     
+    } catch (error) {
+           
+          if(error instanceof mongoose.Error.ValidationError){  
+            return {
+                success:false,
+                statusCode:400,
+                data:null,
+                message:validateError(error)
+            };
+          }
+          return {
+              success:false,
+              statusCode:500,
+              data:null,
+              message:error?.message
+          }
+    }
+  },
 
 };

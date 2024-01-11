@@ -128,6 +128,16 @@
 .post-media{
     width: 100%;
     position: relative;
+    .media-action{
+        ul{
+            li{
+               
+                &:hover{
+                    color: #4e5d78c0 !important;
+                }
+            }
+        }
+    }
     .emoji{
         position: absolute;
         top: 50px;

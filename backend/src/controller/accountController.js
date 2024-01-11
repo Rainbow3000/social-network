@@ -25,4 +25,13 @@ module.exports = {
             res.status(error.statusCode).json(error); 
         }
     },
+
+    resetPassword:async(req,res,next)=>{
+        try {
+            const result = await _accountService.resetPassword(req.body); 
+            res.status(result.statusCode).json(result); 
+        } catch (error) {
+            res.status(error.statusCode).json(error); 
+        }
+    },
 }

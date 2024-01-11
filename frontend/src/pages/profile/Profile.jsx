@@ -46,8 +46,9 @@ const Profile = () => {
               const storageRef = refStorage(storage,fileName); 
               uploadBytes(storageRef,file).then((snapshot)=>{
                   getDownloadURL(refStorage(storage,fileName)).then(downloadUrl =>{     
-                    const userData = {...userInfo,chats:[], avatar:`${downloadUrl}@-@${fileName}`};
+                    const userData = {avatar:`${downloadUrl}@-@${fileName}`};
                     dispatch(updateUserInfo({userId,userData}));
+                  
                   })
             })
     }
@@ -58,8 +59,9 @@ const Profile = () => {
           const storageRef = refStorage(storage,fileName); 
           uploadBytes(storageRef,file).then((snapshot)=>{
               getDownloadURL(refStorage(storage,fileName)).then(downloadUrl =>{     
-                const userData = {...userInfo,chats:[],coverAvatar:`${downloadUrl}@-@${fileName}`};
+                const userData = {coverAvatar:`${downloadUrl}@-@${fileName}`};
                 dispatch(updateUserInfo({userId,userData}));
+              
               })
         })
     }
@@ -114,7 +116,7 @@ const Profile = () => {
     useEffect(()=>{
         dispatch(getUserInfo(userId)); 
         dispatch(getPostByUser(userId));
-    },[userId])
+    },[userId,userInfo])
 
 
  
@@ -248,10 +250,14 @@ const Profile = () => {
             </div>
 
             <div className='profile-post'>
-
+                {
+                    postOfUser?.length === 0 && (
+                        <span className='post-empty-title'>Chưa có bài viết được tạo !</span>
+                    )
+                }
                 <div className='post-list'>
                 {
-                    postOfUser?.length > 0 ? (
+                    postOfUser?.length > 0 && (
                              <div className="profile-center-bottom">
                                 {
                                     postOfUser.map(item=>{
@@ -263,10 +269,8 @@ const Profile = () => {
                             
                             </div> 
                             
-                            ):(
-                                <span style={{textAlign:'center', alignItems:'center'}}>Chưa có bài viết !</span>
-                                )
-                            }
+                            )
+                        }
                 </div>
 
                 {/* <div className='recommend'>

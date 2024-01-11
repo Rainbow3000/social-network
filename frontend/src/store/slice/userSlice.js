@@ -19,8 +19,12 @@ export const userRegister = createAsyncThunk(
 export const userLogin = createAsyncThunk(
   'users/login',
   async (data) => {
-    const response = await _publicRequest.post('account/login',data); 
-    return response.data
+    try{
+      const response = await _publicRequest.post('account/login',data); 
+      return response.data
+    }catch(error){
+      throw error?.response?.data
+    }
   }
 )
 
@@ -32,6 +36,19 @@ export const userAddFriend = createAsyncThunk(
     return response.data
   }
 )
+
+export const recoverPassword = createAsyncThunk(
+  'users/password/reset',
+  async (data) => {
+    try {
+      const response = await _publicRequest.post('account/password/reset',data); 
+      return response.data
+    } catch (error) {
+      throw error?.response?.data
+    }
+  }
+)
+
 
 
 export const userAcceptAddFriend = createAsyncThunk(
@@ -83,6 +100,15 @@ export const getBlockingUser = createAsyncThunk(
   }
 )
 
+export const getUserDob = createAsyncThunk(
+  'users/dob',
+  async (userId) => {
+    const response = await _publicRequest.get(`user/dob/${userId}`); 
+    return response.data
+  }
+)
+
+
 
 export const getUserList = createAsyncThunk(
   'users/getUserList',
@@ -111,7 +137,6 @@ export const updatePassword = createAsyncThunk(
       const response = await _publicRequest.put(`account/password/${accountId}`,accountData); 
       return response.data    
     } catch (error) {
-      console.log(123,error); 
       throw error?.response?.data
     }
   }
@@ -126,8 +151,10 @@ const userState = {
   user: JSON.parse(localStorage.getItem('user'))  || null,
   userInfo:null,
   error:null,
-  success:null,
+  success:false,
+  isRecoverPassSuccess:false,
   activeList: [],
+  userDob:[],
   userList:[],
   blockingUser:[]
 }
@@ -147,9 +174,10 @@ export const userSlice = createSlice({
         state.typePopupForm = action.payload;
     },
     userLogout:(state,action)=>{
-        state.user = null; 
-        localStorage.clear(); 
-        state.activeList = state.activeList.filter(item => item !== action.payload); 
+      state.user = null; 
+      localStorage.removeItem('user');
+      localStorage.clear();  
+      state.activeList = state.activeList.filter(item => item !== action.payload); 
     },
     setUserActive:(state,action)=>{
      state.activeList = action.payload;
@@ -157,9 +185,35 @@ export const userSlice = createSlice({
     setEmptyUserChat:(state,action)=>{
         state.userInfo = {...state.userInfo,chats:[]}
     },
+    resetSuccess:(state,action)=>{
+      state.success = false; 
+      state.isRecoverPassSuccess = false;
+    }
   },
 
   extraReducers: (builder) => {
+
+    builder.addCase(recoverPassword.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.isRecoverPassSuccess = true; 
+    })
+
+    builder.addCase(recoverPassword.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.error; 
+      state.success = false; 
+      state.isRecoverPassSuccess = false; 
+    })
+
+    builder.addCase(getUserDob.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.success = true; 
+      state.userDob = action.payload.data; 
+    })
 
 
     builder.addCase(updatePassword.pending, (state, action) => {
@@ -348,7 +402,7 @@ export const userSlice = createSlice({
     })
     builder.addCase(userLogin.rejected, (state, action) => {
       state.user = null;
-      state.error = action.payload
+      state.error = action.error
       state.isLoading = false; 
     })
 
@@ -368,6 +422,6 @@ export const userSlice = createSlice({
 })
 
 
-export const { showLoginForm,hiddenLoginForm,setTypePopupForm,userLogout,setUserActive,setEmptyUserChat} = userSlice.actions
+export const {resetSuccess,showLoginForm,hiddenLoginForm,setTypePopupForm,userLogout,setUserActive,setEmptyUserChat} = userSlice.actions
 
 export default userSlice.reducer

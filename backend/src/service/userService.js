@@ -242,6 +242,8 @@ module.exports = {
                 if(userOnline.has(data.userId)){
                     const socketId = userOnline.get(data.userId);
                     socketObject.join(socketId)
+                    console.log(data.userId); 
+                    console.log('socket receive',socketId)
                     ioObject.to(socketId).emit("notifi-add-friend-single-user",notificationCreated);               
                 } 
             }
@@ -401,6 +403,47 @@ module.exports = {
             return {
                 success:false,
                 message:"Thống kê người dùng thất bại",
+                statusCode:500,
+                data:null,
+                errors:error?.message
+            };
+        }
+    },
+    userDob: async(id)=>{
+        try {
+            const user =  await _userRepository.userDob(); 
+            let friendList = user.filter(item =>{
+                return item.friends.find(f => f.equals(id)) !== undefined; 
+            }); 
+
+            const data  =  await Promise.all(friendList.map(async item =>{
+                const account = await _accountRepository.get(item._id); 
+                const userName = account._doc.userName; 
+                item.userName = userName; 
+                return item; 
+            }))
+
+            return {
+                success:true,
+                message:"Lấy sinh nhật người dùng thành công",
+                statusCode:200,
+                data:data
+            }
+        } catch (error) {
+            
+            if(error instanceof mongoose.Error.ValidationError){  
+                return {
+                    success:false,
+                    message:"Lấy sinh nhật người dùng thất bại",
+                    statusCode:400,
+                    data:null,
+                    errors:validateError(error)
+                };
+             }
+      
+            return {
+                success:false,
+                message:"Lấy sinh nhật người dùng thất bại",
                 statusCode:500,
                 data:null,
                 errors:error?.message

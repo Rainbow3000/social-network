@@ -67,9 +67,7 @@ const Notification = () => {
                                         <div className='notifi-item-btn'>
                                           
         
-                                            <div className='btn-item eye'>
-                                                <span><IoMdEye/></span>
-                                            </div>
+                                           
                                         </div>
                                         <div className='state'>
                                             

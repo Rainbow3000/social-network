@@ -79,13 +79,6 @@ const Account = () => {
             }
             dispatch(toggleOverlay(false)); 
         }
-
-        if(success === true){
-            notify(); 
-            dispatch(toggleOverlay(false))
-            
-        }
-        
     
     },[error,success])
     
@@ -105,20 +98,20 @@ const Account = () => {
                     <label htmlFor="">Mật khẩu hiện tại</label>
                     <span className='text-err'>{passwordErr}</span>
                     <span className='text-err'>{emptyErr}</span>
-                    <input value={password} type="password" onChange={(e)=>setPassword(e.target.value)}/>
+                    <input placeholder='Mật khẩu hiện tại' value={password} type="password" onChange={(e)=>setPassword(e.target.value)}/>
                 </div>
 
                 <div className='input-item-wrap'>
                     <label htmlFor="">Mật khẩu mới</label>
                     <span className='text-err'>{passwordLengthErr}</span>
-                    <input value={newPassword} type="password" onChange={(e) => setNewPassword(e.target.value)}/>
+                    <input placeholder='Mật khẩu mới' value={newPassword} type="password" onChange={(e) => setNewPassword(e.target.value)}/>
                 </div>
 
                 <div className='input-item-wrap'>
                     <label htmlFor="">Nhập lại mật khẩu mới</label>
                     <span className='text-err'>{passwordLengthErr}</span>
                     <span className='text-err'>{passwordNotMatchErr}</span>
-                    <input value={reNewPassword} type="password" onChange={(e) => setReNewPassword(e.target.value)}/>
+                    <input placeholder='Nhập lại mật khẩu mới' value={reNewPassword} type="password" onChange={(e) => setReNewPassword(e.target.value)}/>
                 </div>
             
                 

@@ -1,33 +1,42 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useRef } from 'react'
 import Post from '../../components/post/Post'
 import RightBar from '../../components/rightbar/Rightbar'
 import './home.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import {getPostList} from '../../store/slice/postSlice'
-import { IoMdImages } from "react-icons/io";
-import { FaRegFaceSmile } from "react-icons/fa6";
-import { RiFacebookBoxLine } from "react-icons/ri";
-import { FaInstagram } from "react-icons/fa";
-import { LuTwitter } from "react-icons/lu";
 import { RiSendPlane2Line } from "react-icons/ri";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
-import Recommend from '../../components/recommend/Recommend'
 import { useNavigate } from 'react-router-dom'
 import PostAction from '../../components/postAction/PostAction'
 import { ToastContainer, toast } from 'react-toastify';
 import {getUserInfo} from '../../store/slice/userSlice'
 import 'react-toastify/dist/ReactToastify.css';
+import {createInstanceSocket} from '../../utils/socket'
+import {setUserActive} from '../../store/slice/userSlice'
+
 const Home = () => {
 
   const {postList} = useSelector(state => state.post); 
-  const {user} = useSelector(state => state.user); 
+  const {user,userDob} = useSelector(state => state.user); 
   const dispatch = useDispatch(); 
   const navigate = useNavigate(); 
   const notify = () => toast.info("Wow so easy!");
   
-
+  const socket = useRef(); 
 
   useEffect(()=>{
+    socket.current = createInstanceSocket();
+    if(socket.current){
+      socket.current.on('connect', () => {
+         socket.current.emit('user-connected',user?.data?._id); 
+      });
+
+      socket.current.on('user-online',(data)=>{
+            dispatch(setUserActive(data));         
+      })
+    }
+
+
     dispatch(getPostList());
     dispatch(getUserInfo(user?.data?._id))
   },[])
@@ -64,36 +73,75 @@ const Home = () => {
                       <span>Sinh nhật</span>
                       <span onClick={notify}>Xem thêm</span>
                     </div>
-                    <div className='center'>           
-                        <img className='dob-user-img' src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />            
-                        <div className="user-wrapper">
-                          <div className='user-name'>
-                            <span>Nguyễn Văn A</span>
-                            <span>Sinh nhật ngày hôm nay</span>                      
-                          </div>
+                    {
+                      userDob.length > 0 && userDob.map(item =>{
+                        return (
+                          <>
+                          <div className='center'>           
+                            <img className='dob-user-img' src={item.avatar} alt="" />            
+                            <div className="user-wrapper">
+                              <div className='user-name'>
+                                <span>{item.userName}</span>
+                                <span style={{fontSize:13}}>Sinh nhật ngày hôm nay</span>                      
+                              </div>
 
-                        </div>
-                        
-                      </div>
+                            </div>
+                            
+                          </div>
+                            <div className='bottom'>
+                              <div className='dob-send-input'>
+                                  <input type="text" placeholder='Gửi lời chúc mừng ...'/>
+                                  <div className='send-icon-wrapper'><RiSendPlane2Line/></div>
+                              </div>
+                            </div>
+                          </>
+                        )
+                      })
+                    }
                   
-                    <div className='bottom'>
-                      <div className='dob-send-input'>
-                          <input type="text" placeholder='Gửi lời chúc mừng ...'/>
-                          <div className='send-icon-wrapper'><RiSendPlane2Line/></div>
-                      </div>
-                    </div>
 
                     <div className='dob-upcomming'>
                       <div className='dob-icon'>
                           <LiaBirthdayCakeSolid/>
                       </div>
                       <div className='dob-info'>
-                        <span>Sinh nhật của mọi người</span>
-                        <span>12 người bạn đón sinh nhật hôm nay</span>
+                        <span style={{fontSize:15}}>Sinh nhật của bạn bè</span>
+                        {
+                          userDob.length > 0 ? (
+                            <span style={{fontSize:14}}>{userDob.length} người bạn đón sinh nhật hôm nay</span>
+                          ):(
+                            <span style={{fontSize:14}}>Hôm nay không có bạn bè sinh nhật</span>
+                          )
+                        }
                       </div>
                     </div>
                 </div>
             
+
+
+                {/* <div className="right-recommend">
+                    <div className='top'>
+                      <span>Sinh nhật trong tháng này</span>
+                      <span onClick={notify}>Xem thêm</span>
+                    </div>
+                  
+                    <div className='list-wrapper'>
+                    {
+                      userDob.length > 0 && userDob.map(item =>{
+                        return (
+                            <div className='center'>           
+                              <img className='dob-user-img' src={item.avatar} alt="" />            
+                              <div className="user-wrapper">
+                            </div>                          
+                          </div>
+                        )
+                      })
+                    }
+                    </div>                           
+                  
+
+                   
+                </div> */}
             </div>
         </div>
      

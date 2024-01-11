@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import './sidebar.scss'
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,22 +15,22 @@ import { notifiReset } from '../../store/slice/notificationSlice';
 import {updateUserInfo} from '../../store/slice/userSlice'
 import {chatReset} from '../../store/slice/chatSlice'
 const Sidebar = () => {
-  const {user,userInfo} = useSelector(state => state.user); 
+  const {user} = useSelector(state => state.user); 
   const {unReadNumber} = useSelector(state => state.notification); 
   const [pageRender,setPageRender] = useState(1); 
   const navigate = useNavigate();
   const dispatch = useDispatch(); 
 
-
   const handleLogout = ()=>{
     const userId = user.data._id
     const userData = {timeDisconnect:1}
-    dispatch(updateUserInfo({userId,userData}));
     dispatch(userLogout());
     dispatch(notifiReset())
     dispatch(chatReset()); 
+    dispatch(updateUserInfo({userId,userData}));
+    
   }
-
+  
   if(user === null){
     navigate('/auth')
   }
@@ -75,14 +75,14 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className={pageRender === 5 ?'active':''} onClick={()=>handleChangePage(5)}>
-              <Link className='link' to={user?.data ? `/profile/${user.data._id}`:`/profile/un-auth`}>
+              <Link className='link' to={user?.data ? `/profile/${user.data?._id}`:`/profile/un-auth`}>
                 <FaWpexplorer/>
                  <span>&nbsp;&nbsp; Khám phá</span>
               </Link>
             </li>
 
             <li className={pageRender === 6 ?'active':''} onClick={()=>handleChangePage(6)}>
-              <Link className='link' to={`/profile/${user?.data._id}`}>
+              <Link className='link' to={`/profile/${user?.data?._id}`}>
                 <RxPerson/>
                  <span>&nbsp;&nbsp; Hồ sơ</span>
               </Link>

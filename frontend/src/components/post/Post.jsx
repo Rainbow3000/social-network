@@ -4,6 +4,7 @@ import { GrLike } from "react-icons/gr";
 import { FaRegCommentDots, FaSlack } from "react-icons/fa";
 import { CiShare2 } from "react-icons/ci";
 import { FaRegHeart } from "react-icons/fa";
+import { IoTimeOutline } from "react-icons/io5";
 import {updatePostByOtherUser} from '../../store/slice/postSlice'
 import {useDispatch, useSelector} from 'react-redux'
 import Comment from '../comment/Comment';
@@ -109,7 +110,16 @@ const handleSubmitForm = (e)=>{
     setEmojiShow(false)
 }
 
-const handleSetReplyComment = (userName,parent,level)=>{
+const handleSetReplyComment = (userName,parent,level,parentPrev)=>{
+   
+    if(level === 3){
+        setContent(`@${userName}`);
+        setParent(parentPrev); 
+        setLevel(level);
+        setParentName(userName);
+        inputRef.current.focus();
+        return; 
+    }
     setContent(`@${userName}`);
     setParent(parent); 
     setLevel(level);
@@ -170,7 +180,7 @@ useEffect(()=>{
             <img src={userShare?.user?.avatar} alt="" />
              <ul>
                 <li>{userShare?.user._id.userName} <span style={{fontWeight:'normal'}}>đã chia sẻ một bài viết</span></li>
-                <li>{moment(userShare?.timeShare).calendar()}</li>
+                <li><IoTimeOutline/> {moment(userShare?.timeShare).calendar()}</li>
              </ul>
              <ul>
                 
@@ -378,14 +388,14 @@ useEffect(()=>{
                         <img src={item?.user?.avatar} alt="" />
                         <ul>
                             <li>{item?.user?._id?.userName}</li>
-                            <li>{moment(item?.createdDate).calendar()}</li>
+                            <li style={{display:'flex',alignItems:'center'}}><IoTimeOutline/>&nbsp;{moment(item?.createdDate).calendar()}</li>
                         </ul>
                         <ul>
                             
                         </ul>
                        
                         {
-                            user?.data._id === item?.user._id._id && (
+                            user?.data?._id === item?.user?._id?._id && (
                                 <HiOutlineDotsHorizontal className='post-action' onClick={()=>setIsShowActionActive(active => !active)}/>
                                 )
                         }

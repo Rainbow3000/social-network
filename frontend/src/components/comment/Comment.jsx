@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 
 moment.locale('vi');
 const Comment = ({comment,handleSetReplyComment,index,level}) => {
-
+console.log(comment); 
 const dispatch = useDispatch(); 
 
  const handleShowCommentChild = (commentId,postId,children)=>{   
@@ -24,7 +24,7 @@ const dispatch = useDispatch();
             <div className={comment.image !== "" || comment.video !== "" ?"comment-content-main outline":"comment-content-main"}>
                 <div className='comment-top'>
                     <span className='user-name'>{comment.user?._id?.userName}</span>
-                    <span className='time-comment'><IoTimeOutline/>&nbsp;{moment(comment.createdDate).startOf('hour').fromNow()}</span>
+                    <span className='time-comment'><IoTimeOutline/>&nbsp;{moment(comment.createdDate).calendar()}</span>
                 </div>
                     {
                         comment?.video !== "" && (
@@ -45,17 +45,17 @@ const dispatch = useDispatch();
                         )
                      }
                 <div>
-                    <span className='user-comment'>{comment.content}</span>
+                    <span className='user-comment'>{comment.level === 3 && <b style={{fontSize:14,marginLeft:10,fontWeight:500}}>@{comment.parentName}</b>} &nbsp; {comment.content}</span>
                 </div>
             </div>
 
             <div className='user-action'>
-                <div>
-                    <span>Thích</span>
-                    <span onClick={()=>handleSetReplyComment(`${comment.user?._id?.userName} `,comment._id,level)}>Phản hồi</span>
+                <div style={{paddingLeft:20}}>
+                   
+                    <span onClick={()=>handleSetReplyComment(`${comment.user?._id?.userName} `,comment._id,level,comment.parent)}>Phản hồi</span>
                     <span onClick={()=>handleShowCommentChild(comment._id,comment.post,comment.children)} className='child-comment-num'>{comment.children?.length} Bình luận</span>
                 </div>
-                <span>Báo cáo</span>
+                
             </div>
         </div>
     </div>

@@ -28,9 +28,6 @@ const UserChat = ({item,chatLengh,activeList}) => {
     }
   }
 
-  console.log(activeList)
-  console.log(chatItem)
-
 
   useEffect(()=>{
     getRecentChatItem(); 
@@ -44,11 +41,15 @@ const UserChat = ({item,chatLengh,activeList}) => {
             <div className='chat-content'>
                 <span>{item._id.userName}</span>          
                 {
-                  chatItem !== null && chatItem[0]?.from._id._id === user.data._id && (
+                  chatItem !== null && (chatItem[0]?.from._id._id === user.data._id ? (
                     <>
                       <span>Bạn: <span style={{fontWeight:'normal'}}>{chatItem[0].content}</span></span>
                     </>
-                  )
+                  ):(
+                    <>
+                      <span style={{fontWeight:'normal'}}>{chatItem[0]?.content}</span>
+                    </>
+                  ))
                 }
             </div>
         </div>

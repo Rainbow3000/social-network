@@ -112,7 +112,7 @@ return (
   <form className='post-create' onSubmit={handleSubmitForm}>
   <span className='text-error content'>{contentErr}</span>
   <div className='user-input'>
-    <img src={user ?.data.avatar} alt="" />
+    <img src={user?.data?.avatar} alt="" />
     <input value={content} placeholder='Nội dung bài viết của bạn ...' type="text" onChange={(e)=>{
       setContent(e.target.value)
       setContentErr("")
