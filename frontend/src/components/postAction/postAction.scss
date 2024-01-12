@@ -118,7 +118,7 @@
     label{
         display: flex;
         align-items: center;
-        color: #4E5D78;
+        color: #1E2A35;
         font-weight: 500;
         cursor: pointer;
         margin-top: 10px;
@@ -131,7 +131,10 @@
     .media-action{
         ul{
             li{
-               
+                label{
+                    display: flex;
+                    align-items: center;
+                }
                 &:hover{
                     color: #4e5d78c0 !important;
                 }

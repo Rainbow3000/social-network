@@ -84,7 +84,7 @@
                                 margin-left: 20px;
                                 display: flex;
                                 align-items: center;
-                                color: #4E5D78;
+                                color: #1E2A35;
                                 font-weight: 500;
                                 cursor: pointer;
                                 label{
@@ -130,7 +130,7 @@
                 align-items: flex-start;
                 background-color: #FFFFFF;
                 padding:20px;
-                color: #4E5D78;
+                color: #1E2A35;
                 margin-bottom: 20px;
                 .list-wrapper{
                     display: flex;
@@ -145,7 +145,7 @@
                     span{
                         &:first-child{
                             font-weight: bold;
-                            color: #4E5D78;
+                            color: #1E2A35;
                             cursor: default;
                         }
                     }
@@ -238,7 +238,7 @@
                         cursor: pointer;
                         &:first-child{
                             background-color: transparent;
-                            border: 0.5px solid #4E5D78;
+                            border: 0.5px solid #1E2A35;
                         }
 
                         &:last-child{

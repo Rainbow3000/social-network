@@ -4,6 +4,7 @@ const userOnline = new Map();
 let socketObject = null;
 let ioObject = null;  
 let online = [] 
+let callId = [] 
 module.exports = {
     getSocketIo:()=>{
         return {ioObject,socketObject,userOnline};
@@ -16,8 +17,29 @@ module.exports = {
                     userOnline.set(data,socket.id); 
                     online.push(data); 
                 }  
-                socket.broadcast.emit('user-online',online)           
-                console.log('online',userOnline)
+                socket.broadcast.emit('user-online',online)      
+                              
+            })
+
+
+            socket.on('user-end-call',(userEndCallId) =>{
+                socket.broadcast.emit('end-call',userEndCallId)
+            });
+
+
+            socket.on('user-call-id',(data)=>{
+                if(callId.length === 0){
+                    callId.push(data); 
+                }else {
+                    if(callId.find(item => item.userId === data.userId) !== undefined){
+                        callId = callId.filter(item => item.userId !== data.userId); 
+                        callId.push(data); 
+                    }else{
+                        callId.push(data); 
+                    }
+                }
+                socket.broadcast.emit('send-callId-to-client',callId)
+              
             })
 
             socket.on('disconnect', () => {     
@@ -32,8 +54,7 @@ module.exports = {
                })
                online = online.filter(item => item !== keyDisconnected); 
                socket.broadcast.emit('user-online',online)
-               userOnline.delete(keyDisconnected);
-               
+               userOnline.delete(keyDisconnected);              
             });
             
             socketObject = socket; 

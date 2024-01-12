@@ -116,7 +116,7 @@ const Profile = () => {
     useEffect(()=>{
         dispatch(getUserInfo(userId)); 
         dispatch(getPostByUser(userId));
-    },[userId,userInfo])
+    },[userId])
 
 
  

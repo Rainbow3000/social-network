@@ -15,6 +15,7 @@ import {ref as refStorage,uploadBytes, getDownloadURL} from 'firebase/storage'
 import {createComment} from '../../store/slice/postSlice'
 import { CiImageOn } from "react-icons/ci";
 import { VscSmiley } from "react-icons/vsc";
+import {Link} from 'react-router-dom'
 import {getCommentByPost,getPostByUser,updateStatusPost,deletePost} from '../../store/slice/postSlice'
 import { RiSendPlane2Line } from "react-icons/ri";
 import EmojiPicker from "emoji-picker-react";
@@ -168,19 +169,20 @@ useEffect(()=>{
 },[item])
 
 
+
   return (
     <div className='post-container'>
         {
             item?.type === 'SHARE'  ? (
-                <>
-                {
-                   
-                }
-                    <div className="post-top">
-            <img src={userShare?.user?.avatar} alt="" />
+            <>
+               
+            <div className="post-top">
+                
+                <img src={item?.user?.avatar} alt="" />
+                
              <ul>
-                <li>{userShare?.user._id.userName} <span style={{fontWeight:'normal'}}>đã chia sẻ một bài viết</span></li>
-                <li><IoTimeOutline/> {moment(userShare?.timeShare).calendar()}</li>
+                <li>{userShare?.user?._id.userName} <span style={{fontWeight:'normal'}}>đã chia sẻ một bài viết</span></li>
+                <li style={{display:'flex',alignItems:'center'}}><IoTimeOutline/> &nbsp;{moment(userShare?.timeShare).calendar()}</li>
              </ul>
              <ul>
                 
@@ -197,7 +199,7 @@ useEffect(()=>{
                     <span onClick={()=>handleHiddenSharePost(item._id)}>Ẩn bài viết</span>
                     <span onClick={()=>handleDeleteSharePost()}>Xóa bài viết</span>                          
             </div>
-        </div>
+            </div>
        
         <div className="post-center">
             {
@@ -224,7 +226,7 @@ useEffect(()=>{
             }
 
             {
-                    item?.images?.length === 0  && item.video.trim() !== "" (
+                    item?.images?.length === 0  && item.video.trim() !== "" && (
                         <div className='post-video'>
                             <video width="100%" height="100%" controls ref={videoRef} poster={item.thumb} >
                                 <source src={item.video} type="video/mp4"/>
@@ -251,7 +253,9 @@ useEffect(()=>{
             }
 
                     <div className="post-top">
-                        <img src={item?.user?.avatar} alt="" />
+                        <Link to={`/profile/${item.user._id._id}`}>
+                            <img src={item?.user?.avatar} alt="" />
+                        </Link>
                         <ul>
                             <li>{item?.user?._id?.userName}</li>
                             <li>{moment(item?.createdDate).calendar()}</li>
@@ -385,7 +389,9 @@ useEffect(()=>{
 
                 <>
                     <div className="post-top">
-                        <img src={item?.user?.avatar} alt="" />
+                        <Link to={`/profile/${item.user._id._id}`}>
+                            <img src={item?.user?.avatar} alt="" />
+                        </Link>
                         <ul>
                             <li>{item?.user?._id?.userName}</li>
                             <li style={{display:'flex',alignItems:'center'}}><IoTimeOutline/>&nbsp;{moment(item?.createdDate).calendar()}</li>

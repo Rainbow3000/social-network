@@ -3,16 +3,16 @@ import UserChat from '../../components/userChat/UserChat';
 import { FaRegFaceSmile } from "react-icons/fa6";
 import { BiDotsHorizontal, BiSearch } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
-import { LuPenSquare } from "react-icons/lu";
 import { IoImageOutline } from "react-icons/io5";
 import { RiSendPlane2Line } from "react-icons/ri";
+import { FaVideo } from "react-icons/fa";
 import './chat.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import uuid from 'react-uuid';
 import storage from '../../firebase'; 
 import {ref as refStorage,uploadBytes, getDownloadURL} from 'firebase/storage'
 import EmojiPicker from "emoji-picker-react";
-import {createChat,getChatListByUser} from '../../store/slice/chatSlice'
+import {createChat,getChatListByUser,setIsPlayCall,setIsShowCallLayout} from '../../store/slice/chatSlice'
 import {getUserInfo} from '../../store/slice/userSlice'
 import moment from 'moment/dist/moment';
 import 'moment/dist/locale/vi'
@@ -105,6 +105,12 @@ const handleSubmitForm = (e)=>{
     handleCreateMessage();
 }
 
+const handlePlayVideo = ()=>{
+    dispatch(setIsPlayCall(true))
+    dispatch(setIsShowCallLayout(true)); 
+}
+
+
 
 useEffect(()=>{
     if(userChatCurrent !== null){
@@ -115,10 +121,9 @@ useEffect(()=>{
 
 
 
-  
-
   return (
     <div className='chat-container'>
+       
         <div className="chat-left">
             <div className='input-wrapper'>
                 <div className='input'>
@@ -170,19 +175,17 @@ useEffect(()=>{
                         <img src={ userChatCurrent?.avatar} alt="" />
                         <div className='user-name'>
                             <span>{userChatCurrent?._id.userName}<span className={activeList?.find(item => item === userChatCurrent?._id._id) !== undefined ? 'status on':'status off'}></span></span>                         
-                            <span>{activeList?.find(item => item === userChatCurrent?._id._id) !== undefined ? 'Đang hoạt động':'Không hoạt động'}</span>
+                            <span style={{fontSize:13}}>{activeList?.find(item => item === userChatCurrent?._id._id) !== undefined ? 'Đang hoạt động':'Không hoạt động'}</span>
                         </div>
                         <div className='pen-icon'>
-                            <LuPenSquare/>
-                            &nbsp;
-                            Tùy chọn
+                            <FaVideo onClick={handlePlayVideo}/>               
                         </div>
                     </div>
                     <div className="chat-bottom">
                         {
                             chatList.length  === 0 ? (
                                 <div className='chat-welcome'>
-                                    <span>Bắt đầu cuộc trò chuyện của bạn với {userChatCurrent?._id.userName}</span>
+                                    <span>Bắt đầu cuộc trò chuyện của bạn với <b>{userChatCurrent?._id.userName}</b></span>
                                 </div>
                             ):(
                                 <div className='chat-welcome'>

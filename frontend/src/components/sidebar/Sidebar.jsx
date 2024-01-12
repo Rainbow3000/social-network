@@ -69,9 +69,9 @@ const Sidebar = () => {
 
             <li className={pageRender === 4 ?'active':''} onClick={()=>handleChangePage(4)}>
               <Link className='link notifi' to="/notification">
-                <div className='notifi-number'>{unReadNumber}</div>
                 <BiBell/>
                  <span>&nbsp;&nbsp; Thông báo</span>
+                <div className='notifi-number'>{unReadNumber}</div>
               </Link>
             </li>
             <li className={pageRender === 5 ?'active':''} onClick={()=>handleChangePage(5)}>

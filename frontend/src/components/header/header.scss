@@ -8,7 +8,7 @@
     z-index: 1;
     background-color: #FFFFFF;
     justify-content: space-between;
-    padding: 0 50px;
+    padding: 0 20px;
     .header-input{
         border: 1px solid  #4e5d7844;
         border-radius: 5px;
@@ -18,7 +18,7 @@
         align-items: center;
         border-radius: 10px;
         &::placeholder{
-            color: #4E5D78;
+            color: #1E2A35;
         }
         .search-icon{
             width: 60px;
@@ -27,7 +27,7 @@
             justify-content: center;
             align-items: center;
             font-size: 22px;
-            color: #4E5D78;
+            color: #1E2A35;
         }
         input{
             width: 100%;
@@ -44,7 +44,7 @@
         font-weight: bold;
         span{
             font-size:18px;
-            color: #4E5D78;
+            color: #1E2A35;
         }
         img{
             width: 45px;

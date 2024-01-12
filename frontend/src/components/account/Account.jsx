@@ -91,7 +91,7 @@ const Account = () => {
             <div className='input-list-wrapper'>
                 <div className='input-item-wrap'>
                     <label htmlFor="">Email</label>
-                    <input disabled value={user?.data.email} type="email" />
+                    <input style={{fontSize:14}} disabled value={user?.data.email} type="email" />
                 </div>
 
                 <div className='input-item-wrap'>

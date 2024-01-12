@@ -168,7 +168,7 @@
                 flex: 1;
                 font-size: 16px;
                 color: #4E5D78;
-                font-weight: 500;
+                font-weight: 600;
                 cursor: pointer;
                 display: flex;
                 align-items: center;
@@ -294,7 +294,7 @@
                     margin-right: 10px;
                 }
                 .user-name{
-                    font-weight: bold;
+                    font-weight: 600;
                     font-size: 14px;
                     margin-left: 10px;
                 }
@@ -307,6 +307,7 @@
             display: flex;
             align-items: center;
             position: relative;
+            color: #4E5D78;
             .emoji{
                 position: absolute;
                 top: -455px;

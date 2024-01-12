@@ -114,7 +114,7 @@
         height: auto;
         padding: 50px 100px;
         background-color: #F9FAFB;
-        color: #4E5D78;
+        color: #1E2A35;
         .profile-intro{
             flex: 1;
             margin-top: 30px;
@@ -229,7 +229,7 @@
         flex-direction: column;
         align-items: center;
         left: 20px;
-        color: #4E5D78;
+        color: #1E2A35;
         #avatar-update{
             display: none;
         }
@@ -265,7 +265,7 @@
         padding: 10px;
         border-radius: 10px;
         background-color: #FFFFFF;
-        color: #4E5D78;
+        color: #1E2A35;
         position: absolute;
         right: 20px;
         bottom: 140px;
@@ -280,7 +280,7 @@
         padding: 10px;
         border-radius: 10px;
         background-color: #FFFFFF;
-        color: #4E5D78;
+        color: #1E2A35;
         position: absolute;
         right: 20px;
         bottom: 20px;
@@ -304,7 +304,7 @@
                 margin-top: 10px;
                 cursor: pointer;
                 font-size: 14px;
-                color: #4E5D78;
+                color: #1E2A35;
                 &:hover{
                     color:#4e5d78b9;
                 }
@@ -327,7 +327,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            color: #4E5D78;
+            color: #1E2A35;
             font-size: 16px;
         }
     }

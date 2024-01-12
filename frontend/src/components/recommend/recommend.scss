@@ -8,7 +8,7 @@
     justify-content: center;
     background-color: #FFFFFF;
     padding:20px;
-    color: #4E5D78;
+    color: #1E2A35;
     margin-bottom: 20px;
     .dob-upcomming{
         margin-top: 20px;
@@ -47,8 +47,8 @@
         }
         span{
             &:first-child{
-                font-weight: bold;
-                color: #4E5D78;
+                font-weight: 600;
+                color: #1E2A35;
                 cursor: default;
             }
         }
@@ -150,7 +150,7 @@
             cursor: pointer;
             &:first-child{
                 background-color: transparent;
-                border: 0.5px solid #4E5D78;
+                border: 0.5px solid #1E2A35;
             }
 
             &:last-child{

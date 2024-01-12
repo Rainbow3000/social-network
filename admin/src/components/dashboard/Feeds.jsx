@@ -11,25 +11,25 @@ import {
 
 const FeedData = [
   {
-    title: "Cras justo odio",
+    title: "Thông báo",
     icon: "bi bi-bell",
     color: "primary",
     date: "6 minute ago",
   },
   {
-    title: "New user registered.",
+    title: "Người dùng đăng ký mới",
     icon: "bi bi-person",
     color: "info",
     date: "6 minute ago",
   },
   {
-    title: "Server #1 overloaded.",
+    title: "Tin nhắn mới",
     icon: "bi bi-hdd",
     color: "danger",
     date: "6 minute ago",
   },
   {
-    title: "New order received.",
+    title: "Bài viết bị tố cáo",
     icon: "bi bi-bag-check",
     color: "success",
     date: "6 minute ago",
@@ -52,9 +52,9 @@ const Feeds = () => {
   return (
     <Card>
       <CardBody>
-        <CardTitle tag="h5">Feeds</CardTitle>
+        <CardTitle tag="h5">Hoạt động</CardTitle>
         <CardSubtitle className="mb-2 text-muted" tag="h6">
-          Widget you can use
+          Các hoạt động gần đây
         </CardSubtitle>
         <ListGroup flush className="mt-4">
           {FeedData.map((feed, index) => (

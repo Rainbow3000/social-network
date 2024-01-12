@@ -385,7 +385,7 @@ module.exports = {
             const user = await User.aggregate([            
                 {
                     $match:{
-                        dob: { $lte: getFullDate }
+                        dob: { $eq: getFullDate }
                     }
                 },
                 {

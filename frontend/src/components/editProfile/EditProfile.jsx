@@ -118,7 +118,7 @@ const EditProfile = () => {
 
                 <div className='input-item'>
                     <label htmlFor="">Ngày sinh</label>
-                    <input value={dob} onChange={e => setDob(e.target.value)} type="date" />
+                    <input style={{fontSize:12}} value={dob} onChange={e => setDob(e.target.value)} type="date" />
                    
                 </div>
 

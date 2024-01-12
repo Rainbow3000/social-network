@@ -43,6 +43,10 @@ const chatState = {
   chatList:[],
   userChatCurrent:JSON.parse(localStorage.getItem('user-chat')) !== null ? JSON.parse(localStorage.getItem('user-chat')) : null,
   userChatList:[],
+  callIdList:[],
+  isPlayCall:false,
+  currentCallId:null,
+  isShowCallLayout:false,
   isSuccess:false,
   isLoading:false,
   isError:false,
@@ -64,13 +68,24 @@ export const chatSlice = createSlice({
     setUserChatCurrent:(state,action)=>{
         state.userChatCurrent = action.payload; 
     },
-
+    setCallIdList:(state,action)=>{
+        state.callIdList = action.payload; 
+    },
+    setCurrentCallId:(state,action)=>{
+      state.currentCallId = action.payload; 
+    },
     addChatCreated:(state,action)=>{
       if(state.chatList.find(item => item._id === action.payload._id) === undefined){
         state.chatList = [...state.chatList,action.payload]; 
       } 
     },
 
+    setIsPlayCall:(state,action)=>{
+      state.isPlayCall = action.payload; 
+    },
+    setIsShowCallLayout:(state,action)=>{
+      state.isShowCallLayout = action.payload
+    },
     chatReset: () => chatState
   },
   extraReducers:(builder)=>{
@@ -160,6 +175,6 @@ export const chatSlice = createSlice({
   }
 })
 
-export const { showCreatePost,hiddenShowCreatePost,setUserChatCurrent,addChatCreated,chatReset } = chatSlice.actions
+export const {setIsPlayCall,setIsShowCallLayout,showCreatePost,hiddenShowCreatePost,setUserChatCurrent,addChatCreated,chatReset,setCallIdList,setCurrentCallId } = chatSlice.actions
 
 export default chatSlice.reducer

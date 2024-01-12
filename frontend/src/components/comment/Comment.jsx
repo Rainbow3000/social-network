@@ -5,7 +5,7 @@ import './comment.scss'
 import 'moment/dist/locale/vi'
 import {setChildrentComment,getCommentByParent} from '../../store/slice/postSlice'
 import { useDispatch } from 'react-redux';
-
+import { IoMdArrowDropright } from "react-icons/io";
 moment.locale('vi');
 const Comment = ({comment,handleSetReplyComment,index,level}) => {
 console.log(comment); 
@@ -23,7 +23,7 @@ const dispatch = useDispatch();
         <div className= 'comment-content'>
             <div className={comment.image !== "" || comment.video !== "" ?"comment-content-main outline":"comment-content-main"}>
                 <div className='comment-top'>
-                    <span className='user-name'>{comment.user?._id?.userName}</span>
+                    <span className='user-name' style={{display:'flex',alignItems:'center'}}>{comment.user?._id?.userName} {comment.level === 3 && <span style={{display:'flex',alignItems:'center'}}><IoMdArrowDropright style={{color:'gray'}}/>{comment.parentName}</span>}</span>
                     <span className='time-comment'><IoTimeOutline/>&nbsp;{moment(comment.createdDate).calendar()}</span>
                 </div>
                     {
@@ -45,7 +45,7 @@ const dispatch = useDispatch();
                         )
                      }
                 <div>
-                    <span className='user-comment'>{comment.level === 3 && <b style={{fontSize:14,marginLeft:10,fontWeight:500}}>@{comment.parentName}</b>} &nbsp; {comment.content}</span>
+                    <span className='user-comment'>{comment.content}</span>
                 </div>
             </div>
 
