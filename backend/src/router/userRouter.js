@@ -5,6 +5,7 @@ const router = express.Router();
 const userController = require('../controller/userController'); 
 
 
+router.put('/api/user/blockbyadmin/:id',userController.blockAccount); 
 router.get('/api/user/stat',userController.userStat); 
 router.get('/api/user/dob/:id',userController.userDob); 
 router.get('/api/user/:id',userController.get); 

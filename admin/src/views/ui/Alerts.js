@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import {useDispatch,useSelector} from 'react-redux'
+import {getNotifiList,updateNotifiList,setIsSuccess} from '../../store/slice/notificationSlice'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import './ui.scss'
+
 import {
   Alert,
   UncontrolledAlert,
@@ -6,203 +12,99 @@ import {
   CardBody,
   CardTitle,
 } from "reactstrap";
-
+import moment from 'moment'
+import 'moment/locale/vi';
 const Alerts = () => {
   // For Dismiss Button with Alert
   const [visible, setVisible] = useState(true);
-
+  const dispatch = useDispatch(); 
+  const {notifiList,isSuccess,successMessage} = useSelector(state => state.notification)
+  const {user} = useSelector(state => state.user);
   const onDismiss = () => {
     setVisible(false);
   };
 
+  const handleSetChecked = (value)=>{
+    dispatch(updateNotifiList(value)); 
+  }
+
+  if(isSuccess){
+    toast.success(successMessage)
+    dispatch(setIsSuccess(false)); 
+  }
+
+  useEffect(()=>{
+    dispatch(getNotifiList(user?.data._id)); 
+  },[])
+
   return (
     <div>
-      {/* --------------------------------------------------------------------------------*/}
-      {/* Card-1*/}
-      {/* --------------------------------------------------------------------------------*/}
+      <ToastContainer/>
       <Card>
         <CardTitle tag="h6" className="border-bottom p-3 mb-0">
           <i className="bi bi-bell me-2"> </i>
-          Alert
+          Thông báo tài khoản
         </CardTitle>
         <CardBody className="">
           <div className="mt-3">
-            <Alert color="primary">
-              This is a primary alert— check it out!
-            </Alert>
-            <Alert color="secondary">
-              This is a secondary alert— check it out!
-            </Alert>
-            <Alert color="success">
-              This is a success alert— check it out!
-            </Alert>
-            <Alert color="danger">This is a danger alert— check it out!</Alert>
-            <Alert color="warning">
-              This is a warning alert— check it out!
-            </Alert>
-            <Alert color="info">This is a info alert— check it out!</Alert>
-            <Alert color="light">This is a light alert— check it out!</Alert>
-            <Alert color="dark">This is a dark alert</Alert>
-          </div>
-        </CardBody>
-      </Card>
-      {/* --------------------------------------------------------------------------------*/}
-      {/* Card-2*/}
-      {/* --------------------------------------------------------------------------------*/}
-      <Card>
-        <CardTitle tag="h6" className="border-bottom p-3 mb-0">
-          <i className="bi bi-bell me-2" />
-          Alert with Links
-        </CardTitle>
-        <CardBody className="">
-          <div>
-            <Alert color="primary">
-              This is a primary alert with
-              <a href="/" className="alert-link">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </Alert>
-            <Alert color="secondary">
-              This is a secondary alert with
-              <a href="/" className="alert-link">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </Alert>
-            <Alert color="success">
-              This is a success alert with
-              <a href="/" className="alert-link">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </Alert>
-            <Alert color="danger">
-              This is a danger alert with
-              <a href="/" className="alert-link">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </Alert>
-            <Alert color="warning">
-              This is a warning alert with
-              <a href="/" className="alert-link">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </Alert>
-            <Alert color="info">
-              This is a info alert with
-              <a href="/" className="alert-link">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </Alert>
-            <Alert color="light">
-              This is a light alert with
-              <a href="/" className="alert-link">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </Alert>
-            <Alert color="dark">
-              This is a dark alert with
-              <a href="/" className="alert-link">
-                an example link
-              </a>
-              . Give it a click if you like.
-            </Alert>
-          </div>
-        </CardBody>
-      </Card>
-      {/* --------------------------------------------------------------------------------*/}
-      {/* Card-3*/}
-      {/* --------------------------------------------------------------------------------*/}
-      <Card>
-        <CardTitle tag="h6" className="border-bottom p-3 mb-0">
-          <i className="bi bi-bell me-2" />
-          Alert with Additional content
-        </CardTitle>
-        <CardBody className="">
-          <div>
-            <Alert color="success">
-              <h4 className="alert-heading">Well done!</h4>
-              <p>
-                Aww yeah, you successfully read this important alert message.
-                This example text is going to run a bit longer so that you can
-                see how spacing within an alert works with this kind of content.
-              </p>
-              <hr />
-              <p className="mb-0">
-                Whenever you need to, be sure to use margin utilities to keep
-                things nice and tidy.
-              </p>
-            </Alert>
-          </div>
-        </CardBody>
-      </Card>
-      {/* --------------------------------------------------------------------------------*/}
-      {/* Card-4*/}
-      {/* --------------------------------------------------------------------------------*/}
-      <Card>
-        <CardTitle tag="h6" className="border-bottom p-3 mb-0">
-          <i className="bi bi-bell me-2" />
-          Alert with Dissmissing
-        </CardTitle>
-        <CardBody className="">
-          <div>
-            <Alert color="info" isOpen={visible} toggle={onDismiss.bind(null)}>
-              I am an alert and I can be dismissed!
-            </Alert>
-          </div>
-        </CardBody>
-      </Card>
-      {/* --------------------------------------------------------------------------------*/}
-      {/* Card-5*/}
-      {/* --------------------------------------------------------------------------------*/}
-      <Card>
-        <CardTitle tag="h6" className="border-bottom p-3 mb-0">
-          <i className="bi bi-bell me-2" />
-          Alert with Uncontrolled [disable] Alerts
-        </CardTitle>
-        <CardBody className="">
-          <div>
-            <UncontrolledAlert color="info">
-              I am an alert and I can be dismissed!
-            </UncontrolledAlert>
-          </div>
-        </CardBody>
-      </Card>
-      {/* --------------------------------------------------------------------------------*/}
-      {/* Card-6*/}
-      {/* --------------------------------------------------------------------------------*/}
-      <Card>
-        <CardTitle tag="h6" className="border-bottom p-3 mb-0">
-          <i className="bi bi-bell me-2" />
-          Alerts without fade
-        </CardTitle>
-        <CardBody className="">
-          <div>
-            <Alert
-              color="primary"
-              isOpen={visible}
-              toggle={onDismiss.bind(null)}
-              fade={false}
-            >
-              I am a primary alert and I can be dismissed without animating!
-            </Alert>
-            <UncontrolledAlert color="warning" fade={false}>
-              I am an alert and I can be dismissed without animating!
-            </UncontrolledAlert>
+            {
+              notifiList.length > 0 && notifiList.filter(item => item.notifiType === 'CREATE_ACCOUNT').map(item =>{
+                return (
+                <Alert style={{display:'flex',justifyContent:'space-between',alignItems:'center'}} color="light">
+                  <div className="notifi-wrap">
+                    
+                    <img src={item?.fromUser?.avatar} alt="" />
+                    
+                    <div className="info-user">
+                      <span >{item?.fromUser?._id?.userName} <span>{item.content}</span></span>
+                      <span>{moment(item?.createdAt).calendar()}</span>
+                    </div>
+                  </div>
+                  <div style={{display:'flex',alignItems:'center'}}>
+                    <input checked = {item.isReaded} onChange={()=> handleSetChecked(item._id)} title="Đánh dấu đã đọc" style={{cursor:'pointer',width:16,height:16,marginRight:10}} type="checkbox" />  
+                   <div className={item.isReaded === true ?'new checked':'new'}></div>
+                  </div>
+                </Alert>
+                )
+              })
+            }     
           </div>
         </CardBody>
       </Card>
 
-      {/* --------------------------------------------------------------------------------*/}
-      {/* End Inner Div*/}
-      {/* --------------------------------------------------------------------------------*/}
-    </div>
-  );
+      <Card>
+        <CardTitle tag="h6" className="border-bottom p-3 mb-0">
+          <i className="bi bi-bell me-2"> </i>
+          Thông báo bài viết
+        </CardTitle>
+        <CardBody className="">
+          <div className="mt-3">
+            {
+              notifiList.length > 0 && notifiList.filter(item => item.notifiType === 'CREATE_POST').map(item =>{
+                return (
+                <Alert style={{display:'flex',justifyContent:'space-between',alignItems:'center'}} color="light">
+                  <div className="notifi-wrap">
+                    
+                    <img src={item?.fromUser?.avatar} alt="" />
+                    
+                    <div className="info-user">
+                      <span >{item?.fromUser?._id?.userName} <span>{item?.content}</span></span>
+                      <span>{moment(item?.createdAt).calendar()}</span>
+                    </div>
+                  </div>
+                  <div style={{display:'flex',alignItems:'center'}}>
+                    <input checked = {item.isReaded} onChange={()=> handleSetChecked(item._id)} title="Đánh dấu đã đọc" style={{cursor:'pointer',width:16,height:16,marginRight:10}} type="checkbox" />  
+                   <div className={item.isReaded === true ?'new checked':'new'}></div>
+                  </div>
+                </Alert>
+                )
+              })
+            }       
+          </div>
+        </CardBody>
+      </Card>
+      </div>
+  )
 };
 
 export default Alerts;

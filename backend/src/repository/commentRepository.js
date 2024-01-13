@@ -100,4 +100,12 @@ module.exports = {
             throw error;
         }
     },
+    deleteMany: async(id)=>{
+        try {
+            await Comment.deleteMany({user:id});
+            return 1;
+        } catch (error) {
+            throw error;
+        }
+    },
 }

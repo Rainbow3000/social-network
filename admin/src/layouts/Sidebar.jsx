@@ -4,19 +4,25 @@ import { Link, useLocation } from "react-router-dom";
 
 const navigation = [
   {
-    title: "Dashboard",
+    title: "Trang chủ",
     href: "/starter",
     icon: "bi bi-speedometer2",
   },
+
   {
-    title: "Alert",
-    href: "/alerts",
-    icon: "bi bi-bell",
+    title: "Bài viết",
+    href: "/post-list",
+    icon: "bi bi-card-text",
   },
   {
-    title: "Badges",
-    href: "/badges",
+    title: "Đơn tố cáo",
+    href: "/denounce",
     icon: "bi bi-patch-check",
+  },
+  {
+    title: "Thông báo",
+    href: "/alerts",
+    icon: "bi bi-bell",
   },
   {
     title: "Buttons",

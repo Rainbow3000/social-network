@@ -1,52 +1,14 @@
 import { Col, Row } from "reactstrap";
 import SalesChart from "../components/dashboard/SalesChart";
 import Feeds from "../components/dashboard/Feeds";
-import ProjectTables from "../components/dashboard/ProjectTable";
+import UserList from "../components/dashboard/UserList";
 import TopCards from "../components/dashboard/TopCards";
-import Blog from "../components/dashboard/Blog";
-import bg1 from "../assets/images/bg/bg1.jpg";
-import bg2 from "../assets/images/bg/bg2.jpg";
-import bg3 from "../assets/images/bg/bg3.jpg";
-import bg4 from "../assets/images/bg/bg4.jpg";
-import {useSelector} from 'react-redux'
-const BlogData = [
-  {
-    image: bg1,
-    title: "This is simple blog",
-    subtitle: "2 comments, 1 Like",
-    description:
-      "This is a wider card with supporting text below as a natural lead-in to additional content.",
-    btnbg: "primary",
-  },
-  {
-    image: bg2,
-    title: "Lets be simple blog",
-    subtitle: "2 comments, 1 Like",
-    description:
-      "This is a wider card with supporting text below as a natural lead-in to additional content.",
-    btnbg: "primary",
-  },
-  {
-    image: bg3,
-    title: "Don't Lamp blog",
-    subtitle: "2 comments, 1 Like",
-    description:
-      "This is a wider card with supporting text below as a natural lead-in to additional content.",
-    btnbg: "primary",
-  },
-  {
-    image: bg4,
-    title: "Simple is beautiful",
-    subtitle: "2 comments, 1 Like",
-    description:
-      "This is a wider card with supporting text below as a natural lead-in to additional content.",
-    btnbg: "primary",
-  },
-];
+import {useSelector,useDispatch} from 'react-redux'
+import {deleteUser} from '../store/slice/userSlice'
 
-const Starter = () => {
-
+const Starter = () => { 
   const {postLength,userLength}  = useSelector(state => state.stat)
+
   return (
     <div>
       {/***Top Cards***/}
@@ -100,7 +62,7 @@ const Starter = () => {
       {/***Table ***/}
       <Row>
         <Col lg="12">
-          <ProjectTables />
+          <UserList />
         </Col>
       </Row>
       {/***Blog Cards***/}

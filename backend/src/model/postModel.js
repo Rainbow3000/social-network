@@ -53,6 +53,22 @@ const postSchema = new mongoose.Schema(
         ref:"User",
       }
     },
+    denounce:{
+      type:[
+        {
+          user:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"User",
+          },
+          denounceContent:{
+            type:[String],
+          },
+          denounceDate:{
+            type:String
+          }
+        }
+      ]
+    },
     share:{
       number:{
         type:Number,

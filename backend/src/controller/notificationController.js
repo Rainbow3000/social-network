@@ -49,7 +49,7 @@ module.exports = {
 
     update: async(req,res,next)=>{
         try {
-            const result = await notificationService.update(data,req.params?.id); 
+            const result = await notificationService.update(req.params?.id); 
             res.status(result.statusCode).json(result);
         } catch (error) {
             

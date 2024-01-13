@@ -2,18 +2,7 @@ const Notification = require('../model/notificationModel');
 module.exports = {
     get: async(id)=>{
         try {
-            return await Notification.findById(id).populate(
-                {
-                    path:'children',
-                    populate:{
-                        path:'user',
-                        populate:{
-                            path:'_id'
-                        }
-                    }
-                    
-                }
-            ); 
+            return await Notification.findById(id)
         } catch (error) {
             throw error;
         }
@@ -34,7 +23,7 @@ module.exports = {
 
     getByUserId: async(id)=>{
         try {
-            return await Notification.find({user:id}).limit(20).populate(
+            return await Notification.find({user:id}).limit(20).sort({createdAy:-1}).populate(
                 {
                     path:'fromUser',
                     populate: { path: '_id' }
@@ -76,7 +65,7 @@ module.exports = {
 
     update: async(commentId,data)=>{
         try {
-            return await Comment.findByIdAndUpdate({_id:commentId},data,{
+            return await Notification.findByIdAndUpdate({_id:commentId},data,{
                 new:true
             }).populate({
                 path: 'user',
@@ -84,7 +73,12 @@ module.exports = {
                     path:'_id',
                     select:'userName'
                 }
-              });
+              }).populate(
+                {
+                    path:'fromUser',
+                    populate: { path: '_id' }
+                },
+            );
             
         } catch (error) {
             throw error;
@@ -92,7 +86,23 @@ module.exports = {
     },
     delete: async(id)=>{
         try {
-            await Comment.findByIdAndDelete(id);
+            await Notification.findByIdAndDelete(id);
+            return 1;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    deleteMany: async(id)=>{
+        try {
+            await Notification.deleteMany({$or:[
+                {
+                    user:id
+                },
+                {
+                    fromUser:id
+                }
+        ]});
             return 1;
         } catch (error) {
             throw error;

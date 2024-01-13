@@ -35,10 +35,7 @@ module.exports = {
                   }
                 }); 
 
-           
-
-
-              
+                      
             return {postShare,postList}
         } catch (error) {
         console.log('eee',error); 
@@ -47,18 +44,26 @@ module.exports = {
     },
     getAll: async()=>{
         try {
-            return await Post.find().populate({
-                path: 'user',
-                populate: {
-                    path:'_id',
-                    select:'userName'
-                }
-              })
+            return await Post.find().sort({createdAt:1}).populate(
+                {
+                    path: 'user',
+                    populate: {
+                        path:'_id',
+                        select:'userName email'
+                    }
+                },
+              ).populate(
+                {
+                    path: 'denounce.user',
+                    
+                },
+              )
         } catch (error) {
            throw error; 
         }
     },
 
+  
     create: async(data)=>{
         try {
             const post = new Post(data);
@@ -99,6 +104,14 @@ module.exports = {
     delete: async(id)=>{
         try {
             await Post.findByIdAndDelete(id);
+            return 1;
+        } catch (error) {
+            throw error;
+        }
+    },
+    deleteMany: async(id)=>{
+        try {
+            await Post.deleteMany({user:id});
             return 1;
         } catch (error) {
             throw error;

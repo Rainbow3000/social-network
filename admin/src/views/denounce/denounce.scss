@@ -1,0 +1,11 @@
+.icon-wrapper{
+    width: max-content;
+    height: max-content;
+    padding: 0 5px;
+    cursor: pointer;
+    border: 1px solid rgba(128, 128, 128, 0.486);
+    border-radius: 5px;
+    &:hover{
+        background-color: rgba(128, 128, 128, 0.226);
+    }
+}

@@ -1,75 +1,37 @@
 import { Card, CardBody, CardTitle, CardSubtitle, Table } from "reactstrap";
-import user1 from "../../assets/images/users/user1.jpg";
-import user2 from "../../assets/images/users/user2.jpg";
-import user3 from "../../assets/images/users/user3.jpg";
-import user4 from "../../assets/images/users/user4.jpg";
-import user5 from "../../assets/images/users/user5.jpg";
 import {useSelector,useDispatch} from 'react-redux'
-import {getUserList} from '../../store/slice/userSlice'
+import {getUserList,deleteUser,setIsSuccess,blockAccount} from '../../store/slice/userSlice'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from "react";
-const tableData = [
-  {
-    avatar: user1,
-    name: "Hanna Gover",
-    email: "hgover@gmail.com",
-    project: "Flexy React",
-    status: "pending",
-    weeks: "35",
-    budget: "95K",
-  },
-  {
-    avatar: user2,
-    name: "Hanna Gover",
-    email: "hgover@gmail.com",
-    project: "Lading pro React",
-    status: "done",
-    weeks: "35",
-    budget: "95K",
-  },
-  {
-    avatar: user3,
-    name: "Hanna Gover",
-    email: "hgover@gmail.com",
-    project: "Elite React",
-    status: "holt",
-    weeks: "35",
-    budget: "95K",
-  },
-  {
-    avatar: user4,
-    name: "Hanna Gover",
-    email: "hgover@gmail.com",
-    project: "Flexy React",
-    status: "pending",
-    weeks: "35",
-    budget: "95K",
-  },
-  {
-    avatar: user5,
-    name: "Hanna Gover",
-    email: "hgover@gmail.com",
-    project: "Ample React",
-    status: "done",
-    weeks: "35",
-    budget: "95K",
-  },
-];
 
 const ProjectTables = () => {
 
-  const {user} = useSelector(state => state.user); 
+  const {userList,isSuccess,successMessage} = useSelector(state => state.user); 
   const dispatch = useDispatch()
+  const handleDeleteUser = (userId)=>{
+    dispatch(deleteUser(userId)); 
+  }
+
+  const handleBlockAccount = (userId)=>{
+    dispatch(blockAccount({id:userId})); 
+  }
+
+  if(isSuccess){
+    dispatch(getUserList()); 
+    dispatch(setIsSuccess(false))
+    toast.success(successMessage)
+  }
 
   useEffect(()=>{
     dispatch(getUserList()); 
   },[]) 
   return (
     <div>
+      <ToastContainer/>
       <Card>
         <CardBody>
           <CardTitle tag="h5">Danh sách người dùng</CardTitle>
-         
-
           <Table className="no-wrap mt-3 align-middle" responsive borderless>
             <thead>
               <tr>
@@ -81,7 +43,7 @@ const ProjectTables = () => {
               </tr>
             </thead>
             <tbody>
-              {user.length > 0 && user.map((tdata, index) => (
+              {userList?.length > 0 && userList?.map((tdata, index) => (
                 <tr key={index} className="border-top">
                   <td>
                     <div className="d-flex align-items-center p-2">
@@ -102,18 +64,18 @@ const ProjectTables = () => {
                   <td>{tdata.postNumber}</td>
                   <td>
                     {tdata.status === -1 ? (
-                      <span className="p-2 bg-danger rounded-circle d-inline-block ms-3"></span>
-                    ) : tdata.status === 0 ? (
-                      <span className="p-2 bg-warning rounded-circle d-inline-block ms-3"></span>
+                      <span title="Tài khoản bị khóa" className="p-2 bg-danger rounded-circle d-inline-block ms-3"></span>
+                    ) : tdata.status === 1 ? (
+                      <span title="Đang hoạt động" className="p-2 bg-success rounded-circle d-inline-block ms-3"></span>
                     ) : (
-                      <span className="p-2 bg-success rounded-circle d-inline-block ms-3"></span>
+                      <span className="p-2 bg-warning rounded-circle d-inline-block ms-3"></span>
                     )}
                   </td>
                   <td style={{display:'flex',alignItems:'center',transform:'translateY(40%)'}}>
-                      <div>
+                      <div title="Khóa tài khoản" style={{cursor:'pointer'}} onClick={()=> handleBlockAccount(tdata._id._id)}>
                       <i  class="bi bi-slash-circle text-info"></i>
                       </div>
-                      <div style={{marginLeft:30}}>
+                      <div title="Xóa tài khoản" st style={{marginLeft:30,cursor:'pointer'}} onClick={()=> handleDeleteUser(tdata._id._id)}>
                         <i class="bi bi-trash3 text-danger"></i>
                       </div>
                   </td>

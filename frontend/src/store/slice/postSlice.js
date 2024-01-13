@@ -10,6 +10,17 @@ export const createPost = createAsyncThunk(
 )
 
 
+export const createDenounce = createAsyncThunk(
+  'post/createDenounce',
+   async (data) => {
+    const response = await _userRequest.put(`post/denounce/${data.postId}`,data); 
+    return response.data
+  }
+)
+
+
+
+
 export const createComment = createAsyncThunk(
   'comment/create',
    async (data) => {
@@ -96,7 +107,8 @@ const postState = {
   isSuccess:false,
   isLoading:false,
   isError:false,
-  error:null
+  error:null,
+  successMessage:""
 }
 
 export const postSlice = createSlice({
@@ -138,8 +150,7 @@ export const postSlice = createSlice({
     
             return comment;
           })
-
-          
+       
 
         }
         return post;
@@ -163,10 +174,17 @@ export const postSlice = createSlice({
         }
         return post;
       })
+    },
+    setValueSuccess:(state,action)=>{
+      state.isSuccess = action.payload
     }
   },
   extraReducers:(builder)=>{
 
+    builder.addCase(createDenounce.fulfilled, (state, action) => {
+      state.isSuccess = true; 
+      state.successMessage = action.payload.message; 
+    })
 
     builder.addCase(getCommentByParent.pending, (state, action) => {
       state.isLoading = true; 
@@ -268,6 +286,7 @@ export const postSlice = createSlice({
       state.error = null; 
       state.isError = false; 
       state.isSuccess = true;
+      state.successMessage = action.payload.message; 
       state.postList = [...state.postList,action.payload?.data].reverse();
       state.postOfUser = [...state.postOfUser,action.payload?.data].reverse(); 
 
@@ -466,6 +485,6 @@ export const postSlice = createSlice({
   }
 })
 
-export const { showCreatePost,hiddenShowCreatePost,setChildrentComment } = postSlice.actions
+export const { showCreatePost,hiddenShowCreatePost,setChildrentComment,setValueSuccess } = postSlice.actions
 
 export default postSlice.reducer

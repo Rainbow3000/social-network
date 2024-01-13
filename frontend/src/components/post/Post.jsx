@@ -4,9 +4,10 @@ import { GrLike } from "react-icons/gr";
 import { FaRegCommentDots, FaSlack } from "react-icons/fa";
 import { CiShare2 } from "react-icons/ci";
 import { FaRegHeart } from "react-icons/fa";
-import { IoTimeOutline } from "react-icons/io5";
+import { IoLogoYen, IoTimeOutline } from "react-icons/io5";
 import {updatePostByOtherUser} from '../../store/slice/postSlice'
 import {useDispatch, useSelector} from 'react-redux'
+import { IoClose } from "react-icons/io5";
 import Comment from '../comment/Comment';
 import './post.scss'
 import uuid from 'react-uuid';
@@ -16,12 +17,15 @@ import {createComment} from '../../store/slice/postSlice'
 import { CiImageOn } from "react-icons/ci";
 import { VscSmiley } from "react-icons/vsc";
 import {Link} from 'react-router-dom'
-import {getCommentByPost,getPostByUser,updateStatusPost,deletePost} from '../../store/slice/postSlice'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import {getCommentByPost,getPostByUser,updateStatusPost,deletePost,createDenounce,setValueSuccess} from '../../store/slice/postSlice'
 import { RiSendPlane2Line } from "react-icons/ri";
 import EmojiPicker from "emoji-picker-react";
 import moment from 'moment/dist/moment';
 import 'moment/dist/locale/vi'
 moment.locale('vi');
+
 
 
 const Post = ({item,userIdProfile}) => {
@@ -31,16 +35,22 @@ const Post = ({item,userIdProfile}) => {
   const [image,setImage] = useState(""); 
   const [video,setVideo] = useState(""); 
   const [parent,setParent] = useState(null); 
-  const [indexChildShow,setIndexChildShow] = useState([]); 
   const [isShowActionActive,setIsShowActionActive] = useState(false); 
   const [emojiShow, setEmojiShow] = useState(false);
   const [parentName,setParentName] = useState('')
   const [level,setLevel] = useState(0); 
   const dispatch = useDispatch(); 
   const {user}= useSelector(state => state.user); 
+  const {successMessage,isSuccess}= useSelector(state => state.post); 
   const inputRef = useRef(); 
   const videoRef = useRef();
   const [userShare,setUserShare] = useState(null); 
+  const [postId,setPostId] = useState(""); 
+  const [denounceContent,setDenounceContent] = useState([]);  
+  const [myContent,setMyContent] = useState(""); 
+  const denounceFirst =  useRef(); 
+  const denounceSecond =  useRef(); 
+  const denounceThree = useRef(); 
 
   const handleLikePost = (postId,type)=>{
     const userId = user.data._id 
@@ -111,6 +121,11 @@ const handleSubmitForm = (e)=>{
     setEmojiShow(false)
 }
 
+const handleDenouncePost = (id)=>{
+    setPostId(id); 
+    setIsShowActionActive(false); 
+}
+
 const handleSetReplyComment = (userName,parent,level,parentPrev)=>{
    
     if(level === 3){
@@ -132,20 +147,39 @@ const handleGetCommentByPost = (postId)=>{
     dispatch(getCommentByPost(postId))
 }
 
-// const handleShowCommentChild = (index)=>{
-//     if(indexChildShow.indexOf(index) === -1){
-//         setIndexChildShow(indexChild => [...indexChild,index]); 
-//         return; 
-//     }
-//     const newIndexChild = indexChildShow.filter(item => item !== index); 
-//     setIndexChildShow(newIndexChild); 
-// }
+
 
 const handleHiddenSharePost = ()=>{
 
 }
 
 const handleDeleteSharePost = ()=>{
+
+}
+
+
+const handleSetDebounceContent = (value,position)=>{
+    
+    if(position === 1 && value === true){
+       setDenounceContent( oldState => [...oldState,denounceFirst.current.value]); 
+    }else if(position === 1 && value === false){
+        const filter = denounceContent.filter(item => parseInt(item.split('.')[0]) !== position); 
+        setDenounceContent(filter); 
+    }
+
+    if(position === 2 && value === true){
+        setDenounceContent( oldState => [...oldState,denounceSecond.current.value]); 
+    }else if(position === 2 && value === false){    
+        const filter = denounceContent.filter(item => parseInt(item.split('.')[0]) !== position); 
+        setDenounceContent(filter)
+    }
+
+    if(position === 3 && value === true){
+        setDenounceContent( oldState => [...oldState,denounceThree.current.value]); 
+    }else if(position === 3 && value === false){
+        const filter = denounceContent.filter(item => parseInt(item.split('.')[0]) !== position); 
+        setDenounceContent(filter)
+    }
 
 }
 
@@ -159,6 +193,30 @@ const handleDeletePost = (postId)=>{
     setIsShowActionActive(false); 
 }
 
+const handleSendDebounce = ()=>{
+
+    if(myContent.trim() !== ""){
+        setDenounceContent(oldState => [...oldState,`${denounceContent} ${myContent}`])
+    }
+
+    const data = {
+        user:user.data._id, 
+        denounceContent,
+        postId:item._id
+    }
+    dispatch(createDenounce(data)); 
+    setDenounceContent([]); 
+    setMyContent(""); 
+    setPostId(""); 
+}
+
+
+if(isSuccess){
+    toast.info(successMessage); 
+    dispatch(setValueSuccess(false)); 
+}
+
+
 
 useEffect(()=>{
     if(item.type !== undefined && item.type === 'SHARE'){
@@ -170,8 +228,41 @@ useEffect(()=>{
 
 
 
+
+
   return (
     <div className='post-container'>
+       
+        {postId === item.user._id._id && (
+        <div className='denounce-list'>
+            <IoClose className='io-close' onClick={()=>setPostId("")}/>
+            <span>Tố cáo bài viết</span>
+            <ul>
+                <li>
+                    <input ref={denounceFirst} style={{display:'none'}} type="text" value="1.Bài viết có chứa hình ảnh bạo lực hoặc nội dung bị cấm"/>
+                    <input onChange={(e) => handleSetDebounceContent(e.target.checked,1)} type="checkbox" />
+                    <label htmlFor="">Bài viết có chứa hình ảnh bạo lực hoặc nội dung bị cấm</label>
+                </li>
+                <li>
+                    <input ref={denounceSecond} style={{display:'none'}} type="text" value="2.Bài viết có liên quan đến tệ nạn xã hội"/>
+                    <input onChange={(e) => handleSetDebounceContent(e.target.checked,2)}  type="checkbox" />
+                    <label htmlFor="">Bài viết có liên quan đến tệ nạn xã hội</label>
+                </li>
+                <li>
+                    <input ref={denounceThree} style={{display:'none'}} type="text" value="3.Bài viết gây chia rẽ, xuyên tạc hoặc phản động" />
+                    <input onChange={(e) => handleSetDebounceContent(e.target.checked,3)} type="checkbox"  />
+                    <label htmlFor="">Bài viết gây chia rẽ, xuyên tạc hoặc phản động</label>
+                </li>
+               
+                <li>
+                    <textarea onChange={(e) =>setMyContent(e.target.value)} placeholder='Thêm nội dung của bạn'></textarea>
+                </li>
+            </ul>
+            <button onClick={handleSendDebounce} >Gửi</button>
+        </div>
+
+        )}
+
         {
             item?.type === 'SHARE'  ? (
             <>
@@ -276,7 +367,7 @@ useEffect(()=>{
 
 
             <ul className='post-center-action'>
-                <li className={item.like?.userLiked?.find(item => item === user?.data._id) !== undefined && 'liked'} onClick={()=>handleLikePost(item?._id,item.type)}><GrLike/>&nbsp;Thích&nbsp;( {item?.like?.number} )</li>
+                <li className={item.like?.userLiked?.find(item => item === user?.data._id) !== undefined && 'liked'} onClick={()=>handleLikePost(item?._id,item.type)}><GrLike/>&nbsp;{item.like?.userLiked?.find(item => item === user?.data._id) !== undefined ? 'Đã thích':'Thích'}&nbsp;( {item?.like?.number} )</li>
                 <li className='post-comment' onClick={()=> handleGetCommentByPost(item?._id)}><FaRegCommentDots/>&nbsp;Bình Luận&nbsp;( {item?.comment?.number} )</li>
                 <li onClick={()=>handleSharePost(item?._id)}><CiShare2/>&nbsp;Chia sẻ&nbsp;( {shareNumber} )</li>
             </ul>
@@ -400,18 +491,27 @@ useEffect(()=>{
                             
                         </ul>
                        
-                        {
-                            user?.data?._id === item?.user?._id?._id && (
+                      
                                 <HiOutlineDotsHorizontal className='post-action' onClick={()=>setIsShowActionActive(active => !active)}/>
-                                )
+                                
+                    
+                        {
+                             user?.data?._id === item?.user?._id?._id && (
+                                <div className={ isShowActionActive === true ? 'post-action-item-wrapper active':'post-action-item-wrapper'}>            
+                                        <span onClick={()=>handleHiddenPost(item._id)}>Ẩn bài viết</span>
+                                        <span onClick={()=>handleDeletePost(item._id)}>Xóa bài viết</span>                                 
+                                </div>
+                             )
                         }
-                       
 
-                        <div className={ isShowActionActive === true ? 'post-action-item-wrapper active':'post-action-item-wrapper'}>            
-                                <span onClick={()=>handleHiddenPost(item._id)}>Ẩn bài viết</span>
-                                <span onClick={()=>handleDeletePost(item._id)}>Xóa bài viết</span>
-                                     
-                        </div>
+                        {
+                             user?.data?._id !== item?.user?._id?._id && (
+                                <div className={ isShowActionActive === true ? 'post-action-item-wrapper active':'post-action-item-wrapper'}>            
+                                        <span style={{margin:0}} onClick={()=>handleDenouncePost(item?.user?._id?._id)}>Báo cáo bài viết</span>                           
+                                </div>
+                             )
+                        }
+
                     </div>
                     <div className='post-content'>
                         {item?.content}
@@ -470,7 +570,7 @@ useEffect(()=>{
 
 
                         <ul className='post-center-action'>
-                            <li style={{display:'flex',alignItems:'center'}} className={item?.like?.userLiked?.find(item => item === user?.data._id) !== undefined && 'liked'} onClick={()=>handleLikePost(item?._id)}><FaRegHeart/>&nbsp;Thích&nbsp;( {item?.like?.number} )</li>
+                            <li style={{display:'flex',alignItems:'center'}} className={item?.like?.userLiked?.find(item => item === user?.data._id) !== undefined && 'liked'} onClick={()=>handleLikePost(item?._id)}><FaRegHeart/>&nbsp;{item.like?.userLiked?.find(item => item === user?.data._id) !== undefined ? 'Đã thích':'Thích'}&nbsp;( {item?.like?.number} )</li>
                             <li className='post-comment' onClick={()=> handleGetCommentByPost(item?._id)}><FaRegCommentDots/>&nbsp;Bình Luận&nbsp;( {item?.comment?.number} )</li>
                             <li onClick={()=>handleSharePost(item?._id)}><CiShare2/>&nbsp;Chia sẻ&nbsp;( {shareNumber} )</li>
                         </ul>

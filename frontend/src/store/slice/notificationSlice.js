@@ -65,7 +65,6 @@ export const notificationSlice = createSlice({
     })
     builder.addCase(getNotificationByUser.fulfilled, (state, action) => {
         state.notificationList = action.payload.data;
-
         state.unReadNumber = state.notificationList.filter(item => item.isReaded === false).length; 
     })
     builder.addCase(getNotificationByUser.rejected, (state, action) => {

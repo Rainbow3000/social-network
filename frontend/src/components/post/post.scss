@@ -9,6 +9,72 @@
     position: relative;
     background-color: #FFFFFF;
     padding: 0 30px 30px 30px;
+   
+    .denounce-list{
+        .io-close{
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        width: 500px;
+        height: auto;
+        border-radius: 5px;
+        padding: 20px;
+        position: absolute;
+        z-index: 9999999999999;
+        top: 60px;
+        right: 30px;
+        box-shadow: -1px -1px 4px 2px rgba(199,184,184,0.73);
+        -webkit-box-shadow: -1px -1px 4px 2px rgba(199,184,184,0.73);
+        -moz-box-shadow: -1px -1px 4px 2px rgba(199,184,184,0.73);
+        background-color: #FFFFFF;
+        ul{
+            list-style: none;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            li{
+                width: 100%;
+                height: 45px;
+                padding-left: 20px;
+                margin-top: 10px;
+                display: flex;
+                align-items: center;
+                input{
+                    margin-right: 5px;
+                    width: 16px;
+                    height: 16px;
+                }
+                textarea{
+                    width: 100%;
+                    height: 60px;
+                    padding-left: 10px;
+                    margin-top: 20px;
+                    outline: none;
+                    border: 1px solid rgba(128, 128, 128, 0.226);
+                }
+            }
+        }
+        button{
+            margin-top: 30px;
+            width: 120px;
+            height: 40px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            line-height: 40px;
+            margin-left: 20px;
+            background-color: #377DFF;
+            &:hover{
+                background-color: #5D96FF;
+            }
+            color: white;
+            border-radius: 5px;
+        }
+    }
     .post-action-item-wrapper{
         display: flex;
         flex-direction: column;
@@ -17,11 +83,14 @@
         right: 0;
         width: max-content;
         padding: 10px;
-        border: 1px solid rgba(128, 128, 128, 0.205);
+        border: 1px solid rgba(128, 128, 128, 0.178);
         background-color: #FFFFFF;
         border-radius: 5px;
         display: none;
-        color: #4E5D78;
+        color: #1E2A35;
+        &:hover{
+            color: gray;
+        }
         span{
             cursor: pointer;
             margin-top: 10px;
@@ -39,7 +108,7 @@
         height: auto;
         text-wrap: wrap;
         margin-bottom: 20px;
-        color: #4E5D78;
+        color: #1E2A35;
     }
     .post-top{
         width: 100%;
@@ -59,7 +128,7 @@
             font-size: 14px;
             cursor: pointer;
             right: 60px;
-            color: #4E5D78;
+            color: #1E2A35;
             &:hover{
                 text-decoration: underline;
             }
@@ -81,12 +150,12 @@
             li{
                 font-size: 12px;
                 font-weight: 300;
-                color: #4E5D78;
+                color: #1E2A35;
             }
             li:first-child{
                 font-size: 18px;
                 font-weight: bold;
-                color: #4E5D78;
+                color: #1E2A35;
             }
         }
     }
@@ -167,7 +236,7 @@
             li{
                 flex: 1;
                 font-size: 16px;
-                color: #4E5D78;
+                color: #1E2A35;
                 font-weight: 600;
                 cursor: pointer;
                 display: flex;
@@ -209,7 +278,7 @@
             height: auto;
             max-height: 500px;
             overflow-y: auto;
-            color: #4E5D78;
+            color: #1E2A35;
             .more-comment{
                 width: 100%;
                 display: flex;
@@ -307,7 +376,7 @@
             display: flex;
             align-items: center;
             position: relative;
-            color: #4E5D78;
+            color: #1E2A35;
             .emoji{
                 position: absolute;
                 top: -455px;
@@ -404,3 +473,4 @@
 .Flex.epr-preview.FlexRow{
     display: none;
 }
+

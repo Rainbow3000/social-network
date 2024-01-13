@@ -8,6 +8,10 @@ module.exports = {
             throw error;
         }
     },
+
+    getAdmin:async()=>{
+        return await Account.findOne({role:'ADMIN'}); 
+    },
     getAll: async()=>{
         try {
             return await Account.find();
@@ -45,7 +49,7 @@ module.exports = {
     },
     delete: async(id)=>{
         try {
-            await User.findByIdAndDelete(id);
+            await Account.findByIdAndDelete(id);
             return 1;
         } catch (error) {
             throw error;

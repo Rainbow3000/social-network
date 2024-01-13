@@ -125,4 +125,18 @@ module.exports = {
             throw error;
         }
     },
+
+    deleteMany: async(id)=>{
+        try {
+            await Chat.deleteMany({
+                $or:[
+                    {from:id},
+                    {to:id}
+                ]
+            });
+            return 1;
+        } catch (error) {
+            throw error;
+        }
+    },
 }

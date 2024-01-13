@@ -9,8 +9,8 @@ import { LiaBirthdayCakeSolid } from "react-icons/lia";
 import { useNavigate } from 'react-router-dom'
 import PostAction from '../../components/postAction/PostAction'
 import { ToastContainer, toast } from 'react-toastify';
-import {getUserInfo} from '../../store/slice/userSlice'
 import 'react-toastify/dist/ReactToastify.css';
+import {getUserInfo} from '../../store/slice/userSlice'
 import {createInstanceSocket} from '../../utils/socket'
 import {setUserActive} from '../../store/slice/userSlice'
 
@@ -20,7 +20,7 @@ const Home = () => {
   const {user,userDob} = useSelector(state => state.user); 
   const dispatch = useDispatch(); 
   const navigate = useNavigate(); 
-  const notify = () => toast.info("Wow so easy!");
+  const notify = () => toast.info("...");
   
   const socket = useRef(); 
 

@@ -28,6 +28,16 @@ module.exports = {
         }
     },
 
+    getDenounceList: async(req,res,next)=>{
+        
+        try { 
+            const result =  await postService.getDenouncePostList(); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
     create: async(req,res,next)=>{
         try {
             const result = await postService.create(req.body); 
@@ -40,6 +50,15 @@ module.exports = {
     update: async(req,res,next)=>{
         try {
             const result = await postService.update(req.body,req.params?.id); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
+    denounce: async(req,res,next)=>{
+        try {
+            const result = await postService.denounce(req.body,req.params?.id); 
             res.status(result.statusCode).json(result);
         } catch (error) {
             

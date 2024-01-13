@@ -9,11 +9,12 @@ import uuid from 'react-uuid';
 import storage from '../../firebase'; 
 import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
-import {createPost} from '../../store/slice/postSlice'
+import {createPost,setValueSuccess} from '../../store/slice/postSlice'
 import { validateEmpty } from '../../helper/validateHelper';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import EmojiPicker from "emoji-picker-react";
 import { BsEmojiSmile } from "react-icons/bs";
+import { toast } from 'react-toastify';
 let flag = 0;
 const PostAction = () => {
   const [emojiShow, setEmojiShow] = useState(false);
@@ -21,7 +22,7 @@ const PostAction = () => {
   const [video,setVideo] = useState(""); 
   const [content,setContent] = useState(""); 
   const dispacth = useDispatch(); 
-  const {isSuccess} = useSelector(state => state.post); 
+  const {isSuccess,successMessage} = useSelector(state => state.post); 
   const inputRef = useRef(null); 
   const {user} = useSelector(state => state.user)
   const [contentErr,setContentErr] = useState(""); 
@@ -72,6 +73,7 @@ const handleChooseImageForVideo = (event)=>{
 const onEmojiClick = (object) => {
   let text = content + object.emoji;
   setContent(text);
+  setContentErr(""); 
 };
 
 
@@ -102,6 +104,11 @@ const handleSubmitForm = (e)=>{
   setVideo("");
   setImages([]);
   setEmojiShow(false)
+}
+
+if(isSuccess){
+  toast.success(successMessage); 
+  dispacth(setValueSuccess(false));
 }
 
 useEffect(()=>{

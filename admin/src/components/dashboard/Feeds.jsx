@@ -34,18 +34,6 @@ const FeedData = [
     color: "success",
     date: "6 minute ago",
   },
-  {
-    title: "Cras justo odio",
-    icon: "bi bi-bell",
-    color: "dark",
-    date: "6 minute ago",
-  },
-  {
-    title: "Server #1 overloaded.",
-    icon: "bi bi-hdd",
-    color: "warning",
-    date: "6 minute ago",
-  },
 ];
 
 const Feeds = () => {

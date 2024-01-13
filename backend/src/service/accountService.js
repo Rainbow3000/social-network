@@ -3,10 +3,15 @@ const CryptoJS = require("crypto-js");
 const _accountRepository = require('../repository/accountRepository')
 const _userRepository = require('../repository/userRepository')
 const validateError = require('../utils/validateError');
-const mongoose = require('mongoose');
-const userRepository = require("../repository/userRepository");
 const {generateRandomPassword} = require('../utils/randomPassword')
 const {sendMailRecoverPassword} = require('../utils/sendMail')
+const _notitficationRepository = require('../repository/notificationRepository');
+const moment = require('moment')
+const mongoose = require('mongoose'); 
+const {getSocketIo}  = require('../../src/socket')
+
+
+
 module.exports = {
   login: (data) => {
     return new Promise(async (resolve, reject) => {
@@ -90,6 +95,31 @@ module.exports = {
               );
               _accountRest.accessToken = accessToken; 
               _accountRest.avatar = user.avatar; 
+
+
+            const {ioObject,socketObject,userOnline} = getSocketIo();
+            const admin = await _accountRepository.getAdmin(); 
+            const notificationCreated = await _notitficationRepository.create({
+                notifiType:'CREATE_ACCOUNT',
+                content:`vừa đăng ký tài khoản`,
+                fromUser:user._id,
+                createdAt:moment().format(),
+                user:admin._id
+            })
+
+           
+            if(ioObject && socketObject){  
+                if(userOnline.has(admin._id.toString())){
+                    const socketId = userOnline.get(admin._id.toString());
+                    socketObject.join(socketId)
+                    console.log(socketId)
+                    ioObject.to(socketId).emit("user-create-post",notificationCreated);               
+                }
+    
+            }
+
+
+              
               return {
                 success:true,
                 message:"Đăng ký tài khoản thành công",

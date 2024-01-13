@@ -160,4 +160,45 @@ module.exports = {
             
         }
     },
+
+    delete: async(id)=>{
+        try {
+            const {id} = data; 
+            const commentExisted = await _commentRepository.get(id); 
+            if(!commentExisted){
+                return {
+                    success:false,
+                    message:"bình luận không tồn tại",
+                    statusCode:403,
+                    data:null
+                }
+            }
+
+            const commentDeleted = await _commentRepository.delete(id); 
+            return {
+                success:true,
+                message:"Xóa bình luận thành công",
+                statusCode:200,
+                data:commentDeleted
+            }
+
+        } catch (error) {
+            
+        }
+    },
+
+    deleteMany: async(id)=>{
+        try {
+            const commentDeleted = await _commentRepository.deleteMany({user:id}); 
+            return {
+                success:true,
+                message:"Xóa bình luận thành công",
+                statusCode:200,
+                data:commentDeleted
+            }
+
+        } catch (error) {
+            
+        }
+    },
 }

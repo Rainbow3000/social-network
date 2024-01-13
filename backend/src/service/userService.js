@@ -1,6 +1,11 @@
 const _userRepository = require('../repository/userRepository');
 const _accountRepository = require('../repository/accountRepository');
 const _notitficationRepository = require('../repository/notificationRepository');
+const _postRepository = require('../repository/postRepository');
+const _notificationRepository = require('../repository/notificationRepository');
+const _chatRepository = require('../repository/chatRepository');
+const _commentRepository = require('../repository/commentRepository');
+
 const validateError = require('../utils/validateError');
 const mongoose = require('mongoose'); 
 const moment = require('moment')
@@ -29,7 +34,7 @@ module.exports = {
     },
     getAll: async()=>{
         try { 
-            const userList =  await _userRepository.getAll(); 
+            const userList =  (await _userRepository.getAll()).filter(item => item._id.role !== 'ADMIN'); 
             return {
                 success:true,
                 message:"Lấy danh sách người dùng thành công",
@@ -124,9 +129,58 @@ module.exports = {
             };
         }
     },
+    updateStatus: async(data,id)=>{
+        try {
+            const userExisted = await _userRepository.get(id); 
+            if(!userExisted){
+                return {
+                    success:false,
+                    message:"Người dùng không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+            if(data.timeDisconnect === 1){
+                data.timeDisconnect = moment().format(); 
+            }
+
+            if(data.userName?.trim() !== ""){
+                const account = await _accountRepository.get(id); 
+                account.userName = data.userName; 
+                const {_id, ...accountData}= account._doc; 
+                await _accountRepository.update(accountData,account._id); 
+             
+            }
+            const userUpdated =  await _userRepository.update(data,id);
+            return {
+                success:true,
+                message:"Cập nhật người dùng thành công",
+                statusCode:200,
+                data:userUpdated
+            }
+        } catch (error) {
+            
+            if(error instanceof mongoose.Error.ValidationError){  
+                return {
+                    success:false,
+                    message:"Cập nhật dùng thất bại",
+                    statusCode:400,
+                    data:null,
+                    errors:validateError(error)
+                };
+             }
+      
+            return {
+                success:false,
+                message:"Cập nhật dùng thất bại",
+                statusCode:500,
+                data:null,
+                errors:error?.message
+            };
+        }
+    },
     delete: async(id)=>{
         try {
-            const {id} = data; 
             const userExisted = await _userRepository.get(id); 
             if(!userExisted){
                 return {
@@ -135,9 +189,16 @@ module.exports = {
                     statusCode:403,
                     data:null
                 }
+                
             }
 
             const userDeleted = await _userRepository.delete(id); 
+            await _accountRepository.delete(id); 
+            await _postRepository.deleteMany(id); 
+            await _notificationRepository.deleteMany(id); 
+            await _commentRepository.deleteMany(id);
+            await _chatRepository.deleteMany(id); 
+
             return {
                 success:true,
                 message:"Xóa người dùng thành công",
@@ -192,8 +253,6 @@ module.exports = {
                     data:null
                 }
             }
-            console.log(data); 
-          
             if(userExisted.blocking.find(item => item.equals(id)) === undefined){
                 userExisted.blocking.push(id); 
             }else {
@@ -205,6 +264,35 @@ module.exports = {
             return {
                 success:true,
                 message:"Cập nhật người dùng thành công",
+                statusCode:200,
+                data:userUpdated
+            }
+
+        } catch (error) {
+            
+        }
+    },
+
+    blockAccount:async(data,id)=>{
+        try {
+            const userExisted = await _userRepository.get(id); 
+            if(!userExisted){
+                return {
+                    success:false,
+                    message:"Người dùng không tồn tại",
+                    statusCode:400,
+                    data:null
+                }
+            }
+            
+            const account = await _accountRepository.get(id);  
+            userExisted.status = -1; 
+            account.status = -1; 
+            await _accountRepository.update(account,account._id);                        
+            const userUpdated =  await _userRepository.update(userExisted,id);
+            return {
+                success:true,
+                message:"Khóa tài khoản người dùng thành công",
                 statusCode:200,
                 data:userUpdated
             }

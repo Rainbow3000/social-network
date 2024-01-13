@@ -70,7 +70,7 @@ module.exports = {
             return await User.find().populate(
                 {
                     path:'_id',
-                    select:'-password -role',
+                    select:'-password',
                     
                 },
             ).populate({
@@ -136,6 +136,8 @@ module.exports = {
             throw error;
         }
     },
+
+   
     addFriend: async(data,id)=>{
         try {
             const userSendRequest = await User.findById({_id:id});

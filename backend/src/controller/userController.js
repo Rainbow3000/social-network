@@ -57,6 +57,15 @@ module.exports = {
         }
     },
 
+    blockAccount: async(req,res,next)=>{
+        try {
+            const result = await userService.blockAccount(req.body,req.params?.id); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
     addFriend: async(req,res,next)=>{
         try {
            

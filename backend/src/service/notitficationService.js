@@ -86,24 +86,7 @@ module.exports = {
         try {
             data.createdDate = moment().format();
             const notificationCreated = await _notificationRepository.create(data);   
-            // const postExisted = await _postRepository.get(data.post);        
-            // const userComment = postExisted.comment.userCommented.find(item => mongoose.Types.ObjectId(item).equals(mongoose.Types.ObjectId(data.user)));
-            // if(userComment === undefined){
-            //     postExisted.comment.userCommented.push(data.user); 
-            //     postExisted.comment.number ++; 
-            // }else{
-               
-            //     postExisted.comment.number ++; 
-            // }
-            //  await _postRepository.update(data.post,postExisted);
-            // const {parent} = data; 
-            // if(parent !== null){
-            //     const parentComment =  await _notificationRepository.get(parent); 
-            //     if(parentComment){
-            //         parentComment._doc.children?.push(commentCreated._doc._id); 
-            //     }
-            //     await _notificationRepository.update(parentComment._doc._id,parentComment); 
-            // }
+          
             return {
                 success:true,
                 message:"Tạo thông báo thành công",
@@ -131,11 +114,11 @@ module.exports = {
         }
     },
 
-    update: async(data,id)=>{
+    update: async(id)=>{
         try {
-
-            const {id} = data; 
+    
             const notificationExisted = await _notificationRepository.get(id); 
+
             if(!notificationExisted){
                 return {
                     success:false,
@@ -145,7 +128,12 @@ module.exports = {
                 }
             }
 
-            const notificationUpdated =  await _notificationRepository.update(id,data);
+        
+
+            notificationExisted.isReaded = !notificationExisted.isReaded;
+            
+
+            const notificationUpdated =  await _notificationRepository.update(id,notificationExisted);
             return {
                 success:true,
                 message:"Cập nhật thông báo thành công",
@@ -153,7 +141,7 @@ module.exports = {
                 data:notificationUpdated
             }
         } catch (error) {
-            
+            console.log(error); 
         }
     },
     delete: async(id)=>{

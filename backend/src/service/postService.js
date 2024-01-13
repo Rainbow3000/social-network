@@ -1,8 +1,12 @@
 const _postRepository = require('../repository/postRepository');
 const _userRepository = require('../repository/userRepository');
+const _accountRepository = require('../repository/accountRepository');
+const _notitficationRepository = require('../repository/notificationRepository');
 const validateError = require('../utils/validateError');
 const moment = require('moment')
 const mongoose = require('mongoose'); 
+const {getSocketIo}  = require('../../src/socket')
+
 module.exports = {
     get: async(id)=>{
         try {
@@ -28,8 +32,6 @@ module.exports = {
 
     getByUser: async(id)=>{
         try {
-
-            
 
             let {postList,postShare} =  await _postRepository.getByUser(id);
             
@@ -72,7 +74,20 @@ module.exports = {
             
         }
     },
-
+    getDenouncePostList: async()=>{
+        try { 
+            const postList =  await _postRepository.getAll(); 
+            const deboundList = postList.filter(item => item.denounce.length > 0); 
+            return {
+                success:true,
+                message:"Lấy danh sách bài viết bị tố cáo thành công",
+                statusCode:200,
+                data:deboundList
+            }
+        } catch (error) {
+            
+        }
+    },
     create: async(data)=>{
         try {
             data.createdDate = moment().format();
@@ -82,6 +97,32 @@ module.exports = {
                 userExisted.postNumber++; 
                 await _userRepository.update(userExisted,data.user);
             } 
+
+        
+
+            const {ioObject,socketObject,userOnline} = getSocketIo();
+            const admin = await _accountRepository.getAdmin(); 
+            const notificationCreated = await _notitficationRepository.create({
+                notifiType:'CREATE_POST',
+                content:`đã tạo một bài viết mới`,
+                fromUser:userExisted._id,
+                createdAt:moment().format(),
+                user:admin._id
+            })
+
+           
+            if(ioObject && socketObject){  
+                if(userOnline.has(admin._id.toString())){
+                    const socketId = userOnline.get(admin._id.toString());
+                    socketObject.join(socketId)
+                    console.log(socketId)
+                    ioObject.to(socketId).emit("user-create-post",notificationCreated);               
+                }
+    
+            }
+    
+            
+
             return {
                 success:true,
                 message:"Tạo bài viết thành công",
@@ -129,6 +170,40 @@ module.exports = {
                 statusCode:200,
                 data:postUpdated
             }
+        } catch (error) {
+            
+        }
+    },
+
+    denounce: async(data,id)=>{
+        try {
+            const postExisted = await _postRepository.get(id); 
+            if(!postExisted){
+                return {
+                    success:false,
+                    message:"Bài viết không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+            if(postExisted.denounce.find(item => item.user.equals(data.user)) === undefined){
+                postExisted.denounce.push({user:data.user,denounceContent:data.denounceContent,denounceDate:moment().format()}); 
+                const postUpdated =  await _postRepository.update(id,postExisted);
+                return {
+                    success:true,
+                    message:"Tố cáo bài viết thành công",
+                    statusCode:200,
+                    data:postUpdated
+                }
+            }else {
+                return {
+                    success:true,
+                    message:"Bài viết đã được bạn tố cáo trước đó",
+                    statusCode:200,
+                    data:null
+                }
+            }
+
         } catch (error) {
             
         }
