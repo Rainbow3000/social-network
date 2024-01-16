@@ -21,6 +21,8 @@ module.exports = {
                               
             })
 
+            console.log('online',userOnline)
+
 
             socket.on('user-end-call',(userEndCallId) =>{
                 socket.broadcast.emit('end-call',userEndCallId)

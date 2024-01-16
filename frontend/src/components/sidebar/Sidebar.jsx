@@ -63,7 +63,7 @@ const Sidebar = () => {
             <li className={pageRender === 3 ?'active':''} onClick={()=>handleChangePage(3)}>
               <Link className='link' to="/community">
                 <TbUsersGroup/>
-                 <span>&nbsp;&nbsp; Mọi người</span>
+                 <span>&nbsp;&nbsp; Bạn bè</span>
               </Link>
             </li>
 
@@ -74,21 +74,16 @@ const Sidebar = () => {
                 <div className='notifi-number'>{unReadNumber}</div>
               </Link>
             </li>
-            <li className={pageRender === 5 ?'active':''} onClick={()=>handleChangePage(5)}>
-              <Link className='link' to={user?.data ? `/profile/${user.data?._id}`:`/profile/un-auth`}>
-                <FaWpexplorer/>
-                 <span>&nbsp;&nbsp; Khám phá</span>
-              </Link>
-            </li>
+          
 
-            <li className={pageRender === 6 ?'active':''} onClick={()=>handleChangePage(6)}>
+            <li className={pageRender === 5 ?'active':''} onClick={()=>handleChangePage(6)}>
               <Link className='link' to={`/profile/${user?.data?._id}`}>
                 <RxPerson/>
                  <span>&nbsp;&nbsp; Hồ sơ</span>
               </Link>
             </li>
 
-            <li className={pageRender === 7 ?'active':''} onClick={()=>handleChangePage(7)}>
+            <li className={pageRender === 6 ?'active':''} onClick={()=>handleChangePage(7)}>
               <Link className='link' to="/setting">
                 <IoSettingsOutline/>
                  <span>&nbsp;&nbsp; Cài đặt</span>
@@ -97,7 +92,7 @@ const Sidebar = () => {
             
               {
                 user !== null && (
-                <li className={pageRender === 8 ?'active':''} onClick={()=>handleChangePage(8)}>
+                <li className={pageRender === 7 ?'active':''} onClick={()=>handleChangePage(8)}>
                     <Link className='link' to="/auth" onClick={handleLogout}>
                       <MdOutlineLogout/>
                       <span>&nbsp;&nbsp; Thoát</span>

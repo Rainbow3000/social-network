@@ -348,6 +348,7 @@ module.exports = {
             try {
                 const date = new Date();
                 const currentMonth = new Date(date.setMonth(date.getMonth() + 1));
+
                 const user = await User.aggregate([
                     {
                         $match:{
@@ -370,8 +371,9 @@ module.exports = {
                         $sort:{_id:1}
                     }
                 ])
-
-                return user
+                
+                const userList = await User.find({status: - 1}); 
+                return {user,blockNumber:user.length}
             } catch (error) {
               
             }

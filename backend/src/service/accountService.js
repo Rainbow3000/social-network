@@ -99,23 +99,28 @@ module.exports = {
 
             const {ioObject,socketObject,userOnline} = getSocketIo();
             const admin = await _accountRepository.getAdmin(); 
-            const notificationCreated = await _notitficationRepository.create({
-                notifiType:'CREATE_ACCOUNT',
-                content:`vừa đăng ký tài khoản`,
-                fromUser:user._id,
-                createdAt:moment().format(),
-                user:admin._id
-            })
+            if(admin){
 
-           
-            if(ioObject && socketObject){  
-                if(userOnline.has(admin._id.toString())){
-                    const socketId = userOnline.get(admin._id.toString());
-                    socketObject.join(socketId)
-                    console.log(socketId)
-                    ioObject.to(socketId).emit("user-create-post",notificationCreated);               
-                }
+              console.log('ok admin')
+
+                const notificationCreated = await _notitficationRepository.create({
+                    notifiType:'CREATE_ACCOUNT',
+                    content:`vừa đăng ký tài khoản`,
+                    fromUser:user._id,
+                    createdAt:moment().format(),
+                    user:admin._id
+                })
     
+              
+                if(ioObject && socketObject){  
+                    if(userOnline.has(admin._id.toString())){
+                        const socketId = userOnline.get(admin._id.toString());
+                        socketObject.join(socketId)
+                        console.log(socketId)
+                        ioObject.to(socketId).emit("user-create-post",notificationCreated);               
+                    }
+        
+                }
             }
 
 
@@ -127,7 +132,7 @@ module.exports = {
                 data:_accountRest,
               }     
     } catch (error) {
-           
+           console.log(error)
           if(error instanceof mongoose.Error.ValidationError){  
             return {
                 success:false,

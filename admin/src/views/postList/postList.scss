@@ -1,0 +1,17 @@
+.icon-wrapper{
+    cursor: pointer;
+    border: 1px solid rgba(128, 128, 128, 0.267);
+    padding: 0 3px;
+    border-radius: 5px;
+   
+}
+
+.content-type{
+    span{
+        width: 120px;
+        border-right:  1px solid gray;
+        &:last-child{
+            border: none;
+        }
+    }
+}

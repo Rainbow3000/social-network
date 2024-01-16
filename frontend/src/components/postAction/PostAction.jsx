@@ -9,7 +9,7 @@ import uuid from 'react-uuid';
 import storage from '../../firebase'; 
 import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
-import {createPost,setValueSuccess} from '../../store/slice/postSlice'
+import {createPost,setValueSuccess,resetSuccess} from '../../store/slice/postSlice'
 import { validateEmpty } from '../../helper/validateHelper';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import EmojiPicker from "emoji-picker-react";
@@ -108,7 +108,7 @@ const handleSubmitForm = (e)=>{
 
 if(isSuccess){
   toast.success(successMessage); 
-  dispacth(setValueSuccess(false));
+  dispacth(resetSuccess());
 }
 
 useEffect(()=>{

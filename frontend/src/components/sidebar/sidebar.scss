@@ -49,15 +49,16 @@
                     display: flex;align-items: center;
             }
             &:hover{
-                background-color: #1E2A35;
-                color: #FFFFFF;
-                
+                color: rgba(0, 0, 0, 0.384);
             }
 
         }
         .active{
-            background-color: #1E2A35;
-            color: #FFFFFF;
+            background-color: #F0F2F5;
+            color: #1E2A35;
+            &:hover{
+                color: #FFFFFF;
+            }
         }
     }
 }

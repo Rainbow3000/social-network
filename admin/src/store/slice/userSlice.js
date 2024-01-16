@@ -59,6 +59,14 @@ export const recoverPassword = createAsyncThunk(
     }
   }
 )
+
+export const getUserInfo = createAsyncThunk(
+  'users/getUserInfo',
+  async (userId) => {
+    const response = await _userRequest.get(`user/${userId}`); 
+    return response.data
+  }
+)
   
 const userState = {
   isShowLoginForm:false,
@@ -75,6 +83,7 @@ const userState = {
   activeList: [],
   userDob:[],
   blockingUser:[],
+  
 }
 
 export const userSlice = createSlice({
@@ -95,6 +104,18 @@ export const userSlice = createSlice({
   },
 
   extraReducers:(builder)=>{
+
+    builder.addCase(getUserInfo.pending, (state, action) => {
+      state.isLoading = true; 
+    })
+    builder.addCase(getUserInfo.fulfilled, (state, action) => {
+      state.isLoading = false; 
+      state.userInfo = action.payload.data; 
+    })
+    builder.addCase(getUserInfo.rejected, (state, action) => {
+      state.user = null;
+      state.isLoading = false; 
+    })
 
     builder.addCase(deleteUser.fulfilled,(state, action) => {
       state.isLoading = false;
@@ -158,8 +179,6 @@ export const userSlice = createSlice({
     })
 
   }
-
-
 })
 
 

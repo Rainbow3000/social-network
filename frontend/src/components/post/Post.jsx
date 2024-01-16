@@ -19,7 +19,7 @@ import { VscSmiley } from "react-icons/vsc";
 import {Link} from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {getCommentByPost,getPostByUser,updateStatusPost,deletePost,createDenounce,setValueSuccess} from '../../store/slice/postSlice'
+import {getCommentByPost,getPostByUser,updateStatusPost,deletePost,createDenounce,setValueSuccess,resetSuccess} from '../../store/slice/postSlice'
 import { RiSendPlane2Line } from "react-icons/ri";
 import EmojiPicker from "emoji-picker-react";
 import moment from 'moment/dist/moment';
@@ -191,6 +191,7 @@ const handleHiddenPost = (postId)=>{
 const handleDeletePost = (postId)=>{
     dispatch(deletePost(postId)); 
     setIsShowActionActive(false); 
+    dispatch(resetSuccess()); 
 }
 
 const handleSendDebounce = ()=>{

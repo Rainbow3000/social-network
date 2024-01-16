@@ -35,6 +35,7 @@ module.exports = {
     getAll: async()=>{
         try { 
             const userList =  (await _userRepository.getAll()).filter(item => item._id.role !== 'ADMIN'); 
+
             return {
                 success:true,
                 message:"Lấy danh sách người dùng thành công",
@@ -469,12 +470,12 @@ module.exports = {
 
     userStat: async()=>{
         try {
-            const user =  await _userRepository.userStat(); 
+            const {user,blockNumber} =  await _userRepository.userStat(); 
             return {
                 success:true,
                 message:"Thống kê người dùng thành công",
                 statusCode:200,
-                data:user
+                data:{user,blockNumber}
             }
         } catch (error) {
             

@@ -7,7 +7,8 @@ import {useSelector,useDispatch} from 'react-redux'
 import {deleteUser} from '../store/slice/userSlice'
 
 const Starter = () => { 
-  const {postLength,userLength}  = useSelector(state => state.stat)
+  const {postLength,userLength,blockNumber}  = useSelector(state => state.stat)
+  const {activeList}  = useSelector(state => state.user)
 
   return (
     <div>
@@ -35,8 +36,8 @@ const Starter = () => {
           <TopCards
             bg="bg-light-warning text-warning"
             title="New Project"
-            subtitle="Lượt truy cập"
-            earning="456"
+            subtitle="Đang trực tuyến"
+            earning={activeList?.length}
             icon="bi bi-reception-0"
           />
         </Col>
@@ -45,7 +46,7 @@ const Starter = () => {
             bg="bg-light-info text-danger"
             title="Sales"
             subtitle="Tài khoản bị khóa"
-            earning="210"
+            earning={blockNumber}
             icon="bi bi-lock-fill"
           />
         </Col>

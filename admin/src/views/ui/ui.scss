@@ -33,5 +33,9 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: blue;
+    background-color: rgb(38, 190, 38);
+}
+
+input[type='checkbox'] {
+    accent-color: green;
 }

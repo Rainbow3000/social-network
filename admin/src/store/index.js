@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import {appSlice,statSlice,userSlice,postSlice,notificationSlice} from './slice'
+import {appSlice,statSlice,userSlice,postSlice,notificationSlice,chatSlice} from './slice'
 
 export const store = configureStore({
   reducer: {
@@ -7,6 +7,7 @@ export const store = configureStore({
     stat: statSlice,
     user:userSlice,
     post:postSlice,
-    notification:notificationSlice
+    notification:notificationSlice,
+    chat:chatSlice
   },
 })

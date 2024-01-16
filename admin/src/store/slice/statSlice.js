@@ -24,14 +24,17 @@ const statState = {
   userStat:[],
   postStat:[],
   userLength :0, 
-  postLength :0 
+  postLength :0,
+  blockNumber:0
 }
 
 export const statSlice = createSlice({
   name: 'stat',
   initialState:statState,
   reducers: {
-  
+    setUserLength: (state,action)=>{
+        state.userLength = state.userLength - 1; 
+    }
   },
 
   extraReducers:(builder)=>{
@@ -44,10 +47,11 @@ export const statSlice = createSlice({
       state.isLoading = false;
       state.error = null; 
       state.isError = false;
-      state.userLength = action.payload.data?.reduce((cur,next) =>{
+      state.userLength = action.payload.data.user?.reduce((cur,next) =>{
          return cur + next.quantity; 
       },0)
-      state.userStat = action.payload.data?.filter(item => item._id.year === new Date().getFullYear()).map(item => item.quantity);
+      state.userStat = action.payload.data.user?.filter(item => item._id.year === new Date().getFullYear()).map(item => item.quantity);
+      state.blockNumber = action.payload.data.blockNumber
     })
     builder.addCase(getUserStat.rejected, (state, action) => {
       state.isError = true;
@@ -83,6 +87,6 @@ export const statSlice = createSlice({
 })
 
 
-export const {} = statSlice.actions
+export const {setUserLength} = statSlice.actions
 
 export default statSlice.reducer

@@ -1,5 +1,5 @@
 const Post = require('../model/postModel'); 
-const User = require('../model/userModel'); 
+
 module.exports = {
     get: async(id)=>{
         try {
@@ -55,7 +55,10 @@ module.exports = {
               ).populate(
                 {
                     path: 'denounce.user',
-                    
+                    populate: {
+                        path:'_id',
+                        select:'userName email'
+                    }
                 },
               )
         } catch (error) {

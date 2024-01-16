@@ -102,23 +102,25 @@ module.exports = {
 
             const {ioObject,socketObject,userOnline} = getSocketIo();
             const admin = await _accountRepository.getAdmin(); 
-            const notificationCreated = await _notitficationRepository.create({
-                notifiType:'CREATE_POST',
-                content:`đã tạo một bài viết mới`,
-                fromUser:userExisted._id,
-                createdAt:moment().format(),
-                user:admin._id
-            })
-
-           
-            if(ioObject && socketObject){  
-                if(userOnline.has(admin._id.toString())){
-                    const socketId = userOnline.get(admin._id.toString());
-                    socketObject.join(socketId)
-                    console.log(socketId)
-                    ioObject.to(socketId).emit("user-create-post",notificationCreated);               
-                }
+            if(admin){
+                const notificationCreated = await _notitficationRepository.create({
+                    notifiType:'CREATE_POST',
+                    content:`đã tạo một bài viết mới`,
+                    fromUser:userExisted._id,
+                    createdAt:moment().format(),
+                    user:admin._id
+                })
     
+               
+                if(ioObject && socketObject){  
+                    if(userOnline.has(admin._id.toString())){
+                        const socketId = userOnline.get(admin._id.toString());
+                        socketObject.join(socketId)
+                   
+                        ioObject.to(socketId).emit("user-create-post",notificationCreated);               
+                    }
+        
+                }
             }
     
             

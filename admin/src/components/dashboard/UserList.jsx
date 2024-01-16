@@ -1,8 +1,10 @@
 import { Card, CardBody, CardTitle, CardSubtitle, Table } from "reactstrap";
 import {useSelector,useDispatch} from 'react-redux'
 import {getUserList,deleteUser,setIsSuccess,blockAccount} from '../../store/slice/userSlice'
+import {setUserLength} from '../../store/slice/statSlice'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { IoLockClosedOutline } from "react-icons/io5";
 import { useEffect } from "react";
 
 const ProjectTables = () => {
@@ -19,6 +21,7 @@ const ProjectTables = () => {
 
   if(isSuccess){
     dispatch(getUserList()); 
+    dispatch(setUserLength())
     dispatch(setIsSuccess(false))
     toast.success(successMessage)
   }
@@ -72,12 +75,16 @@ const ProjectTables = () => {
                     )}
                   </td>
                   <td style={{display:'flex',alignItems:'center',transform:'translateY(40%)'}}>
-                      <div title="Khóa tài khoản" style={{cursor:'pointer'}} onClick={()=> handleBlockAccount(tdata._id._id)}>
-                      <i  class="bi bi-slash-circle text-info"></i>
+
+                      <div className="icon-wrapper-user" title="Xem chi tiết" st style={{marginRight:10,cursor:'pointer',border:'1px solid rgba(128, 128, 128, 0.267)',padding:'0 5px',borderRadius:'5px'}} onClick={()=> handleDeleteUser(tdata._id._id)}>
+                        <i class="bi bi-eye text-primary"></i>
                       </div>
-                      <div title="Xóa tài khoản" st style={{marginLeft:30,cursor:'pointer'}} onClick={()=> handleDeleteUser(tdata._id._id)}>
+                      <div className="icon-wrapper-user" title="Khóa tài khoản" style={{cursor:'pointer',border:'1px solid rgba(128, 128, 128, 0.267)',padding:'0 5px',borderRadius:'5px'}} onClick={()=> handleBlockAccount(tdata._id._id)}>
+                        <IoLockClosedOutline className="text-warning"/>
+                      </div>
+                      <div className="icon-wrapper-user" title="Xóa tài khoản" st style={{marginLeft:10,cursor:'pointer',border:'1px solid rgba(128, 128, 128, 0.267)',padding:'0 5px',borderRadius:'5px'}} onClick={()=> handleDeleteUser(tdata._id._id)}>
                         <i class="bi bi-trash3 text-danger"></i>
-                      </div>
+                      </div>             
                   </td>
                 </tr>
               ))}

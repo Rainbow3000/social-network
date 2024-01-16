@@ -33,8 +33,10 @@ export const deletePost = createAsyncThunk(
   'comment/deletePost',
    async (postId) => {
     const response = await _userRequest.delete(`post/${postId}`); 
-    const {data} = response.data; 
-    return {data,postId}
+    const {data,message} = response.data;
+ 
+ 
+    return {data,postId,message}
   }
 )
 
@@ -177,7 +179,12 @@ export const postSlice = createSlice({
     },
     setValueSuccess:(state,action)=>{
       state.isSuccess = action.payload
+    },
+    resetSuccess:(state,action)=>{
+      state.isSuccess = false; 
+      state.successMessage = "" 
     }
+   
   },
   extraReducers:(builder)=>{
 
@@ -267,6 +274,7 @@ export const postSlice = createSlice({
       state.isSuccess = true;
       state.postList = state.postList.filter(item => item._id !== action.payload.postId); 
       state.postOfUser = state.postOfUser.filter(item => item._id !== action.payload.postId); 
+      state.successMessage = action.payload.message
       
     })
     builder.addCase(deletePost.rejected, (state, action) => {
@@ -430,7 +438,6 @@ export const postSlice = createSlice({
       state.isLoading = false;
       state.error = null; 
       state.isError = false; 
-      state.isSuccess = true; 
      
       state.postList = state.postList.map(post =>{
         if(post._id === action.payload.data.post){
@@ -485,6 +492,6 @@ export const postSlice = createSlice({
   }
 })
 
-export const { showCreatePost,hiddenShowCreatePost,setChildrentComment,setValueSuccess } = postSlice.actions
+export const { showCreatePost,hiddenShowCreatePost,setChildrentComment,setValueSuccess,resetSuccess } = postSlice.actions
 
 export default postSlice.reducer

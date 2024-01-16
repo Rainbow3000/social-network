@@ -92,10 +92,9 @@ const Header = () => {
         <Dropdown isOpen={dropdownOpen} toggle={toggle} style={{display:'flex',alignItems:'center'}}>
           <DropdownToggle color="light">
             <img
-              src={user.data.avatar}
+              src={user?.data?.avatar}
               alt="profile"
-              className="rounded-circle"
-              width="30"
+              className="avatar-circle"
             ></img>
           </DropdownToggle>
           <DropdownMenu>

@@ -48,9 +48,11 @@ const Alerts = () => {
         <CardBody className="">
           <div className="mt-3">
             {
-              notifiList.length > 0 && notifiList.filter(item => item.notifiType === 'CREATE_ACCOUNT').map(item =>{
+              notifiList.length > 0 && notifiList.filter(item => item.notifiType === 'CREATE_ACCOUNT').sort((x,y)=>{
+                return  new Date(y.createdAt) - new Date(x.createdAt)
+              }).map(item =>{
                 return (
-                <Alert style={{display:'flex',justifyContent:'space-between',alignItems:'center'}} color="light">
+                <Alert style={{display:'flex',justifyContent:'space-between',alignItems:'center',position:'relative'}} color="light">
                   <div className="notifi-wrap">
                     
                     <img src={item?.fromUser?.avatar} alt="" />
@@ -63,6 +65,12 @@ const Alerts = () => {
                   <div style={{display:'flex',alignItems:'center'}}>
                     <input checked = {item.isReaded} onChange={()=> handleSetChecked(item._id)} title="Đánh dấu đã đọc" style={{cursor:'pointer',width:16,height:16,marginRight:10}} type="checkbox" />  
                    <div className={item.isReaded === true ?'new checked':'new'}></div>
+                    <span style={{marginLeft:5,fontSize:13}}>
+                      {
+                        item.isReaded === true ? 'đã đọc':'chưa đọc'
+                      }
+                    </span>
+                    <i class="bi bi-x" style={{position:'absolute', right:5,top:3,cursor:'pointer',fontSize:20,fontWeight:'bold'}}></i>
                   </div>
                 </Alert>
                 )
@@ -80,7 +88,9 @@ const Alerts = () => {
         <CardBody className="">
           <div className="mt-3">
             {
-              notifiList.length > 0 && notifiList.filter(item => item.notifiType === 'CREATE_POST').map(item =>{
+              notifiList.length > 0 && notifiList.filter(item => item.notifiType === 'CREATE_POST').sort((x,y)=>{
+                return  new Date(y.createdAt) - new Date(x.createdAt)
+              }).map(item =>{
                 return (
                 <Alert style={{display:'flex',justifyContent:'space-between',alignItems:'center'}} color="light">
                   <div className="notifi-wrap">
@@ -95,6 +105,11 @@ const Alerts = () => {
                   <div style={{display:'flex',alignItems:'center'}}>
                     <input checked = {item.isReaded} onChange={()=> handleSetChecked(item._id)} title="Đánh dấu đã đọc" style={{cursor:'pointer',width:16,height:16,marginRight:10}} type="checkbox" />  
                    <div className={item.isReaded === true ?'new checked':'new'}></div>
+                   <span style={{marginLeft:5,fontSize:13}}>
+                      {
+                        item.isReaded === true ? 'đã đọc':'chưa đọc'
+                      }
+                    </span>
                   </div>
                 </Alert>
                 )

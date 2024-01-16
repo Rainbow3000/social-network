@@ -9,23 +9,24 @@ import 'moment/locale/vi';
 import { useState } from "react";
 const Post = ({post}) => {
   const [isShowAction,setIsShowAction] = useState(false); 
+  console.log(post)
   return (
-    <Card style={{padding:10}}>
+    <Card  style={{padding:10, marginTop:20}}>
       <div className="avatar">
         <img src={post?.user?.avatar} alt="" />
         <div className="info-top">
           <span>{post.user._id.userName}</span>
           <span>{moment(post.createdDate).calendar()}</span>
         </div>
-        <div className="dot-icon" onClick={()=>setIsShowAction(value => !value)}>
+        {/* <div className="dot-icon" onClick={()=>setIsShowAction(value => !value)}>
           <i class="bi bi-three-dots"></i>
           <ul className={isShowAction === true ?"list-action active":"list-action"}>
               <li>Khóa bài viết</li>
               <li>Xóa bài viết</li>
           </ul>
-        </div>
+        </div> */}
       </div>
-      <span>{post.content}</span>
+      <span style={{paddingLeft:20}}>{post.content}</span>
       {
         post.images?.length === 1 && (
           <CardImg alt="Card image cap" src={post.images[0]} />
@@ -38,8 +39,7 @@ const Post = ({post}) => {
             {
               post.images.map(item =>{
                 return (
-                  <img src={item} alt="" />
-                 
+                  <img src={item} alt="" />              
                 )
               })
             }
