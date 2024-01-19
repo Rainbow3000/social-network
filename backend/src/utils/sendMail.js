@@ -89,4 +89,34 @@ const sendMailRecoverPassword = (email,newPassword) => {
     }
 };
 
-module.exports = {senMailOrder,senMailSuccess,sendMailRecoverPassword}
+
+const sendMailHaveMess = (email,userName) => {
+  try {
+      let transporter = nodemailer.createTransport({
+          service: "hotmail",
+          auth: {
+            user: "nguyenducthinh0401@gmail.com",
+            pass: "0363578628gmail@",
+          },
+        });
+        const option = {
+          from: "nguyenducthinh0401@gmail.com",
+          to: email.toString(),
+          subject: `Tin nhắn từ ${userName}`,
+          html: `
+                     <span>${userName} đã gửi cho bạn 1 tin nhắn</span>
+                    `,
+        };
+        transporter.sendMail(option, (err, info) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          res.json('send mail success !'); 
+        });
+  } catch (error) {
+      
+  }
+};
+
+module.exports = {senMailOrder,senMailSuccess,sendMailRecoverPassword,sendMailHaveMess}

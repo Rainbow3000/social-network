@@ -237,13 +237,29 @@ module.exports = {
                             createdAt:moment().format(),
                             user:user._id._id
                         })
+
+
+                        const notificationCreatedU = await _notitficationRepository.create({
+                            notifiType:'ADMIN',
+                            content:`Quản trị viên@ đã xóa bài viết của bạn do vi phạm chính sách`,
+                            fromUser:admin._id,
+                            createdAt:moment().format(),
+                            user:postExisted.user._id._id
+                        })
                               
                         if(ioObject && socketObject){  
                             if(userOnline.has(user._id._id.toString())){
                                 const socketId = userOnline.get(user._id._id.toString());
                                 socketObject.join(socketId) 
                                 ioObject.to(socketId).emit("admin-confirm-offence",notificationCreated);               
-                            }                        
+                            }    
+                            
+                            
+                            if(userOnline.has(postExisted.user._id._id.toString())){
+                                const socketId = userOnline.get(postExisted.user._id._id.toString());
+                                socketObject.join(socketId) 
+                                ioObject.to(socketId).emit("admin-delete-post",notificationCreatedU);               
+                            }         
                         }
                         
                     }
@@ -342,6 +358,30 @@ module.exports = {
                 if(userLiked === undefined){
                     postExisted.like.userLiked.push(data.userId); 
                     postExisted.like.number ++; 
+                    const {ioObject,socketObject,userOnline} = getSocketIo();
+              
+                        const user = await _userRepository.get(data.userId); 
+                        if(user){
+                            const notificationCreated = await _notitficationRepository.create({
+                                notifiType:'LIKE_POST',
+                                content:`${user._id.userName} đã thích bài viết của bạn`,
+                                fromUser:data.userId,
+                                createdAt:moment().format(),
+                                user:postExisted.user._id._id
+                            })
+
+                            if(ioObject && socketObject){  
+                                if(userOnline.has(postExisted.user._id._id.toString())){
+                                    const socketId = userOnline.get(postExisted.user._id._id.toString());
+                                    socketObject.join(socketId)                       
+                                    ioObject.to(socketId).emit("user-like-post",notificationCreated);               
+                                }
+                    
+                            }
+                        }
+            
+                       
+                    
                 }else{
                     postExisted.like.userLiked = postExisted.like.userLiked.filter(item => !mongoose.Types.ObjectId(item).equals(mongoose.Types.ObjectId(data.userId)))
                     postExisted.like.number --; 
@@ -368,7 +408,7 @@ module.exports = {
             }
 
         } catch (error) {
-            
+            console.log(error)
         }
     },
 

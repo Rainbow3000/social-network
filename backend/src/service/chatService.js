@@ -4,6 +4,7 @@ const validateError = require('../utils/validateError');
 const mongoose = require('mongoose'); 
 const moment = require('moment')
 const {getSocketIo}  = require('../../src/socket')
+const {sendMailHaveMess} = require('../utils/sendMail')
 module.exports = {
     get: async(id)=>{
         try {
@@ -144,6 +145,10 @@ module.exports = {
                     const socketId = userOnline.get(toId);
                     socketObject.join(socketId)
                     ioObject.to(socketId).emit("receive-message-single-user",chatCreated);               
+                }else{
+                    const userExisted = await _userRepository.get(toId); 
+             
+                    sendMailHaveMess(userExisted._id.email, userExisted._id.userName); 
                 } 
 
                 if(userOnline.has(fromId)){

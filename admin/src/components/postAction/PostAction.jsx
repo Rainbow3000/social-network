@@ -49,7 +49,7 @@ const PostAction = () => {
           const storageRef = refStorage(storage,fileName); 
           uploadBytes(storageRef,file).then((snapshot)=>{
               getDownloadURL(refStorage(storage,fileName)).then(downloadUrl =>{
-                console.log(downloadUrl);  
+             
                 setImages(image=>[...image,`${downloadUrl}@-@${fileName}`])       
               })
           })

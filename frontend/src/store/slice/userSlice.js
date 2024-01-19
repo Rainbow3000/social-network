@@ -1,5 +1,5 @@
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit'
-import { _publicRequest } from '../../requestMethod'
+import { _publicRequest, _userRequest } from '../../requestMethod'
 import {createInstanceSocket} from '../../utils/socket' 
 
 const socket = createInstanceSocket(); 
@@ -32,7 +32,7 @@ export const userAddFriend = createAsyncThunk(
   'users/addFriend',
   async (data) => {
     const {id,userData} = data; 
-    const response = await _publicRequest.put(`user/friend/${id}`,userData); 
+    const response = await _userRequest.put(`user/friend/${id}`,userData); 
     return response.data
   }
 )
@@ -41,7 +41,7 @@ export const recoverPassword = createAsyncThunk(
   'users/password/reset',
   async (data) => {
     try {
-      const response = await _publicRequest.post('account/password/reset',data); 
+      const response = await _userRequest.post('account/password/reset',data); 
       return response.data
     } catch (error) {
       throw error?.response?.data
@@ -55,7 +55,7 @@ export const userAcceptAddFriend = createAsyncThunk(
   'users/acceptAddFriend',
   async (data) => {
     const {id,userData} = data; 
-    const response = await _publicRequest.put(`user/friend/accept/${id}`,userData); 
+    const response = await _userRequest.put(`user/friend/accept/${id}`,userData); 
     return response.data
   }
 )
@@ -66,7 +66,7 @@ export const userCancelAddFriend = createAsyncThunk(
   'users/cancelAddFriend',
   async (data) => {
     const {id,userData} = data; 
-    const response = await _publicRequest.put(`user/unfriend/${id}`,userData); 
+    const response = await _userRequest.put(`user/unfriend/${id}`,userData); 
     return response.data
   }
 )
@@ -75,7 +75,7 @@ export const updateBlock = createAsyncThunk(
   'users/updateBlock',
   async (data) => {
     const {id,userData} = data; 
-    const response = await _publicRequest.put(`user/block/${id}`,userData); 
+    const response = await _userRequest.put(`user/block/${id}`,userData); 
     return response.data
   }
 )
@@ -87,7 +87,7 @@ export const updateBlock = createAsyncThunk(
 export const getUserInfo = createAsyncThunk(
   'users/getUserInfo',
   async (userId) => {
-    const response = await _publicRequest.get(`user/${userId}`); 
+    const response = await _userRequest.get(`user/${userId}`); 
     return response.data
   }
 )
@@ -95,7 +95,7 @@ export const getUserInfo = createAsyncThunk(
 export const getBlockingUser = createAsyncThunk(
   'users/getBlockingUser',
   async (userId) => {
-    const response = await _publicRequest.get(`user/block/${userId}`); 
+    const response = await _userRequest.get(`user/block/${userId}`); 
     return response.data
   }
 )
@@ -103,7 +103,7 @@ export const getBlockingUser = createAsyncThunk(
 export const getUserDob = createAsyncThunk(
   'users/dob',
   async (userId) => {
-    const response = await _publicRequest.get(`user/dob/${userId}`); 
+    const response = await _userRequest.get(`user/dob/${userId}`); 
     return response.data
   }
 )
@@ -113,7 +113,7 @@ export const getUserDob = createAsyncThunk(
 export const getUserList = createAsyncThunk(
   'users/getUserList',
   async () => {
-    const response = await _publicRequest.get('user'); 
+    const response = await _userRequest.get('user'); 
     return response.data
   }
 )
@@ -124,7 +124,7 @@ export const updateUserInfo = createAsyncThunk(
   'users/updateUserInfo',
   async (data) => {
     const {userId,userData} = data; 
-    const response = await _publicRequest.put(`user/${userId}`,userData); 
+    const response = await _userRequest.put(`user/${userId}`,userData); 
     return response.data
   }
 )
@@ -134,7 +134,7 @@ export const updatePassword = createAsyncThunk(
   async (data) => {
     try {
       const {accountId,accountData} = data; 
-      const response = await _publicRequest.put(`account/password/${accountId}`,accountData); 
+      const response = await _userRequest.put(`account/password/${accountId}`,accountData); 
       return response.data    
     } catch (error) {
       throw error?.response?.data

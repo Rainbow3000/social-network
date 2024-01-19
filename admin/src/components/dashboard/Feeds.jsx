@@ -21,7 +21,7 @@ const Feeds = () => {
   const {user} =useSelector(state => state.user); 
   const {registerToday} =useSelector(state => state.stat); 
   const dispatch = useDispatch(); 
-  console.log(notifiList)
+
   const socket = useRef(); 
   useEffect(()=>{
     dispatch(getNotifiList(user?.data._id)); 

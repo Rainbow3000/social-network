@@ -501,11 +501,6 @@ export const postSlice = createSlice({
         })
       }
 
-
-
-
-  
-     
       
     })
     builder.addCase(updatePostByOtherUser.rejected, (state, action) => {

@@ -18,6 +18,7 @@ import {Link} from 'react-router-dom'
 import { PiHandshake } from "react-icons/pi";
 import { IoMdEye } from "react-icons/io";
 import { FaUserSecret } from "react-icons/fa";
+import { GrLike } from "react-icons/gr";
 moment.locale('vi');
 
 const Notification = () => {  
@@ -169,6 +170,40 @@ const Notification = () => {
                                         <div className='content'>
                                             <span className='notifi-type-icon hand-shake'>   
                                                 <FaUserSecret/>                   
+                                            </span>
+                                            <div className='notifi-user'>
+                                          
+                                                <div className='user-name'>
+                                                    <span><span className='content'><b>{item?.content.split('@')[0]}</b>&nbsp;<span>{item?.content.split('@')[1]}</span>&nbsp;<b>{item?.content.split('@')[2]}</b></span></span>
+                                                    <span className='time'>{moment(item?.createdAt).calendar()}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        {
+                                            item?.isReaded === true ? (
+                                                <div className='state done'>
+                                            
+                                                </div>
+                                            ):(
+                                                <div className='state'>
+                                            
+                                                </div>
+                                            )
+                                        }
+                                       
+                                            <input checked = {item?.isReaded} onChange={()=> handleSetChecked(item?._id)} type="checkbox" style={{marginRight:10,width:18,height:18}} />
+                                        </div>
+                                )
+                            }
+
+
+                            if(item?.notifiType === 'LIKE_POST'){
+                                return (
+                                    <div className="notifi-item">
+                                        <div className='content'>
+                                            <span className='notifi-type-icon hand-shake'>   
+                                                <GrLike/>                   
                                             </span>
                                             <div className='notifi-user'>
                                           

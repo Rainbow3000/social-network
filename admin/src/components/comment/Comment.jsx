@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { IoMdArrowDropright } from "react-icons/io";
 moment.locale('vi');
 const Comment = ({comment,handleSetReplyComment,index,level}) => {
-console.log(comment); 
+
 const dispatch = useDispatch(); 
 
  const handleShowCommentChild = (commentId,postId,children)=>{   

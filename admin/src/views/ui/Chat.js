@@ -31,7 +31,7 @@ const Chat = () => {
   const inputRef = useRef(); 
   const dispatch = useDispatch(); 
 
-  console.log(userList); 
+
 
   useEffect(() => {
     const scrollToBottomWithSmoothScroll = () => {

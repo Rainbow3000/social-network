@@ -88,8 +88,17 @@ function App() {
       dispatch(addNotifi(notifi));
     })   
 
-     
+    socket.current.on('admin-delete-post',(notifi)=>{
+      dispatch(addNotifi(notifi));
+    }) 
+
+  
+    socket.current.on('user-like-post',(notifi)=>{
+      dispatch(addNotifi(notifi));
+    })  
     }
+
+
     
     dispatch(getUserDob(user?.data?._id))
     dispatch(getNotificationByUser(user?.data?._id)); 

@@ -7,7 +7,7 @@ module.exports = {
                 path: 'user',
                 populate: {
                     path:'_id',
-                    select:'userName'
+                    select:'userName _id'
                 }
               }); 
         } catch (error) {

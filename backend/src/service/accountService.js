@@ -18,7 +18,11 @@ module.exports = {
       try {
         const account = await _accountRepository.getByEmail(data?.email);
 
-        if(account.status === -1){
+      
+
+        if (account) {
+
+          if(account.status === -1){
             reject({
               success:false,
               message:"Email:Tài khoản của bạn đã bị khóa",
@@ -28,7 +32,6 @@ module.exports = {
           return
         }
 
-        if (account) {
           const decryptPass = CryptoJS.AES.decrypt(
             account.password,
             process.env.AES_SECRET
@@ -115,7 +118,7 @@ module.exports = {
             const admin = await _accountRepository.getAdmin(); 
             if(admin){
 
-              console.log('ok admin')
+           
 
                 const notificationCreated = await _notitficationRepository.create({
                     notifiType:'CREATE_ACCOUNT',
@@ -130,7 +133,7 @@ module.exports = {
                     if(userOnline.has(admin._id.toString())){
                         const socketId = userOnline.get(admin._id.toString());
                         socketObject.join(socketId)
-                        console.log(socketId)
+                     
                         ioObject.to(socketId).emit("user-create-post",notificationCreated);               
                     }
         
