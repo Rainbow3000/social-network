@@ -166,7 +166,7 @@ module.exports = {
                 }
             }
             
-            console.log(postExisted.share.userShared); 
+         
             postExisted.share.userShared = postExisted.share.userShared.filter(item => !item.user.equals(userId)); 
             const postUpdated =  await _postRepository.update(postExisted._id,postExisted);
             return {

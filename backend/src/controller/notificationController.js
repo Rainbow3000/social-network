@@ -47,6 +47,15 @@ module.exports = {
         }
     },
 
+
+    createByAdmin: async(req,res,next)=>{
+        try {
+            const result = await notificationService.createByAdmin(req.body); 
+            res.status(result.statusCode).json(result); 
+        } catch (error) {
+            
+        }
+    },
     update: async(req,res,next)=>{
         try {
             const result = await notificationService.update(req.params?.id); 
