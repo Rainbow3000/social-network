@@ -47,18 +47,14 @@ const navigation = [
   {
     title: "Tài khoản của tôi",
     href: "/forms",
-    icon: "bi bi-textarea-resize",
+    icon: "bi bi-person",
   },
   {
     title: "Thoát",
     href: "/breadcrumbs",
-    icon: "bi bi-link",
+    icon: "bi bi-box-arrow-right",
   },
-  {
-    title: "About",
-    href: "/about",
-    icon: "bi bi-people",
-  },
+
 ];
 
 const Sidebar = () => {

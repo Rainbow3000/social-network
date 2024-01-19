@@ -150,13 +150,15 @@ const userState = {
   isError:false,
   user: JSON.parse(localStorage.getItem('user'))  || null,
   userInfo:null,
+  userInfoTemp:null,
   error:null,
   success:false,
   isRecoverPassSuccess:false,
   activeList: [],
   userDob:[],
   userList:[],
-  blockingUser:[]
+  blockingUser:[],
+  userSuccessMessage:""
 }
 
 export const userSlice = createSlice({
@@ -178,6 +180,8 @@ export const userSlice = createSlice({
       localStorage.removeItem('user');
       localStorage.clear();  
       state.activeList = state.activeList.filter(item => item !== action.payload); 
+      state.userInfo = null; 
+     
     },
     setUserActive:(state,action)=>{
      state.activeList = action.payload;
@@ -185,9 +189,22 @@ export const userSlice = createSlice({
     setEmptyUserChat:(state,action)=>{
         state.userInfo = {...state.userInfo,chats:[]}
     },
-    resetSuccess:(state,action)=>{
+    resetUserSuccess:(state,action)=>{
       state.success = false; 
+      state.userSuccessMessage = "";
       state.isRecoverPassSuccess = false;
+    },
+    removeFromActiveList:(state,action)=>{
+      state.activeList = state.activeList.filter(item => item !== action.payload); 
+    },
+
+    filterFriends:(state,action)=>{
+      state.userInfo.friends = state.userInfoTemp.friends; 
+      if(action.payload.trim() !== ""){
+        state.userInfo.friends = state.userInfo.friends.filter(item => item._id.userName.toLowerCase().includes(action.payload.toLowerCase()))
+      }else{
+        state.userInfo.friends = state.userInfoTemp.friends; 
+      }
     }
   },
 
@@ -211,7 +228,6 @@ export const userSlice = createSlice({
       state.isLoading = false;
       state.error = null; 
       state.isError = false; 
-      state.success = true; 
       state.userDob = action.payload.data; 
     })
 
@@ -224,6 +240,7 @@ export const userSlice = createSlice({
       state.error = null; 
       state.isError = false; 
       state.success = true; 
+      state.userSuccessMessage = action.payload.message
       // state.blockingUser = action.payload.data; 
 
     })
@@ -359,13 +376,14 @@ export const userSlice = createSlice({
       state.error = null; 
       state.isError = false; 
       state.userInfo = action.payload?.data; 
-    
       if(state.user !== null){
         state.user.data.avatar = action.payload?.data?.avatar; 
         state.user.data.userName = action.payload?.data?._id.userName
       }
       localStorage.removeItem('user'); 
       localStorage.setItem('user',JSON.stringify(state.user)); 
+      state.success = true; 
+      state.userSuccessMessage = action.payload.message
     })
     builder.addCase(updateUserInfo.rejected, (state, action) => {
       state.user = null;
@@ -413,6 +431,7 @@ export const userSlice = createSlice({
     builder.addCase(getUserInfo.fulfilled, (state, action) => {
       state.isLoading = false; 
       state.userInfo = action.payload.data; 
+      state.userInfoTemp = action.payload.data; 
     })
     builder.addCase(getUserInfo.rejected, (state, action) => {
       state.user = null;
@@ -422,6 +441,6 @@ export const userSlice = createSlice({
 })
 
 
-export const {resetSuccess,showLoginForm,hiddenLoginForm,setTypePopupForm,userLogout,setUserActive,setEmptyUserChat} = userSlice.actions
+export const {filterFriends,removeFromActiveList,resetUserSuccess,showLoginForm,hiddenLoginForm,setTypePopupForm,userLogout,setUserActive,setEmptyUserChat} = userSlice.actions
 
 export default userSlice.reducer

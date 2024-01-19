@@ -71,6 +71,15 @@ export const updateStatusPost = createAsyncThunk(
   }
 )
 
+export const updatePost = createAsyncThunk(
+  'post/updatePost',
+   async ({postId,userId}) => {
+    const response = await _userRequest.put(`post/${postId}`,{userId}); 
+    return {postId,userId, message: response.data.message}; 
+  }
+)
+
+
 
 
 export const getCommentByPost = createAsyncThunk(
@@ -110,7 +119,7 @@ const postState = {
   isLoading:false,
   isError:false,
   error:null,
-  successMessage:""
+  postSuccessMessage:""
 }
 
 export const postSlice = createSlice({
@@ -177,20 +186,21 @@ export const postSlice = createSlice({
         return post;
       })
     },
-    setValueSuccess:(state,action)=>{
-      state.isSuccess = action.payload
-    },
-    resetSuccess:(state,action)=>{
+   
+    resetPostSuccess:(state,action)=>{
       state.isSuccess = false; 
-      state.successMessage = "" 
+      state.postSuccessMessage = "" 
     }
    
   },
   extraReducers:(builder)=>{
 
+
+
+
     builder.addCase(createDenounce.fulfilled, (state, action) => {
       state.isSuccess = true; 
-      state.successMessage = action.payload.message; 
+      state.postSuccessMessage = action.payload.message; 
     })
 
     builder.addCase(getCommentByParent.pending, (state, action) => {
@@ -201,8 +211,7 @@ export const postSlice = createSlice({
       state.isLoading = false;
       state.error = null; 
       state.isError = false; 
-      state.isSuccess = true;
-     
+
       state.postList = state.postList.map(post => {
         if(post._id === action.payload.postId){
             post.commentList = post.commentList.map(comment =>{
@@ -241,6 +250,7 @@ export const postSlice = createSlice({
       state.error = null; 
       state.isError = false; 
       state.isSuccess = true;
+      state.postSuccessMessage = action.payload.message;
       state.postList = state.postList.map(item =>{
         if(item._id === action.payload._id){
             item = action.payload.data; 
@@ -271,10 +281,10 @@ export const postSlice = createSlice({
       state.isLoading = false;
       state.error = null; 
       state.isError = false; 
-      state.isSuccess = true;
       state.postList = state.postList.filter(item => item._id !== action.payload.postId); 
       state.postOfUser = state.postOfUser.filter(item => item._id !== action.payload.postId); 
-      state.successMessage = action.payload.message
+      state.isSuccess = true;
+      state.postSuccessMessage = action.payload.message
       
     })
     builder.addCase(deletePost.rejected, (state, action) => {
@@ -294,7 +304,7 @@ export const postSlice = createSlice({
       state.error = null; 
       state.isError = false; 
       state.isSuccess = true;
-      state.successMessage = action.payload.message; 
+      state.postSuccessMessage = action.payload.message; 
       state.postList = [...state.postList,action.payload?.data].reverse();
       state.postOfUser = [...state.postOfUser,action.payload?.data].reverse(); 
 
@@ -318,6 +328,26 @@ export const postSlice = createSlice({
       state.postList = action.payload?.data?.reverse();
     })
     builder.addCase(getPostList.rejected, (state, action) => {
+      state.isError = true;
+      state.isSuccess = false;
+      state.error = action.payload;
+      state.isLoading = false;
+    })
+
+    builder.addCase(updatePost.pending, (state, action) => {
+      state.isLoading = true; 
+      state.isSuccess = false;
+    })
+    builder.addCase(updatePost.fulfilled,(state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false;
+      state.postOfUser = state.postOfUser.filter(item => item._id !== action.payload.postId)
+      state.isSuccess = true; 
+      state.postSuccessMessage = action.payload.message; 
+
+    })
+    builder.addCase(updatePost.rejected, (state, action) => {
       state.isError = true;
       state.isSuccess = false;
       state.error = action.payload;
@@ -395,9 +425,7 @@ export const postSlice = createSlice({
               
             }   
             return item; 
-        }) 
-        
-        
+        })    
       }else {   
         state.postOfUser = state.postOfUser.map(item=>{     
           if(item._id === action.payload?.data?._id){  
@@ -408,9 +436,10 @@ export const postSlice = createSlice({
         })  
         
         
-        state.postList =  state.postList.map(item=>{
-           if(item._id === action.payload?.data?._id){     
-              item = action.payload?.data;
+        state.postList = state.postList.map(item=>{
+           if(item._id === action.payload?.data?._id){    
+            item.like = action.payload.data.like;
+            item.share = action.payload.data.share
            }
            return item; 
         })
@@ -492,6 +521,6 @@ export const postSlice = createSlice({
   }
 })
 
-export const { showCreatePost,hiddenShowCreatePost,setChildrentComment,setValueSuccess,resetSuccess } = postSlice.actions
+export const { showCreatePost,hiddenShowCreatePost,setChildrentComment,setValueSuccess,resetPostSuccess } = postSlice.actions
 
 export default postSlice.reducer

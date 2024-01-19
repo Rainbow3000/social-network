@@ -18,7 +18,9 @@ const Recommend = ({isHiddenTop,item,type}) => {
                   </div>
                   <Link className='link' to={`/profile/${item?._id?._id}`}>
                     <div className='center'>           
-                        <img src={item?.avatar} alt="" />            
+                        <div className='center-avatar'>
+                        <img src={item?.avatar} alt="" />  
+                        </div>            
                         <div className="user-wrapper">
                           <div className='user-name'>
                             <span>{item?._id?.userName}</span>

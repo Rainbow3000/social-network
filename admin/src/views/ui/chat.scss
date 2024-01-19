@@ -4,7 +4,7 @@ body{
 .chat-container{
     background-color: #F9FAFB;
     width: 100%;
-    height: calc(100vh - 69px);
+    height: calc(100vh - 111px);
     display: flex;
     padding: 10px;
     color: #1E2A35;
@@ -16,7 +16,7 @@ body{
 .chat-left{
     width: 100% !important;
     overflow: hidden;
-    flex: 1;
+    flex: 2;
     background-color: #FFFFFF;
     border-radius: 10px;
     padding: 10px;

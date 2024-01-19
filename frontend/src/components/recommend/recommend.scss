@@ -66,12 +66,15 @@
         display: flex;
         justify-content: space-between;  
         align-items: center;
-        margin-top: 20px;          
-        img{
-            width: 45px;
-            height: 45px;
-            border-radius: 50%
-        }
+        margin-top: 20px;    
+        .center-avatar{
+            width: max-content;
+            img{
+                width: 45px;
+                height: 45px;
+                border-radius: 50%
+            }
+        }      
         .user-wrapper{
             display: flex;
             flex-direction: column;                        

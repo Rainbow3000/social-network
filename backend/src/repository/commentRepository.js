@@ -2,7 +2,7 @@ const Comment = require('../model/commentModel');
 module.exports = {
     get: async(id)=>{
         try {
-            console.log(id)
+          
             return await Comment.findById(id).populate(
                 {
                     path:'children',

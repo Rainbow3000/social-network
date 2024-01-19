@@ -73,19 +73,7 @@
                 border-radius: 10px;
                 margin: 2.5%;
         
-                .btn-update{
-                    width: 20% !important;
-                    height: 50px !important;
-                    border: none;
-                    border-radius: 10px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    cursor: pointer;
-                    color: #FFFFFF;
-                    font-size: 18px;
-                    background-color: #377DFF;
-                }
+              
                 .gender-wrapper{
                     display: flex;
                     align-items: center;
@@ -124,4 +112,18 @@
                 }
             }
     }
+}
+
+.btn-update-pass{
+    width: 120px !important;
+    height: 55px !important;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: #FFFFFF;
+    font-size: 18px;
+    background-color: #377DFF;
 }

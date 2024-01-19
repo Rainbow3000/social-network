@@ -19,9 +19,7 @@ const dispatch = useDispatch();
   return (
     <div className='post-comment'>
     <div className='post-comment-item'>
-        <div style={{width:'max-content'}}>
         <img src={comment?.user?.avatar} alt="" />
-        </div>
         <div className= 'comment-content'>
             <div className={comment.image !== "" || comment.video !== "" ?"comment-content-main outline":"comment-content-main"}>
                 <div className='comment-top'>

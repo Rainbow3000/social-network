@@ -55,6 +55,14 @@ module.exports = {
             
         }
     },
+    lockPost: async(req,res,next)=>{
+        try {
+            const result = await postService.lockPost(req.params?.id); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
 
     denounce: async(req,res,next)=>{
         try {

@@ -10,6 +10,7 @@ router.get('/api/post/:id',postController.get);
 router.get('/api/post',postController.getAll); 
 router.get('/api/post/denounce/getlist',postController.getDenounceList); 
 router.put('/api/post/denounce/:id',postController.denounce); 
+router.put('/api/post/lock/:id',postController.lockPost); 
 router.get('/api/post/getbyuser/:id',postController.getByUser); 
 router.post('/api/post',postController.create); 
 router.put('/api/post/:id',postController.update); 

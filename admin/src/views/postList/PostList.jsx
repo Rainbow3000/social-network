@@ -1,14 +1,12 @@
 import React from 'react'
 import { Card, CardBody, CardTitle, CardImg, Table, Row } from "reactstrap";
-
 import {useSelector,useDispatch} from 'react-redux'
 import {getUserList,deleteUser,setIsSuccess,blockAccount} from '../../store/slice/userSlice'
-import {getPostList} from '../../store/slice/postSlice'
-import {getDenounceList} from '../../store/slice/postSlice'
+import {getPostList,resetSuccess} from '../../store/slice/postSlice'
+import {getDenounceList,lockPost,deletePost} from '../../store/slice/postSlice'
 import { ToastContainer, toast } from 'react-toastify';
 import { IoLockClosedOutline } from "react-icons/io5";
 import 'react-toastify/dist/ReactToastify.css';
-
 import { useEffect } from "react";
 import './postList.scss'
 import moment from 'moment'
@@ -17,25 +15,32 @@ import { useState } from 'react';
 import Post from '../../components/dashboard/Post';
 const PostList = () => {
 
-    const {userList,isSuccess,successMessage} = useSelector(state => state.user); 
+    // const {isSuccess,successMessage} = useSelector(state => state.user); 
     const [singlePost,setSinglePost] = useState(null); 
     const [viewSinglePost,setViewSinglePost] = useState(false); 
     const {denounceList} = useSelector(state => state.post); 
-    const {postList} = useSelector(state => state.post); 
-    console.log(postList)
+    const {postList,isSuccess,successMessage} = useSelector(state => state.post); 
+ 
     const dispatch = useDispatch()
-    const handleDeleteUser = (userId)=>{
-      dispatch(deleteUser(userId)); 
+    const handleDeletePost = (postId)=>{
+      dispatch(deletePost(postId)); 
     }
+
   
     const handleBlockAccount = (userId)=>{
       dispatch(blockAccount({id:userId})); 
     }
+    
   
     if(isSuccess){
       dispatch(getUserList()); 
       dispatch(setIsSuccess(false))
       toast.success(successMessage)
+      dispatch(resetSuccess()); 
+    }
+
+    const handleLockPost = (postId)=>{
+        dispatch(lockPost(postId)); 
     }
   
     useEffect(()=>{
@@ -50,7 +55,10 @@ const PostList = () => {
               <ToastContainer/>
               <Card>
                 <CardBody>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <CardTitle tag="h5">Danh sách các bài viết </CardTitle>
+                  <button className="btn btn-success"><i class="bi bi-pencil-square"></i> Tạo bài viết</button>
+                  </div>
                   <Table className="no-wrap mt-3 align-middle" responsive borderless>
                     <thead>
                       <tr>
@@ -137,10 +145,10 @@ const PostList = () => {
                                 <i class="bi bi-eye text-primary"></i>
                               </div>
 
-                              <div className='icon-wrapper' title="Khóa bài viết" style={{marginRight:10}}>   
+                              <div className='icon-wrapper' title="Khóa bài viết" style={{marginRight:10}} onClick={()=>handleLockPost(tdata._id)}>   
                                 < IoLockClosedOutline class="bi bi-trash3 text-warning"/>
                               </div>
-                              <div className='icon-wrapper' title="Xóa bài viết" >   
+                              <div className='icon-wrapper' title="Xóa bài viết" onClick={()=> handleDeletePost(tdata._id)}>   
                                 <i class="bi bi-trash3 text-danger"></i>
                               </div>
 
@@ -155,10 +163,12 @@ const PostList = () => {
               </Card>
             </>
           ):(
-             <Row style={{width:850}}>                
+             <Row style={{width:850, height:650}}>                
                 <CardTitle tag="h5"> <i style={{cursor:'pointer'}} onClick={()=>setViewSinglePost(false)} class="bi bi-arrow-left"></i> Chi tiết bài viết </CardTitle>
-             
+                  <div style={{height:850,height:650}}>
+
                   <Post post={singlePost} />
+                  </div>
                 
                 
              </Row>

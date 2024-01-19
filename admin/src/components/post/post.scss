@@ -9,7 +9,7 @@
     position: relative;
     background-color: #FFFFFF;
     padding: 0 30px 30px 30px;
-  
+   
     .denounce-list{
         .io-close{
             position: absolute;
@@ -80,7 +80,6 @@
         flex-direction: column;
         position: absolute;
         top: 60px;
-        z-index: 9999999;
         right: 0;
         width: max-content;
         padding: 10px;
@@ -110,12 +109,6 @@
         text-wrap: wrap;
         margin-bottom: 20px;
         color: #1E2A35;
-        .like-number-view{
-            :hover{
-                cursor: pointer;
-                text-decoration: underline !important;
-            }
-           }
     }
     .post-top{
         width: 100%;
@@ -168,7 +161,7 @@
     }
     .post-center{
         width: 100%;
-        height: auto;
+        height: 650px !important;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -227,7 +220,6 @@
                 color: #377dff !important;
                 
             }
-           
             width: 100%;
             display: flex;
             margin-top: 30px;
@@ -237,7 +229,9 @@
             border-top: 0.5px solid #EEEEEE;
             padding: 10px 0;
             .post-comment{
-              
+                &:hover{
+                    text-decoration: underline;
+                }
             }
             li{
                 flex: 1;
@@ -469,6 +463,7 @@
 }
 
 
+
 .emoji{
     position: absolute;
     top: 50px;
@@ -477,18 +472,4 @@
 }
 .Flex.epr-preview.FlexRow{
     display: none;
-}
-
-.user-like-item{
-    &:hover{
-        text-decoration: underline;
-    }
-}
-
-.like-number-view{
-    &:hover{
-       .show-user-list{
-            display: flex !important;
-       } 
-    }
 }

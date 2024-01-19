@@ -8,7 +8,7 @@ import { BsGenderMale } from "react-icons/bs";
 import { MdOutlineDateRange } from "react-icons/md";
 import { validateEmail, validateEmpty, validateMinLenght } from '../../helper/validateHelper';
 import { useDispatch,useSelector } from 'react-redux';
-import { userLogin, userRegister,recoverPassword,resetSuccess } from '../../store/slice/userSlice';
+import { userLogin, userRegister,recoverPassword,resetUserSuccess } from '../../store/slice/userSlice';
 import { useNavigate } from 'react-router-dom';
 import {toggleOverlay} from '../../store/slice/appSlice'
 import { ToastContainer, toast } from 'react-toastify';
@@ -162,7 +162,7 @@ if(isRecoverPassSuccess === true){
     toast.success("Khôi phục mật khẩu thành công.Hãy kiểm tra email");
     handleSetChangeStateForget(false); 
     handleChangeStateForm(1);  
-    dispatch(resetSuccess());
+    dispatch(resetUserSuccess());
 }
 
 

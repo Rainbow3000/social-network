@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { Navigate } from "react-router-dom";
+import Profile from "../views/profile/Profile.jsx";
 
 /****Layouts*****/
 const FullLayout = lazy(() => import("../layouts/FullLayout.jsx"));
@@ -39,7 +40,8 @@ const ThemeRoutes = [
       { path: "/forms", exact: true, element: <Forms /> },
       { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
       { path: "/post-list", exact: true, element: <PostList /> },
-      { path: "/denounce", exact: true, element: <Denounce /> }
+      { path: "/denounce", exact: true, element: <Denounce /> },
+      { path: "/profile/:id", exact: true, element: <Profile /> }
     ],
   },
   {

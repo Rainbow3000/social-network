@@ -8,10 +8,18 @@
 
 .content-type{
     span{
-        width: 120px;
+        margin: 0 5px !important;   
         border-right:  1px solid gray;
+        &:first-child{
+            border-right: 1px solid gray !important;
+            padding-right: 5px;
+        }
         &:last-child{
             border: none;
         }
     }
+}
+
+.card-img{
+    height: 650px;
 }

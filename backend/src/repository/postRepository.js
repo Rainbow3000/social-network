@@ -23,7 +23,15 @@ module.exports = {
                     path:'_id',
                     select:'userName'
                 }
-              })
+              }).populate(
+                {
+                    path: 'like.userLiked',
+                    populate: {
+                            path:'_id',
+                            select:'userName email'
+                    }
+                },
+              )
 
             
 
@@ -33,18 +41,25 @@ module.exports = {
                       path:'_id',
                       select:'userName'
                   }
-                }); 
+                }).populate(
+                    {
+                        path: 'like.userLiked',
+                        populate: {
+                                path:'_id',
+                                select:'userName email'
+                        }
+                    },
+                  ); 
 
                       
             return {postShare,postList}
         } catch (error) {
-        console.log('eee',error); 
             throw error;
         }
     },
     getAll: async()=>{
         try {
-            return await Post.find().sort({createdAt:1}).populate(
+            return await Post.find({status:1}).sort({createdAt:1}).populate(
                 {
                     path: 'user',
                     populate: {
@@ -58,6 +73,14 @@ module.exports = {
                     populate: {
                         path:'_id',
                         select:'userName email'
+                    }
+                },
+              ).populate(
+                {
+                    path: 'like.userLiked',
+                    populate: {
+                            path:'_id',
+                            select:'userName email'
                     }
                 },
               )
@@ -98,7 +121,23 @@ module.exports = {
                     path:'_id',
                     select:'userName'
                 }
-              })
+              }).populate(
+                {
+                    path: 'like.userLiked',
+                    populate: {
+                            path:'_id',
+                            select:'userName email'
+                    }
+                },
+              ).populate(
+                {
+                    path: 'comment.userCommented',
+                    populate: {
+                            path:'_id',
+                            select:'userName email'
+                    }
+                },
+              )
             
         } catch (error) {
             throw error;

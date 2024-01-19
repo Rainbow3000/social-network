@@ -207,7 +207,6 @@ module.exports = {
     },
     delete: async(id)=>{
         try {
-            const {id} = data; 
             const chatExisted = await _chatRepository.get(id); 
             if(!chatExisted){
                 return {
@@ -217,7 +216,7 @@ module.exports = {
                     data:null
                 }
             }
-
+          
             const chatDeleted = await _chatRepository.delete(id); 
             return {
                 success:true,

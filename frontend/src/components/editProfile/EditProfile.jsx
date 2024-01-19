@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import uuid from 'react-uuid';
 import storage from '../../firebase'; 
 import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
-import {updateUserInfo,getUserInfo} from '../../store/slice/userSlice'
+import {updateUserInfo,getUserInfo,resetUserSuccess} from '../../store/slice/userSlice'
 import { useNavigate } from 'react-router-dom';
 import {toggleOverlay} from '../../store/slice/appSlice'
 import { ToastContainer, toast } from 'react-toastify';
@@ -24,7 +24,7 @@ const EditProfile = () => {
     const [instagramLink,setInstagramLink] = useState(""); 
     const [linkedInLink,setLinkedInLink] = useState(""); 
 
-    const {user,userInfo} = useSelector(state => state.user); 
+    const {user,userInfo,success,userSuccessMessage} = useSelector(state => state.user); 
     const dispatch = useDispatch(); 
     const navigate = useNavigate(); 
 
@@ -39,8 +39,6 @@ const EditProfile = () => {
                   })
               })
     }
-
-    const notify = () => toast.info("Cập nhật thông tin thành công!");
 
     const handleSubmitForm = (e)=>{
         e.preventDefault(); 
@@ -60,7 +58,12 @@ const EditProfile = () => {
         }
         dispatch(updateUserInfo({userData:data,userId:user?.data._id})) 
         setAvatarPreview("");
-        notify(); 
+         
+    }
+
+    if(success){
+        toast.success(userSuccessMessage); 
+        dispatch(resetUserSuccess()); 
     }
 
     useEffect(()=>{
@@ -91,7 +94,10 @@ const EditProfile = () => {
         <ToastContainer style={{marginTop:60}}/>
         <form onSubmit={handleSubmitForm}>
             <div className='image-upload'>
+                <div style={{width:'max-content'}}>
                 <img src={user?.data?.avatar} alt="" />
+
+                </div>
                 <input id='file-upload' type="file" onChange={handleChooseImage} />
                 <div className='upload-icon'>
                     <label htmlFor="file-upload"><IoCloudUploadOutline/></label>
@@ -172,7 +178,7 @@ const EditProfile = () => {
                 </div>
                 
                 <div className='input-item'>
-                    <button type="submit" className='btn-update'>Cập nhật</button>
+                    <button type="submit" className='btn-update-user'>Cập nhật</button>
                 </div>
             </div>
         </form>

@@ -13,7 +13,7 @@ const Community = () => {
 
   userList = userList.filter(item => item?._id._id !== user.data._id && userInfo?.friends?.find(element => element?._id._id === item?._id._id) === undefined); 
   const dispatch = useDispatch(); 
-  const [indexRender,setIndexRender] = useState(1)
+  const [indexRender,setIndexRender] = useState(3)
   useEffect(()=>{
      dispatch(getUserInfo(user?.data?._id))
      dispatch(getUserList()); 
@@ -27,9 +27,9 @@ const Community = () => {
     <div className='community-container'>
         <div className='community-wrapper'>
             <div className="community-top">
+                <div onClick={()=>handleClick(3)} className={indexRender === 3 ? 'top-btn active':'top-btn'}><span  style={{display:'flex',alignItems:'center'}}><RiGlobalLine/>&nbsp;{userList?.length} Người dùng</span></div>
                 <div onClick={()=>handleClick(1)} className={indexRender === 1 ? 'top-btn active':'top-btn'}><span  style={{display:'flex',alignItems:'center'}}><IoMdPersonAdd/>&nbsp;&nbsp;{userInfo?.requestAddFriendFromUser.length} Lời mời kết bạn</span></div>
                 <div onClick={()=>handleClick(2)} className={indexRender === 2 ? 'top-btn active':'top-btn'}><span  style={{display:'flex',alignItems:'center'}}><IoMdPersonAdd/>&nbsp;&nbsp;{userInfo?.requestAddFriend.length} Lời kết bạn đã gửi</span></div>
-                <div onClick={()=>handleClick(3)} className={indexRender === 3 ? 'top-btn active':'top-btn'}><span  style={{display:'flex',alignItems:'center'}}><RiGlobalLine/>&nbsp;{userList?.length} Người dùng khác</span></div>
             </div>
 
 

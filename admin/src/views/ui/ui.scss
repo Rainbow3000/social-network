@@ -39,3 +39,36 @@
 input[type='checkbox'] {
     accent-color: green;
 }
+
+.notifi-input{
+    width: 100%;
+    outline: none;
+    border: 1px solid #EEEEEE;
+    height: 45px;
+    border-radius: 5px;
+    padding-left: 10px;
+   &:focus{
+    border: 1px solid blue !important;
+   }
+}
+
+
+
+.send-btn{
+    &:hover{
+        background-color: rgb(56, 56, 214) !important;
+    }
+}
+
+
+.emoji-container{
+    position: absolute;
+    z-index: 9999;
+    top: 100px;
+    .Flex.epr-preview.FlexRow{
+        display: none;
+    }
+    .epr-search{
+        padding-left: 30px;
+    }
+}

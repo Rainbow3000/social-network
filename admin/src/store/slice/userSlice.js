@@ -60,6 +60,16 @@ export const recoverPassword = createAsyncThunk(
   }
 )
 
+export const updateUserInfo = createAsyncThunk(
+  'users/updateUserInfo',
+  async (data) => {
+    const {userId,userData} = data; 
+    const response = await _userRequest.put(`user/${userId}`,userData); 
+    return response.data
+  }
+)
+
+
 export const getUserInfo = createAsyncThunk(
   'users/getUserInfo',
   async (userId) => {

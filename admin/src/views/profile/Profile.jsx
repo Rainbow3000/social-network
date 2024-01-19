@@ -16,21 +16,20 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { IoIosRadio } from "react-icons/io";
 import { FaPlus } from "react-icons/fa6";
 import { FiRadio } from "react-icons/fi";
-import { FiPhone } from "react-icons/fi";
 import { PiMessengerLogoBold } from "react-icons/pi";
+import { GiShadowFollower } from "react-icons/gi";
+import { RiSendPlane2Line } from "react-icons/ri";
 import {GenderEnum} from '../../enums/Enum'
 import storage from '../../firebase'; 
 import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
+import {updateUserInfo} from '../../store/slice/userSlice'
 import uuid from 'react-uuid';
 import {Link} from 'react-router-dom'
-import {userAddFriend,userCancelAddFriend,userAcceptAddFriend,setEmptyUserChat,updateBlock,resetUserSuccess,updateUserInfo} from '../../store/slice/userSlice'
+// import {userCancelAddFriend,userAcceptAddFriend,setEmptyUserChat,updateBlock} from '../../store/slice/userSlice'
 import { LuPenSquare } from "react-icons/lu";
 import { MdClear } from "react-icons/md";
 import { LiaUserFriendsSolid } from "react-icons/lia";
 import {setUserChatCurrent} from '../../store/slice/chatSlice'
-import {resetPostSuccess} from '../../store/slice/postSlice'
-import { ToastContainer, toast } from 'react-toastify';
-import {toggleOverlay} from '../../store/slice/appSlice'
 
 const Profile = () => {
     const dispatch = useDispatch(); 
@@ -38,10 +37,9 @@ const Profile = () => {
     const location = useLocation(); 
     const userId = location.pathname.split('/')[2]; 
     const ownUserId = JSON.parse(localStorage.getItem('user')).data._id;
-    const {userInfo,success,userSuccessMessage} = useSelector(state => state.user); 
+    const {userInfo} = useSelector(state => state.user); 
     const {postOfUser} = useSelector(state => state.post); 
     const handleChooseImage = (event)=>{
-            dispatch(toggleOverlay(true))
             const file = event.target.files[0]; 
               const fileName =  `images/${uuid()}-${file.name}`; 
               const storageRef = refStorage(storage,fileName); 
@@ -49,14 +47,12 @@ const Profile = () => {
                   getDownloadURL(refStorage(storage,fileName)).then(downloadUrl =>{     
                     const userData = {avatar:`${downloadUrl}@-@${fileName}`};
                     dispatch(updateUserInfo({userId,userData}));
-                    dispatch(toggleOverlay(false))
+                  
                   })
             })
-            
     }
 
     const handleChooseCoverImage = (event)=>{
-        dispatch(toggleOverlay(true))
         const file = event.target.files[0]; 
           const fileName =  `images/${uuid()}-${file.name}`; 
           const storageRef = refStorage(storage,fileName); 
@@ -64,7 +60,7 @@ const Profile = () => {
               getDownloadURL(refStorage(storage,fileName)).then(downloadUrl =>{     
                 const userData = {coverAvatar:`${downloadUrl}@-@${fileName}`};
                 dispatch(updateUserInfo({userId,userData}));
-                dispatch(toggleOverlay(false))
+              
               })
         })
     }
@@ -74,14 +70,14 @@ const Profile = () => {
             userId
         }
         const id = ownUserId; 
-        dispatch(userAddFriend({userData,id}))
+        // dispatch(userAddFriend({userData,id}))
     }
 
     const handleAcceptAddFriend = ()=>{
         const userData = {
             userId:ownUserId,
         }
-        dispatch(userAcceptAddFriend({userData,id:userId}))
+        // dispatch(userAcceptAddFriend({userData,id:userId}))
     }
 
 
@@ -90,7 +86,7 @@ const Profile = () => {
             userId
         }
         const id = ownUserId; 
-        dispatch(userCancelAddFriend({userData,id})) 
+        // dispatch(userCancelAddFriend({userData,id})) 
     }
 
     const handleCancelAddFriendFromUserRequested = ()=>{
@@ -98,11 +94,11 @@ const Profile = () => {
             userId:ownUserId,
             type:2
         }
-        dispatch(userCancelAddFriend({userData,id:userId})) 
+        // dispatch(userCancelAddFriend({userData,id:userId})) 
     }
 
     const handleSetUserChat = ()=>{     
-        dispatch(setEmptyUserChat()); 
+        // dispatch(setEmptyUserChat()); 
         dispatch(setUserChatCurrent(userInfo))
         localStorage.setItem('user-chat',JSON.stringify(userInfo)); 
     }
@@ -112,12 +108,7 @@ const Profile = () => {
         const userData = {
             userId:ownUserId,
         }
-        dispatch(updateBlock({userData,id:userId})); 
-    }
-
-    if(success){  
-        toast.success(userSuccessMessage)
-        dispatch(resetUserSuccess());
+        // dispatch(updateBlock({userData,id:userId})); 
     }
     
 
@@ -161,7 +152,7 @@ const Profile = () => {
                 {
                     userId !== ownUserId && (
                         <div className='profile-btn-list'>
-                                    {
+                                    {/* {
                                         userInfo?.friends?.find(item => item?._id?._id === ownUserId) !== undefined && (
                                             <button className='primary-btn' ><LiaUserFriendsSolid/> &nbsp; Bạn bè</button>
                                         )
@@ -171,7 +162,7 @@ const Profile = () => {
                                     {
                                         userInfo?.requestAddFriendFromUser?.find(item => item?._id?._id === ownUserId) === undefined &&  userInfo?.requestAddFriend?.find(item => item._id._id === ownUserId) === undefined &&
                                         
-                                        userInfo?.friends?.find(item => item?._id?._id === userId) === undefined && userInfo?.friends?.find(item => item?._id?._id === ownUserId) === undefined && (
+                                        userInfo?.friends?.find(item => item?._id?._id === userId) === undefined && userInfo?.friends?.find(item => item._id?._id === ownUserId) === undefined && (
                                             <button className='primary-btn' onClick={handleAddFriend}><FaPlus/> &nbsp; Kết bạn</button>
                                         )                                    
                                     }
@@ -192,32 +183,28 @@ const Profile = () => {
                                             <div className='hr'></div>
                                         </>
                                         )
-                                      }
+                                      } */}
                                          
 
-                                {
-                                    userInfo?.friends.find(item => item?._id?._id === ownUserId) !== undefined && (
-                                        <button onClick={handleSetUserChat}>
-                                            <Link to="/chat" className='link'>
-                                                <PiMessengerLogoBold/> &nbsp;Nhắn tin
-                                            </Link>
-                                        </button>
-                                    )
-                                }
+                            <button onClick={handleSetUserChat}>
+                                <Link to="/chat" className='link'>
+                                    <PiMessengerLogoBold/> &nbsp;Nhắn tin
+                                </Link>
+                            </button>
                           
-                            <span className='profile-options-icon'><HiDotsHorizontal/>
+                            {/* <span className='profile-options-icon'><HiDotsHorizontal/>
                                 <ul className='profile-options'>
                                     <li onClick={handleCancelAddFriend}>Hủy kết bạn</li>
                                     <li>Tố cáo</li>
                                     <li onClick={handleBlock}>Chặn</li>
                                 </ul>
-                            </span>
+                            </span> */}
                         </div>
                     )
                 }
 
                 {
-                    userId === JSON.parse(localStorage.getItem('user'))?.data?._id && (
+                    userId === JSON.parse(localStorage.getItem('user'))?.data._id && (
                         <div className='profile-btn-list'>
                             <Link to="/setting" className='link'>   
                                 <button><LuPenSquare/> &nbsp; Cập nhật thông tin</button>
@@ -249,16 +236,14 @@ const Profile = () => {
             <div className='profile-intro'>             
                 <ul>
                     <li>Giới thiệu</li>
-                    <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><BsGenderAmbiguous /></div> &nbsp;&nbsp;{GenderEnum[userInfo?.gender]}</li>
-                    <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><LiaBirthdayCakeSolid /></div>&nbsp;&nbsp;{userInfo?.dob.split('-').reverse().join('-')}</li>
-
-                    <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><FiPhone /></div>&nbsp;&nbsp;{userInfo?.phoneNumber}</li>
-
-                    <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><IoLocationOutline /></div>&nbsp;&nbsp;{userInfo?.address !== null && userInfo?.address !== undefined ? <span>{userInfo?.address}</span> :'Chưa cập nhật'}</li>
-                    <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><RiFacebookBoxLine /></div>&nbsp;&nbsp;{userInfo?.facebookLink !== null && userInfo?.facebookLink !== undefined ? <span>{userInfo?.facebookLink}</span> :'Chưa cập nhật'}</li>
-                    <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><FiTwitter /></div>&nbsp;&nbsp;{userInfo?.twitterLink !== null && userInfo?.twitterLink !== undefined ? <span>{userInfo?.twitterLink}</span> :'Chưa cập nhật'}</li>
-                    <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><FaInstagram /></div>&nbsp;&nbsp;{userInfo?.instagramLink !== null && userInfo?.instagramLink !== undefined  ? <span>{userInfo?.instagramLink}</span> :'Chưa cập nhật'}</li>
-                   
+                    <li><BsGenderAmbiguous/> &nbsp;&nbsp;{GenderEnum[userInfo?.gender]}</li>
+                    <li><LiaBirthdayCakeSolid/>&nbsp;&nbsp;{userInfo?.dob.split('-').reverse().join('-')}</li>
+                    <li><IoLocationOutline/>&nbsp;&nbsp;{userInfo?.address !== null && userInfo?.address !== undefined ? userInfo?.address :'Chưa cập nhật'}</li>
+                    <li><RiFacebookBoxLine/>&nbsp;&nbsp;{userInfo?.facebookLink !== null && userInfo?.facebookLink !== undefined ? userInfo?.facebookLink :'Chưa cập nhật'}</li>
+                    <li><FiTwitter/>&nbsp;&nbsp;{userInfo?.twitterLink !== null && userInfo?.twitterLink !== undefined ? userInfo?.twitterLink :'Chưa cập nhật'}</li>
+                    <li><FaInstagram/>&nbsp;&nbsp;{userInfo?.instagramLink !== null && userInfo?.instagramLink !== undefined ? userInfo?.instagramLink :'Chưa cập nhật'}</li>
+                    <li><IoIosRadio/>&nbsp;&nbsp;{userInfo?.followers?.length} Người theo dõi</li>
+                    <li><GiShadowFollower/>&nbsp;&nbsp;{userInfo?.followings?.length} Đang theo dõi</li>
                    
                 </ul>
             </div>
@@ -287,7 +272,42 @@ const Profile = () => {
                         }
                 </div>
 
-               
+                {/* <div className='recommend'>
+                <div className="right-recommend">
+                    <div className='top'>
+                      <span>Sinh nhật</span>
+                      <span>Xem thêm</span>
+                    </div>
+                    <div className='center'>           
+                        <img className='dob-user-img' src="https://media.cnn.com/api/v1/images/stellar/prod/170407220916-04-iconic-mountains-matterhorn-restricted.jpg?q=w_2512,h_1413,x_0,y_0,c_fill/h_778" alt="" />            
+                        <div className="user-wrapper">
+                          <div className='user-name'>
+                            <span>Nguyễn Văn A</span>
+                            <span>Sinh nhật ngày hôm nay</span>                      
+                          </div>
+
+                        </div>
+                        
+                      </div>
+                  
+                    <div className='bottom'>
+                      <div className='dob-send-input'>
+                          <input type="text" placeholder='Gửi lời chúc mừng ...'/>
+                          <div className='send-icon-wrapper'><RiSendPlane2Line/></div>
+                      </div>
+                    </div>
+
+                    <div className='dob-upcomming'>
+                      <div className='dob-icon'>
+                          <LiaBirthdayCakeSolid/>
+                      </div>
+                      <div className='dob-info'>
+                        <span>Sinh nhật của mọi người</span>
+                        <span>12 người bạn đón sinh nhật hôm nay</span>
+                      </div>
+                    </div>
+                </div>
+                </div> */}
             </div>
 
         </div>

@@ -133,9 +133,7 @@ useEffect(()=>{
                     <input type="text" placeholder='Tìm kiếm người liên hệ' />      
                 </div>
 
-                <div className='option-icon'>
-                    <BsThreeDots/>
-                </div>
+              
             </div>
 
             {
@@ -269,7 +267,7 @@ useEffect(()=>{
                         <div className='chat-input'>
                             <form className='input-wrapper' onSubmit={handleSubmitForm}>
                                 <input  onChange={(e)=> setContent(e.target.value)} ref={inputRef}  value={content} type="text" placeholder='Nhập tin nhắn của bạn ...'/>
-                                <div className='icon-wrapper'>
+                                <div style={{display:'flex',alignItems:'center'}} className='icon-wrapper'>
                                     {emojiShow && (
                                         <div className="emoji">
                                             <EmojiPicker theme='light' onEmojiClick={onEmojiClick} />

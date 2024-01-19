@@ -1,6 +1,7 @@
 
 import './App.scss';
 import Home from './pages/home/Home';
+import { useState } from 'react';
 import Header from './components/header/Header';
 import Sidebar from './components/sidebar/Sidebar';
 import Profile from './pages/profile/Profile';
@@ -16,7 +17,7 @@ import { useEffect,useRef } from 'react';
 import {getNotificationByUser} from './store/slice/notificationSlice'
 import {setUserActive,getUserDob} from './store/slice/userSlice'
 import {addNotifi} from '../src/store/slice/notificationSlice'
-import {addChatCreated} from '../src/store/slice/chatSlice'
+import {addChatCreated,setConfirm,setCancel,setCallFriend} from '../src/store/slice/chatSlice'
 import HashLoader from 'react-spinners/HashLoader'
 import VideoCall from './components/videoCall/VideoCall';
 
@@ -26,11 +27,22 @@ function App() {
   const dispatch = useDispatch(); 
   const {user,activeList} = useSelector(state => state.user); 
   const {isShowOverlay} = useSelector(state => state.app); 
+  const {callFromFriend} = useSelector(state => state.chat); 
+  const [showCall,setShowCall] = useState([false]); 
   const socket = useRef(); 
   const navigate = useNavigate(); 
 
+  const handleCancel = ()=>{
+    dispatch(setCancel(true))
+    dispatch(setConfirm(false))
+    dispatch(setCallFriend(null))
+  }
 
-
+  const handleSuccess = ()=>{
+    dispatch(setConfirm(true))
+    dispatch(setCancel(false))
+    dispatch(setCallFriend(null))
+  }
 
   useEffect(()=>{
 
@@ -74,9 +86,12 @@ function App() {
     dispatch(getNotificationByUser(user?.data?._id)); 
 
   },[user])
+
+
+
   return (
     <div id="app">
-    <VideoCall/>
+      <VideoCall/>
       
       {
         isShowOverlay === true && (
@@ -85,6 +100,22 @@ function App() {
           </div>
         )
       }
+      {callFromFriend !== null && callFromFriend?._id !== user.data._id &&  (
+        <div className='overlay-call'>       
+          <div style={{display:'flex',flexDirection:'column',alignItems:'center',backgroundColor:'#FFFFFF',padding:30,width:'auto'}}>
+            <img width={120} height={120} style={{borderRadius:'50%'}} src={user.data.avatar} alt=''/>
+            <span>Cuộc gọi đến từ <b>{callFromFriend?.userName}</b></span>
+            <div>
+              <button onClick={handleCancel} className='btn btn-danger'>Hủy</button>
+              <button onClick={handleSuccess} className='btn btn-success'>Đồng ý</button>
+            </div>
+          </div>
+       </div>
+      
+
+      )}
+    
+
             {
               user !== null &&  (
                 <div className="app-left">

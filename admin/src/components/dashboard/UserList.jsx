@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IoLockClosedOutline } from "react-icons/io5";
 import { useEffect } from "react";
-
+import {Link} from 'react-router-dom'
 const ProjectTables = () => {
 
   const {userList,isSuccess,successMessage} = useSelector(state => state.user); 
@@ -15,8 +15,8 @@ const ProjectTables = () => {
     dispatch(deleteUser(userId)); 
   }
 
-  const handleBlockAccount = (userId)=>{
-    dispatch(blockAccount({id:userId})); 
+  const handleBlockAccount = (userData)=>{
+    dispatch(blockAccount({id:userData._id._id})); 
   }
 
   if(isSuccess){
@@ -50,13 +50,13 @@ const ProjectTables = () => {
                 <tr key={index} className="border-top">
                   <td>
                     <div className="d-flex align-items-center p-2">
-                      <img
-                        src={tdata.avatar}
-                        className="rounded-circle"
-                        alt="avatar"
-                        width="45"
-                        height="45"
-                      />
+                          <img
+                            src={tdata.avatar}
+                            className="rounded-circle"
+                            alt="avatar"
+                            width="45"
+                            height="45"
+                          />
                       <div className="ms-3">
                         <h6 className="mb-0">{tdata._id.userName}</h6>
                         <span className="text-muted">{tdata._id.email}</span>
@@ -76,10 +76,12 @@ const ProjectTables = () => {
                   </td>
                   <td style={{display:'flex',alignItems:'center',transform:'translateY(40%)'}}>
 
-                      <div className="icon-wrapper-user" title="Xem chi tiết" st style={{marginRight:10,cursor:'pointer',border:'1px solid rgba(128, 128, 128, 0.267)',padding:'0 5px',borderRadius:'5px'}} onClick={()=> handleDeleteUser(tdata._id._id)}>
-                        <i class="bi bi-eye text-primary"></i>
-                      </div>
-                      <div className="icon-wrapper-user" title="Khóa tài khoản" style={{cursor:'pointer',border:'1px solid rgba(128, 128, 128, 0.267)',padding:'0 5px',borderRadius:'5px'}} onClick={()=> handleBlockAccount(tdata._id._id)}>
+                      <Link to = {`/profile/${tdata._id._id}`}>
+                        <div className="icon-wrapper-user" title="Xem chi tiết" st style={{marginRight:10,cursor:'pointer',border:'1px solid rgba(128, 128, 128, 0.267)',padding:'0 5px',borderRadius:'5px'}}>
+                          <i class="bi bi-eye text-primary"></i>
+                        </div>
+                      </Link>
+                      <div className="icon-wrapper-user" title="Khóa tài khoản" style={{cursor:'pointer',border:'1px solid rgba(128, 128, 128, 0.267)',padding:'0 5px',borderRadius:'5px'}} onClick={()=> handleBlockAccount(tdata)}>
                         <IoLockClosedOutline className="text-warning"/>
                       </div>
                       <div className="icon-wrapper-user" title="Xóa tài khoản" st style={{marginLeft:10,cursor:'pointer',border:'1px solid rgba(128, 128, 128, 0.267)',padding:'0 5px',borderRadius:'5px'}} onClick={()=> handleDeleteUser(tdata._id._id)}>

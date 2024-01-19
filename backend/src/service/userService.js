@@ -193,12 +193,21 @@ module.exports = {
                 
             }
 
-            const userDeleted = await _userRepository.delete(id); 
-            await _accountRepository.delete(id); 
             await _postRepository.deleteMany(id); 
             await _notificationRepository.deleteMany(id); 
             await _commentRepository.deleteMany(id);
             await _chatRepository.deleteMany(id); 
+
+            const postList = await _postRepository.getAll(); 
+            await Promise.all( postList.map(async item =>{   
+                 if(item.denounce.find(deno => deno.user?._id._id.equals(id) !== undefined)){
+                    item.denounce = item.denounce.filter(deno => !deno.user?._id._id.equals(id))
+                    return await _postRepository.update(item._id,item); 
+                 }
+            }))
+            
+            const userDeleted = await _userRepository.delete(id); 
+            await _accountRepository.delete(id); 
 
             return {
                 success:true,
@@ -208,7 +217,7 @@ module.exports = {
             }
 
         } catch (error) {
-            
+            console.log(error)
             if(error instanceof mongoose.Error.ValidationError){  
                 return {
                     success:false,
@@ -287,13 +296,18 @@ module.exports = {
             }
             
             const account = await _accountRepository.get(id);  
-            userExisted.status = -1; 
-            account.status = -1; 
+            if(userExisted.status !== -1 && account.status !== -1){
+                userExisted.status = -1; 
+                account.status = -1; 
+            }else {
+                userExisted.status = 1; 
+                account.status = 1; 
+            }
             await _accountRepository.update(account,account._id);                        
             const userUpdated =  await _userRepository.update(userExisted,id);
             return {
                 success:true,
-                message:"Khóa tài khoản người dùng thành công",
+                message:"Cập nhật trạng thái tài khoản thành công",
                 statusCode:200,
                 data:userUpdated
             }
@@ -471,14 +485,30 @@ module.exports = {
     userStat: async()=>{
         try {
             const {user,blockNumber} =  await _userRepository.userStat(); 
+            const userList = await _userRepository.getAll();
+            const count = userList.filter(item => {
+                let date = item.createdAt.toISOString().split('T')[0].split('-')[2]; 
+                let dateArr = item.createdAt.toISOString().split('T')[0].split('-'); 
+                let dateCreate = parseInt(date) + 1;
+                dateArr[2] = dateCreate; 
+                dateArr = dateArr.join('-'); 
+                const currentDate = moment().format().split('T')[0]; 
+                
+             
+                if(dateArr === currentDate){
+                    return item; 
+                }
+            });  
+        
+        
             return {
                 success:true,
                 message:"Thống kê người dùng thành công",
                 statusCode:200,
-                data:{user,blockNumber}
+                data:{user,blockNumber,registerToday:count.length}
             }
         } catch (error) {
-            
+            console.log(error)
             if(error instanceof mongoose.Error.ValidationError){  
                 return {
                     success:false,

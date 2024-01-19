@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './videocall.scss'
-import { setCallIdList,setCurrentCallId,setIsPlayCall,setIsShowCallLayout } from '../../store/slice/chatSlice';
+import {setCallFriend, setCallIdList,setCancel,setConfirm,setCurrentCallId,setIsPlayCall,setIsShowCallLayout } from '../../store/slice/chatSlice';
+import {toggleOverlay} from '../../store/slice/appSlice'
 import {createInstanceSocket} from '../../utils/socket'
 import { Peer } from "peerjs";
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,8 +14,9 @@ const VideoCall = () => {
  const dispatch  = useDispatch(); 
  const [stream,setStream] = useState(null); 
  const [call,setCall] = useState(null); 
+ const [startCall,setStartCall] = useState(false); 
 
- const {callIdList,isPlayCall,currentCallId,userChatCurrent,isShowCallLayout} = useSelector(state => state.chat); 
+ const {callIdList,isPlayCall,currentCallId,userChatCurrent,isShowCallLayout,confirm,cancel} = useSelector(state => state.chat); 
  const {user}  = useSelector(state => state.user); 
 
   const openStream = ()=>{
@@ -75,6 +77,10 @@ const handleCloseCall = ()=>{
 
 useEffect(()=>{
     socket.current = createInstanceSocket();
+
+
+    
+
     const peer = new Peer();
     peerRef.current = peer; 
     if(peerRef.current){
@@ -97,6 +103,7 @@ useEffect(()=>{
                 call.on('stream',remoteStream =>playStream(friendVideoRef,remoteStream))
                 dispatch(setIsShowCallLayout(true))
                 setCall(call); 
+                            
             }); 
         });
 
@@ -104,11 +111,24 @@ useEffect(()=>{
 
     if(socket.current){
         socket.current.on('send-callId-to-client',data =>{
-            dispatch(setCallIdList(data)); 
+             dispatch(setCallIdList(data)); 
         })
+
+        socket.current.on('user-calling',(data) =>{
+            dispatch(setCallFriend(data.data))
+          })
     }
  
-},[user])
+},[user,confirm])
+
+
+useEffect(()=>{
+   if(confirm){
+    dispatch(setIsShowCallLayout(true)); 
+    setStartCall(false); 
+    dispatch(setConfirm(false)); 
+   }
+},[confirm])
 
 
 useEffect(()=>{
@@ -133,20 +153,47 @@ useEffect(()=>{
 
 
 useEffect(()=>{
-    if(isPlayCall){
+    if(isPlayCall){    
+        socket.current.emit('user-call',{currentId:userChatCurrent,user}); 
+        setStartCall(true); 
+    }
+},[isPlayCall])
+
+
+useEffect(()=>{
+    if(cancel){
+        setIsShowCallLayout(false);  
+        dispatch(setCancel(false)); 
+    }
+},[cancel])
+
+
+useEffect(()=>{
+    if(confirm){
         openStream().then(stream =>{
             playStream(myVideoRef,stream)
             const call = peerRef.current.call(currentCallId,stream);
-            call.on('stream',remoteStream =>playStream(friendVideoRef,remoteStream))
+            call.on('stream',remoteStream =>playStream(friendVideoRef,remoteStream))         
         }); 
     }
-},[isPlayCall === true])
+},[confirm])
 
 
   return (
     <div className={isShowCallLayout === true ? 'video-call-container active':'video-call-container'}>
+        <div style={{display:'flex',flexDirection:'column', alignItems:'center'}}>
+        {
+            startCall === true && (
+                <div style={{display:'flex',flexDirection:'column', alignItems:'center',position:'relative',top:170,zIndex:99}}>
+                    <img width={120} height={120} src={userChatCurrent.avatar} alt="" style={{borderRadius:'50%'}} />
+                    <span>Đang kết nối tới {userChatCurrent?._id.userName}...</span>
+                </div>
+            )
+        }
         <video ref={myVideoRef} className='my-video' width={200} height={200} autoplay="autoplay"></video>
-        <video ref={friendVideoRef} className='friend-video' width={750} height={500} autoplay="autoplay"></video>
+        <video style={{zIndex:999999999}} ref={friendVideoRef} className='friend-video' width={750} height={500} autoplay="autoplay"></video>
+           
+        </div>
         <div className='btn-action-list'>
             <div className='phone-end' onClick={handleCloseCall}>
                 <ImPhoneHangUp/>

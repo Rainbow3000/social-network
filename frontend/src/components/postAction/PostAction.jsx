@@ -9,7 +9,7 @@ import uuid from 'react-uuid';
 import storage from '../../firebase'; 
 import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
-import {createPost,setValueSuccess,resetSuccess} from '../../store/slice/postSlice'
+import {createPost,setValueSuccess,resetPostSuccess} from '../../store/slice/postSlice'
 import { validateEmpty } from '../../helper/validateHelper';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import EmojiPicker from "emoji-picker-react";
@@ -22,7 +22,7 @@ const PostAction = () => {
   const [video,setVideo] = useState(""); 
   const [content,setContent] = useState(""); 
   const dispacth = useDispatch(); 
-  const {isSuccess,successMessage} = useSelector(state => state.post); 
+  const {isSuccess,postSuccessMessage} = useSelector(state => state.post); 
   const inputRef = useRef(null); 
   const {user} = useSelector(state => state.user)
   const [contentErr,setContentErr] = useState(""); 
@@ -71,10 +71,10 @@ const handleChooseImageForVideo = (event)=>{
 
 
 const onEmojiClick = (object) => {
-  let text = content + object.emoji;
-  setContent(text);
+  setContent(content + object.emoji);
   setContentErr(""); 
 };
+
 
 
 const handleSubmitForm = (e)=>{
@@ -107,9 +107,10 @@ const handleSubmitForm = (e)=>{
 }
 
 if(isSuccess){
-  toast.success(successMessage); 
-  dispacth(resetSuccess());
+  toast.success(postSuccessMessage); 
+  dispacth(resetPostSuccess());
 }
+
 
 useEffect(()=>{
   inputRef?.current?.focus();
@@ -119,7 +120,9 @@ return (
   <form className='post-create' onSubmit={handleSubmitForm}>
   <span className='text-error content'>{contentErr}</span>
   <div className='user-input'>
-    <img src={user?.data?.avatar} alt="" />
+    <div className='user-avatar'>
+      <img src={user?.data?.avatar} alt="" />
+    </div>
     <input value={content} placeholder='Nội dung bài viết của bạn ...' type="text" onChange={(e)=>{
       setContent(e.target.value)
       setContentErr("")

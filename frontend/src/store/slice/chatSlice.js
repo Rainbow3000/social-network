@@ -26,6 +26,14 @@ export const createChat = createAsyncThunk(
     }
   )
 
+  export const deleteChat = createAsyncThunk(
+    'chat/deleteChat',
+     async (chatId) => {
+      const response = await _userRequest.delete(`chat/${chatId}`); 
+      return {chatId}; 
+    }
+  )
+
 export const updatePostByOtherUser = createAsyncThunk(
   'chat/updatePostByOtherUser',
    async ({postId,userId}) => {
@@ -50,13 +58,25 @@ const chatState = {
   isSuccess:false,
   isLoading:false,
   isError:false,
-  error:null
+  error:null,
+  callFromFriend:null,
+  cancel:false, 
+  confirm:false
 }
 
 export const chatSlice = createSlice({
   name: 'chat',
   initialState:chatState,
   reducers: {
+
+    setCancel:(state,action)=>{
+      state.cancel = action.payload; 
+    },
+
+    setConfirm:(state,action)=>{
+      state.confirm = action.payload; 
+    },
+
     showCreatePost : (state)=>{
       state.isSuccess = false; 
       state.isShowCreatePost = true; 
@@ -80,6 +100,10 @@ export const chatSlice = createSlice({
       } 
     },
 
+    setCallFriend:(state,action)=>{
+      state.callFromFriend = action.payload; 
+    },
+
     setIsPlayCall:(state,action)=>{
       state.isPlayCall = action.payload; 
     },
@@ -89,7 +113,22 @@ export const chatSlice = createSlice({
     chatReset: () => chatState
   },
   extraReducers:(builder)=>{
-
+    builder.addCase(deleteChat.pending, (state, action) => {
+      state.isLoading = true; 
+      state.isSuccess = false;
+    })
+    builder.addCase(deleteChat.fulfilled,(state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false
+      state.chatList = state.chatList.filter(item => item._id !== action.payload.chatId); 
+    })
+    builder.addCase(deleteChat.rejected, (state, action) => {
+      state.isError = true;
+      state.isSuccess = false;
+      state.error = action.payload;
+      state.isLoading = false;
+    })
 
 
     builder.addCase(getUserChatList.pending, (state, action) => {
@@ -175,6 +214,6 @@ export const chatSlice = createSlice({
   }
 })
 
-export const {setIsPlayCall,setIsShowCallLayout,showCreatePost,hiddenShowCreatePost,setUserChatCurrent,addChatCreated,chatReset,setCallIdList,setCurrentCallId } = chatSlice.actions
+export const {setCancel,setConfirm,setCallFriend, setIsPlayCall,setIsShowCallLayout,showCreatePost,hiddenShowCreatePost,setUserChatCurrent,addChatCreated,chatReset,setCallIdList,setCurrentCallId } = chatSlice.actions
 
 export default chatSlice.reducer

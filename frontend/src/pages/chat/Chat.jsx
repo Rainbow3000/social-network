@@ -5,6 +5,7 @@ import { BiDotsHorizontal, BiSearch } from "react-icons/bi";
 import { BsThreeDots } from "react-icons/bs";
 import { IoImageOutline } from "react-icons/io5";
 import { RiSendPlane2Line } from "react-icons/ri";
+import { MdClear } from "react-icons/md";
 import { FaVideo } from "react-icons/fa";
 import './chat.scss'
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,8 +13,12 @@ import uuid from 'react-uuid';
 import storage from '../../firebase'; 
 import {ref as refStorage,uploadBytes, getDownloadURL} from 'firebase/storage'
 import EmojiPicker from "emoji-picker-react";
-import {createChat,getChatListByUser,setIsPlayCall,setIsShowCallLayout} from '../../store/slice/chatSlice'
+import {createChat,getChatListByUser,setIsPlayCall,setIsShowCallLayout,deleteChat} from '../../store/slice/chatSlice'
 import {getUserInfo} from '../../store/slice/userSlice'
+import {createInstanceSocket} from '../../utils/socket'
+import {setUserActive} from '../../store/slice/userSlice'
+import {addNotifi} from '../../store/slice/notificationSlice'
+import {addChatCreated} from '../../store/slice/chatSlice'
 import moment from 'moment/dist/moment';
 import 'moment/dist/locale/vi'
 moment.locale('vi');
@@ -30,7 +35,10 @@ const Chat = () => {
   const scrollRef = useRef();
   const inputRef = useRef(); 
   const dispatch = useDispatch(); 
-
+  const socket = useRef(); 
+  const handleDelete = (chatId)=>{
+    dispatch(deleteChat(chatId)); 
+  }
 
   useEffect(() => {
     const scrollToBottomWithSmoothScroll = () => {
@@ -113,6 +121,36 @@ const handlePlayVideo = ()=>{
 
 
 useEffect(()=>{
+
+
+
+    socket.current = createInstanceSocket();
+    if(socket.current){
+      socket.current.on('connect', () => {
+         socket.current.emit('user-connected',user?.data?._id); 
+      });
+
+
+      socket.current.on('user-online',(data)=>{
+            dispatch(setUserActive(data));         
+      })
+
+      socket.current.on('notifi-add-friend-single-user',(notifi)=>{
+        dispatch(addNotifi(notifi));
+     })
+     socket.current.on('notifi-accept-add-friend-single-user',(notifi)=>{
+         dispatch(addNotifi(notifi));
+      })
+
+      socket.current.on('receive-message-single-user',(msg)=>{
+        dispatch(addChatCreated(msg));
+     })   
+
+     
+    }
+
+
+
     if(userChatCurrent !== null){
         dispatch(getChatListByUser({id:user?.data._id,friendId:userChatCurrent?._id._id}))
     }
@@ -133,9 +171,7 @@ useEffect(()=>{
                     <input type="text" placeholder='Tìm kiếm người liên hệ' />      
                 </div>
 
-                <div className='option-icon'>
-                    <BsThreeDots/>
-                </div>
+              
             </div>
 
             {
@@ -251,7 +287,12 @@ useEffect(()=>{
 
 
                                                     &nbsp;&nbsp;
-                                                <BiDotsHorizontal className='option-icon'/>
+                                                 {
+                                                    item.from._id._id === user?.data._id && (
+                                               
+                                                <BiDotsHorizontal onClick={()=>handleDelete(item._id)} title='Xóa tin nhắn' className='option-icon'/>
+                                                    )
+                                                 }   
                                             </div>
                                                                              
                                             <span className='time'>{moment(item?.createdDate).calendar()}</span>
@@ -269,7 +310,7 @@ useEffect(()=>{
                         <div className='chat-input'>
                             <form className='input-wrapper' onSubmit={handleSubmitForm}>
                                 <input  onChange={(e)=> setContent(e.target.value)} ref={inputRef}  value={content} type="text" placeholder='Nhập tin nhắn của bạn ...'/>
-                                <div className='icon-wrapper'>
+                                <div className='icon-wrapper' style={{dispatch:'flex',alignItems:'center'}}>
                                     {emojiShow && (
                                         <div className="emoji">
                                             <EmojiPicker theme='light' onEmojiClick={onEmojiClick} />
@@ -278,15 +319,15 @@ useEffect(()=>{
 
                                     <input id='file-input' type="file" multiple onChange={handleChooseImage} />
                                     <FaRegFaceSmile className='icon' onClick={() => setEmojiShow(!emojiShow)}/>
-                                    <label htmlFor="file-input">
+                                    <label htmlFor="file-input" style={{display:'flex',alignItems:'center'}}>
                                         <IoImageOutline className='icon'/>
                                     </label>
                                 </div>
                             </form>
-
                             <div className='send-btn' onClick={handleCreateMessage}>
                                 <RiSendPlane2Line/>
                             </div>
+
                         </div>
                     </div>
                     </>

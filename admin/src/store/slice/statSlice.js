@@ -25,7 +25,8 @@ const statState = {
   postStat:[],
   userLength :0, 
   postLength :0,
-  blockNumber:0
+  blockNumber:0,
+  registerToday:0
 }
 
 export const statSlice = createSlice({
@@ -52,6 +53,7 @@ export const statSlice = createSlice({
       },0)
       state.userStat = action.payload.data.user?.filter(item => item._id.year === new Date().getFullYear()).map(item => item.quantity);
       state.blockNumber = action.payload.data.blockNumber
+      state.registerToday = action.payload.data.registerToday
     })
     builder.addCase(getUserStat.rejected, (state, action) => {
       state.isError = true;

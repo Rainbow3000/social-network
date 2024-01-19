@@ -18,11 +18,8 @@ module.exports = {
                     online.push(data); 
                 }  
                 socket.broadcast.emit('user-online',online)      
-                              
+             
             })
-
-            console.log('online',userOnline)
-
 
             socket.on('user-end-call',(userEndCallId) =>{
                 socket.broadcast.emit('end-call',userEndCallId)
@@ -42,6 +39,13 @@ module.exports = {
                 }
                 socket.broadcast.emit('send-callId-to-client',callId)
               
+            })
+
+            socket.on('user-call',(data)=>{
+                const {currentId,user} = data;
+                const socketId = userOnline.get(currentId._id._id); 
+                socket.join(socketId); 
+                socket.broadcast.emit('user-calling',user); 
             })
 
             socket.on('disconnect', () => {     

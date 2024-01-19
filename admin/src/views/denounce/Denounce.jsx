@@ -63,21 +63,21 @@ const Denounce = () => {
                   <td>
                     <div className="d-flex align-items-center p-2">
                         <img
-                            src={tdata.user.avatar}
+                            src={tdata?.user?.avatar}
                             className="rounded-circle"
                             alt="avatar"
                             width="45"
                             height="45"
                           />
                           <div className="ms-3">
-                            <h6 className="mb-0">{tdata.user._id.userName}</h6>
-                            <span className="text-muted">{tdata.user._id.email}</span>
+                            <h6 className="mb-0">{tdata?.user?._id?.userName}</h6>
+                            <span className="text-muted">{tdata?.user?._id?.email}</span>
                           </div>
                     </div>
                   </td>
                   <td style={{width:'25%'}}>
-                            <span>{tdata.createdDate?.split('+')[0].split('T')[0].split('-').reverse().join('/')}</span>
-                            <span> - {tdata.createdDate?.split('+')[0].split('T')[1]}</span>
+                            <span>{tdata?.createdDate?.split('+')[0]?.split('T')[0].split('-').reverse().join('/')}</span>
+                            <span> - {tdata?.createdDate?.split('+')[0]?.split('T')[1]}</span>
                   </td>
                   <td>{tdata.denounce?.length}</td>
                   <td>
@@ -157,8 +157,8 @@ const Denounce = () => {
                         <th scope="row">{index + 1}</th>
                         <td>
                           <div style={{display:'flex',alignContent:'center'}}>
-                            <img className='denounce-img' width={60} height={60} src={item.user.avatar} alt="" />
-                            <h6 style={{marginLeft:10, display:'flex',alignItems:'center',marginBottom:0}}>{item.user._id.userName}</h6>
+                            <img className='denounce-img' width={60} height={60} src={item?.user?.avatar} alt="" />
+                            <h6 style={{marginLeft:10, display:'flex',alignItems:'center',marginBottom:0}}>{item?.user?._id?.userName}</h6>
                           </div>
                         </td>
                         <td>
@@ -166,7 +166,7 @@ const Denounce = () => {
                               {
                                 item.denounceContent?.map(value =>{
                                   return (
-                                    <li>{value.split('.')[1]}</li>
+                                    <li>{value?.split('.')[1]}</li>
                                   )
                                 })
                               }  

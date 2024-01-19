@@ -19,7 +19,7 @@ import { VscSmiley } from "react-icons/vsc";
 import {Link} from 'react-router-dom'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {getCommentByPost,getPostByUser,updateStatusPost,deletePost,createDenounce,setValueSuccess,resetPostSuccess,updatePost} from '../../store/slice/postSlice'
+import {getCommentByPost,getPostByUser,updateStatusPost,deletePost,createDenounce,setValueSuccess,resetSuccess} from '../../store/slice/postSlice'
 import { RiSendPlane2Line } from "react-icons/ri";
 import EmojiPicker from "emoji-picker-react";
 import moment from 'moment/dist/moment';
@@ -41,7 +41,7 @@ const Post = ({item,userIdProfile}) => {
   const [level,setLevel] = useState(0); 
   const dispatch = useDispatch(); 
   const {user}= useSelector(state => state.user); 
-  const {postSuccessMessage,isSuccess}= useSelector(state => state.post); 
+  const {successMessage,isSuccess}= useSelector(state => state.post); 
   const inputRef = useRef(); 
   const videoRef = useRef();
   const [userShare,setUserShare] = useState(null); 
@@ -51,16 +51,16 @@ const Post = ({item,userIdProfile}) => {
   const denounceFirst =  useRef(); 
   const denounceSecond =  useRef(); 
   const denounceThree = useRef(); 
-  
+
   const handleLikePost = (postId,type)=>{
     const userId = user.data._id 
+
     if(type === 'SHARE'){
         dispatch(updatePostByOtherUser({postId,userId,type:1,isShare:true})); 
         return; 
     }
 
-    dispatch(updatePostByOtherUser({postId,userId,type:1,isShare:false}));
-
+    dispatch(updatePostByOtherUser({postId,userId,type:1,isShare:false})); 
   }
 
   const handleSharePost = (postId)=>{
@@ -127,7 +127,7 @@ const handleDenouncePost = (id)=>{
 }
 
 const handleSetReplyComment = (userName,parent,level,parentPrev)=>{
-  
+   
     if(level === 3){
         setContent(`@${userName}`);
         setParent(parentPrev); 
@@ -136,7 +136,7 @@ const handleSetReplyComment = (userName,parent,level,parentPrev)=>{
         inputRef.current.focus();
         return; 
     }
-    setContent(`@${userName.replace(/\s/g, "")} `);
+    setContent(`@${userName}`);
     setParent(parent); 
     setLevel(level);
     setParentName(userName);
@@ -149,10 +149,12 @@ const handleGetCommentByPost = (postId)=>{
 
 
 
+const handleHiddenSharePost = ()=>{
 
-const handleDeleteSharePost = (postId)=>{
-    dispatch(updatePost({postId,userId:user.data?._id}))
-    setIsShowActionActive(false); 
+}
+
+const handleDeleteSharePost = ()=>{
+
 }
 
 
@@ -189,6 +191,7 @@ const handleHiddenPost = (postId)=>{
 const handleDeletePost = (postId)=>{
     dispatch(deletePost(postId)); 
     setIsShowActionActive(false); 
+    dispatch(resetSuccess()); 
 }
 
 const handleSendDebounce = ()=>{
@@ -210,9 +213,10 @@ const handleSendDebounce = ()=>{
 
 
 if(isSuccess){
-    toast.success(postSuccessMessage)
-    dispatch(resetPostSuccess()); 
+    toast.info(successMessage); 
+    dispatch(setValueSuccess(false)); 
 }
+
 
 
 useEffect(()=>{
@@ -229,7 +233,7 @@ useEffect(()=>{
 
   return (
     <div className='post-container'>
-        <ToastContainer/>
+       
         {postId === item.user._id._id && (
         <div className='denounce-list'>
             <IoClose className='io-close' onClick={()=>setPostId("")}/>
@@ -266,7 +270,7 @@ useEffect(()=>{
                
             <div className="post-top">
                 
-                <img src={user.data?.avatar} alt="" />
+                <img src={item?.user?.avatar} alt="" />
                 
              <ul>
                 <li>{userShare?.user?._id.userName} <span style={{fontWeight:'normal'}}>đã chia sẻ một bài viết</span></li>
@@ -275,25 +279,25 @@ useEffect(()=>{
              <ul>
                 
              </ul>
-              
+           
              {
-                item?.share?.userShared?.find(item => item?.user?._id?._id === user?.data._id) !== undefined  && (
+                 user?.data._id === item?.user?._id?._id && (
                      <HiOutlineDotsHorizontal className='post-action' onClick={()=>setIsShowActionActive(active => !active)}/>
                      )
                     }
           
 
             <div className={ isShowActionActive === true ? 'post-action-item-wrapper active':'post-action-item-wrapper'}>            
-                  
-                    <span onClick={()=>handleDeleteSharePost(item._id)}>Xóa chia sẻ</span>                          
+                    <span onClick={()=>handleHiddenSharePost(item._id)}>Ẩn bài viết</span>
+                    <span onClick={()=>handleDeleteSharePost()}>Xóa bài viết</span>                          
             </div>
             </div>
        
         <div className="post-center">
             {
                 item?.images.length === 1 && (
-                <div className='post-img-single'>
-                    <img src={item?.images[0]} alt="" />
+                <div className='post-img-single' style={{height:'650px'}}>
+                    <img height={650} src={item?.images[0]} alt="" />
                 </div>
                 )
             }
@@ -364,26 +368,7 @@ useEffect(()=>{
 
 
             <ul className='post-center-action'>
-            <li style={{display:'flex',alignItems:'center'}} className={item?.like?.userLiked?.find(item => item?._id?._id === user?.data._id) !== undefined && 'liked'} ><GrLike onClick={()=>handleLikePost(item?._id)}/>&nbsp;{item.like?.userLiked?.find(item => item?._id?._id === user?.data._id) !== undefined ? 'Đã thích':'Thích'}&nbsp;(&nbsp;<span className='like-number-view' style={{position:'relative'}}> { item?.like?.number }
-                           {
-                            item?.like?.userLiked?.length > 0 && (
-                                <ul className='show-user-list' style={{position:'absolute',display:'none',flexDirection:'column',alignItems:'center',
-                                backgroundColor:'#F0F2F5',padding:20,borderRadius:5,bottom:20,width:'max-content',left:0}}>
-                                        {
-                                           item?.like?.userLiked.map(item =>{
-                                                return (
-                                                    <Link className='link' to={`/profile/${item?._id?._id}`}>
-                                                        <li className='user-like-item'>{item?._id?.userName}</li>
-                                                    </Link>
-                                                )
-                                           })
-                                        }
-                                    </ul>
-                            )
-                        }
-                            </span>&nbsp;)
-                               
-                            </li>
+                <li className={item.like?.userLiked?.find(item => item === user?.data._id) !== undefined && 'liked'} onClick={()=>handleLikePost(item?._id,item.type)}><GrLike/>&nbsp;{item.like?.userLiked?.find(item => item === user?.data._id) !== undefined ? 'Đã thích':'Thích'}&nbsp;( {item?.like?.number} )</li>
                 <li className='post-comment' onClick={()=> handleGetCommentByPost(item?._id)}><FaRegCommentDots/>&nbsp;Bình Luận&nbsp;( {item?.comment?.number} )</li>
                 <li onClick={()=>handleSharePost(item?._id)}><CiShare2/>&nbsp;Chia sẻ&nbsp;( {shareNumber} )</li>
             </ul>
@@ -472,9 +457,7 @@ useEffect(()=>{
                   )
             }
             <div className='post-user-input'>
-            <div style={{width:'max-content'}}>
                 <img src={user.data?.avatar} alt="" />
-            </div>
                 <form  onSubmit={handleSubmitForm}>
                 {emojiShow && (
                     <div className="emoji">
@@ -588,26 +571,7 @@ useEffect(()=>{
 
 
                         <ul className='post-center-action'>
-                            <li style={{display:'flex',alignItems:'center'}} className={item?.like?.userLiked?.find(item => item?._id?._id === user?.data._id) !== undefined && 'liked'} ><GrLike onClick={()=>handleLikePost(item?._id)}/>&nbsp;{item.like?.userLiked?.find(item => item?._id?._id === user?.data._id) !== undefined ? 'Đã thích':'Thích'}&nbsp;(&nbsp;<span className='like-number-view' style={{position:'relative'}}> { item?.like?.number }
-                           {
-                            item?.like?.userLiked?.length > 0 && (
-                                <ul className='show-user-list' style={{position:'absolute',display:'none',flexDirection:'column',alignItems:'center',
-                                backgroundColor:'#F0F2F5',padding:20,borderRadius:5,bottom:20,width:'max-content',left:0}}>
-                                        {
-                                           item?.like?.userLiked.map(item =>{
-                                                return (
-                                                    <Link className='link' to={`/profile/${item?._id?._id}`}>
-                                                        <li className='user-like-item'>{item?._id?.userName}</li>
-                                                    </Link>
-                                                )
-                                           })
-                                        }
-                                    </ul>
-                            )
-                        }
-                            </span>&nbsp;)
-                               
-                            </li>
+                            <li style={{display:'flex',alignItems:'center'}} className={item?.like?.userLiked?.find(item => item === user?.data._id) !== undefined && 'liked'} onClick={()=>handleLikePost(item?._id)}><FaRegHeart/>&nbsp;{item.like?.userLiked?.find(item => item === user?.data._id) !== undefined ? 'Đã thích':'Thích'}&nbsp;( {item?.like?.number} )</li>
                             <li className='post-comment' onClick={()=> handleGetCommentByPost(item?._id)}><FaRegCommentDots/>&nbsp;Bình Luận&nbsp;( {item?.comment?.number} )</li>
                             <li onClick={()=>handleSharePost(item?._id)}><CiShare2/>&nbsp;Chia sẻ&nbsp;( {shareNumber} )</li>
                         </ul>
@@ -672,7 +636,7 @@ useEffect(()=>{
                             {
                                 item?.commentList?.length > 0 && (
                                 <div className='more-comment'>
-                                    <span>Ẩn các bình luận</span>
+                                    <span>Xem các bình luận trước</span>
                                 </div>
                                 )
                             }
@@ -696,9 +660,7 @@ useEffect(()=>{
                             )
                         }
                         <div className='post-user-input'>
-                            <div style={{width:'max-content'}}>
                             <img src={user?.data?.avatar} alt="" />
-                            </div>
                             <form  onSubmit={handleSubmitForm}>
                             {emojiShow && (
                                 <div className="emoji">

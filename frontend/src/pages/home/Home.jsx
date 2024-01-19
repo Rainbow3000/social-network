@@ -3,14 +3,14 @@ import Post from '../../components/post/Post'
 import RightBar from '../../components/rightbar/Rightbar'
 import './home.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import {getPostList} from '../../store/slice/postSlice'
+import {getPostList,resetPostSuccess} from '../../store/slice/postSlice'
 import { RiSendPlane2Line } from "react-icons/ri";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
 import { useNavigate } from 'react-router-dom'
 import PostAction from '../../components/postAction/PostAction'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {getUserInfo} from '../../store/slice/userSlice'
+import {getUserInfo,resetUserSuccess} from '../../store/slice/userSlice'
 import {createInstanceSocket} from '../../utils/socket'
 import {setUserActive} from '../../store/slice/userSlice'
 
@@ -39,7 +39,7 @@ const Home = () => {
 
     dispatch(getPostList());
     dispatch(getUserInfo(user?.data?._id))
-  },[])
+  },[user])
 
 
   if(user === null){
@@ -54,12 +54,10 @@ const Home = () => {
              <PostAction/>
               <div className='post-list'>
                   {
-                    postList && postList.map((item,index)=>{
-                    
-                        return (
-                          <Post key={item._id} item = {item}/>
-                        )
-                      
+                    postList && postList.map((item,index)=>{                   
+                         return (
+                           <Post key={item._id} item = {item}/>
+                         )                                              
                     })
                   }
               </div>
@@ -88,19 +86,14 @@ const Home = () => {
                             </div>
                             
                           </div>
-                            <div className='bottom'>
-                              <div className='dob-send-input'>
-                                  <input type="text" placeholder='Gửi lời chúc mừng ...'/>
-                                  <div className='send-icon-wrapper'><RiSendPlane2Line/></div>
-                              </div>
-                            </div>
+                           
                           </>
                         )
                       })
                     }
                   
 
-                    <div className='dob-upcomming'>
+                    <div className='dob-upcomming' >
                       <div className='dob-icon'>
                           <LiaBirthdayCakeSolid/>
                       </div>
@@ -117,31 +110,6 @@ const Home = () => {
                     </div>
                 </div>
             
-
-
-                {/* <div className="right-recommend">
-                    <div className='top'>
-                      <span>Sinh nhật trong tháng này</span>
-                      <span onClick={notify}>Xem thêm</span>
-                    </div>
-                  
-                    <div className='list-wrapper'>
-                    {
-                      userDob.length > 0 && userDob.map(item =>{
-                        return (
-                            <div className='center'>           
-                              <img className='dob-user-img' src={item.avatar} alt="" />            
-                              <div className="user-wrapper">
-                            </div>                          
-                          </div>
-                        )
-                      })
-                    }
-                    </div>                           
-                  
-
-                   
-                </div> */}
             </div>
         </div>
      

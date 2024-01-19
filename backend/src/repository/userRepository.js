@@ -67,7 +67,7 @@ module.exports = {
     },
     getAll: async()=>{
         try {
-            return await User.find().populate(
+            return await User.find().sort({createdAt:-1}).populate(
                 {
                     path:'_id',
                     select:'-password',
@@ -93,6 +93,9 @@ module.exports = {
             throw error;
         }
     },
+
+
+
 
     create: async(data)=>{
         try {

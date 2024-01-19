@@ -154,6 +154,7 @@ module.exports = {
     },
 
     update: async(data,id)=>{
+        const {userId} = data; 
         try {
             const postExisted = await _postRepository.get(id); 
             if(!postExisted){
@@ -164,11 +165,13 @@ module.exports = {
                     data:null
                 }
             }
-
-            const postUpdated =  await _postRepository.update(id,data);
+            
+            console.log(postExisted.share.userShared); 
+            postExisted.share.userShared = postExisted.share.userShared.filter(item => !item.user.equals(userId)); 
+            const postUpdated =  await _postRepository.update(postExisted._id,postExisted);
             return {
                 success:true,
-                message:"Cập nhật bài viết thành công",
+                message:"Xóa chia sẻ bài viết thành công",
                 statusCode:200,
                 data:postUpdated
             }
@@ -266,6 +269,38 @@ module.exports = {
                     timeShare:moment().format()
                 })
                          
+            }
+
+            const postUpdated =  await _postRepository.update(postId,postExisted);
+
+
+            return {
+                success:true,
+                message:"Cập nhật bài viết thành công",
+                statusCode:200,
+                data:postUpdated
+            }
+
+        } catch (error) {
+            
+        }
+    },
+
+    lockPost:async(postId)=>{
+        try {
+            const postExisted = await _postRepository.get(postId); 
+            if(!postExisted){
+                return {
+                    success:false,
+                    message:"Bài viết không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+            if(postExisted.status === -1){
+                postExisted.status = 1;
+            }else{
+                postExisted.status = -1; 
             }
 
             const postUpdated =  await _postRepository.update(postId,postExisted);

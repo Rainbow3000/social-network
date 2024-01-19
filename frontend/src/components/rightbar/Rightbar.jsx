@@ -1,20 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import User from '../user/User'
 import './rightbar.scss'
 import { BiSearch } from "react-icons/bi";
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 import {Link} from 'react-router-dom'
-const Rightbar = () => {
+import {filterFriends} from '../../store/slice/userSlice'
 
+const Rightbar = () => {
+  const [text,setText] = useState(""); 
   const {userInfo} = useSelector(state => state.user); 
-  
+  const dispatch = useDispatch()
+
   return (
     <div className='right-container'>
         <div className='search-input'>
           <div className='search-icon'>
               <BiSearch/>
           </div>
-          <input type="text" placeholder='Tìm bạn bè ...' />
+          <input  type="text" placeholder='Tìm bạn bè ...' onChange={(e)=>dispatch(filterFriends(e.target.value))}/>
         </div>
 
         <div className='right-title'>

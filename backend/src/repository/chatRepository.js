@@ -2,18 +2,7 @@ const Chat = require('../model/chatModel');
 module.exports = {
     get: async(id)=>{
         try {
-            return await Chat.findById(id).populate(
-                {
-                    path:'children',
-                    populate:{
-                        path:'user',
-                        populate:{
-                            path:'_id'
-                        }
-                    }
-                    
-                }
-            ); 
+            return await Chat.findById(id)
         } catch (error) {
             throw error;
         }

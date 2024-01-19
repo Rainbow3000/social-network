@@ -12,6 +12,18 @@
     bottom: 0;
     background-color: rgba(128, 128, 128, 0.411);
   }
+  .overlay-call{
+    z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #eeeeee6c;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .app-left{
     flex: 1;
     height: 100vh;
@@ -43,3 +55,21 @@
   
 }
 
+
+.btn{
+  width: 120px;
+  height: 50px;
+  border: none;
+  cursor: pointer;
+  color: #FFFFFF;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+.btn-success{
+  background-color: rgb(31, 214, 31);
+}
+
+.btn-danger{
+  background-color: rgb(212, 60, 60);
+}

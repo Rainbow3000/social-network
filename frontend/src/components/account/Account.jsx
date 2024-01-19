@@ -116,7 +116,7 @@ const Account = () => {
             
                 
                 <div className='input-item'>
-                    <button type="submit" className='btn-update'>Cập nhật</button>
+                    <button type="submit" className='btn-update-pass'>Cập nhật</button>
                 </div>
             </div>
         </form>

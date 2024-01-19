@@ -26,6 +26,17 @@ export const getNotificationByUser = createAsyncThunk(
   }
 )
 
+export const updateNotifiList = createAsyncThunk(
+  'notifi/update',
+  async (id) => {
+    try {
+      const response = await _publicRequest.put(`notification/${id}`); 
+      return response.data
+    } catch (error) {
+      throw error?.response?.data
+    }
+  }
+)
 
 
 const notificationState = {
@@ -73,6 +84,22 @@ export const notificationSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false; 
     })
+
+    builder.addCase(updateNotifiList.fulfilled,(state,action) => {
+      state.isLoading = false;
+      state.notificationList = state.notificationList.map(item =>{
+        if(item._id === action.payload.data._id){
+        
+           item = action.payload.data; 
+        }
+        return item; 
+      })
+
+      state.unReadNumber = state.notificationList.filter(item => item.isReaded === false).length; 
+   
+    })
+
+
   },
 })
 

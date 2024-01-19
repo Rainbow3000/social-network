@@ -33,7 +33,7 @@ const UserChat = ({item,chatLengh,activeList}) => {
     getRecentChatItem(); 
   },[chatLengh])
 
-
+  console.log(chatItem); 
   return (
     <div className='user-chat-container' onClick={()=>handleGetChatUser(item)}>
         <div className='left'>
@@ -43,7 +43,24 @@ const UserChat = ({item,chatLengh,activeList}) => {
                 {
                   chatItem !== null && (chatItem[0]?.from._id._id === user.data._id ? (
                     <>
-                      <span>Bạn: <span style={{fontWeight:'normal'}}>{chatItem[0].content}</span></span>
+                    {
+                      chatItem[0]?.content !== "" && (
+                        <span>Bạn: <span style={{fontWeight:'normal'}}>{chatItem[0].content}</span></span>
+                      )
+                    }
+
+                    {
+                      chatItem[0]?.image !== "" && (
+                        <span>Bạn: <span style={{fontWeight:'normal'}}>đã gửi 1 ảnh</span></span>
+                      )
+                    }
+
+                    
+{
+                      chatItem[0]?.video !== ""  && (
+                        <span>Bạn: <span style={{fontWeight:'normal'}}>đã gửi 1 video</span></span>
+                      )
+                    }
                     </>
                   ):(
                     <>
@@ -63,9 +80,9 @@ const UserChat = ({item,chatLengh,activeList}) => {
                 </>
               )
             }
-            <div className='mess-num'>
+            {/* <div className='mess-num'>
               <span>3</span>
-            </div>
+            </div> */}
         </div>
     </div>
   )
