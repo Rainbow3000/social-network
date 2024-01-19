@@ -9,6 +9,14 @@ export const getCommentList = createAsyncThunk(
   }
 )
 
+export const removeComment = createAsyncThunk(
+  'comment/removeComment',
+   async (commentId) => {
+    const response = await _userRequest.delete(`comment/${commentId}`); 
+    return {commentId,message:response.data.message}
+  }
+)
+
 export const updatePostByOtherUser = createAsyncThunk(
   'comment/updatePostByOtherUser',
    async ({postId,userId}) => {
@@ -23,7 +31,7 @@ const commentState = {
   isSuccess:false,
   isLoading:false,
   isError:false,
-  error:null
+  error:null,
 }
 
 export const commentSlice = createSlice({
@@ -50,6 +58,15 @@ export const commentSlice = createSlice({
       state.isError = false;
       state.commentList = action.payload?.data?.reverse();
     })
+
+    builder.addCase(removeComment.fulfilled,(state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false;
+     
+    })
+
+
     builder.addCase(getCommentList.rejected, (state, action) => {
       state.isError = true;
       state.isSuccess = false;

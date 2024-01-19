@@ -77,6 +77,21 @@ export const getUserInfo = createAsyncThunk(
     return response.data
   }
 )
+
+
+export const updatePassword = createAsyncThunk(
+  'users/updatePassword',
+  async (data) => {
+    try {
+      const {accountId,accountData} = data; 
+      const response = await _userRequest.put(`account/password/${accountId}`,accountData); 
+      return response.data    
+    } catch (error) {
+      throw error?.response?.data
+    }
+  }
+)
+
   
 const userState = {
   isShowLoginForm:false,
@@ -110,10 +125,34 @@ export const userSlice = createSlice({
      },
     setIsSuccess:(state,action)=>{
       state.isSuccess = action.payload; 
-    }
+    },
+    resetUserSuccess:(state,action)=>{
+      state.isSuccess = false; 
+      state.successMessage = "";
+      state.isRecoverPassSuccess = false;
+    },
   },
 
   extraReducers:(builder)=>{
+
+    builder.addCase(updatePassword.pending, (state, action) => {
+      state.isLoading = true; 
+    })
+    builder.addCase(updatePassword.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.isSuccess = true; 
+      state.successMessage = action.payload.message
+      // state.blockingUser = action.payload.data; 
+
+    })
+    builder.addCase(updatePassword.rejected, (state, action) => {
+      state.isError = true;
+      state.error = action.error;
+      state.isLoading = false; 
+      state.success = false; 
+    })
 
     builder.addCase(getUserInfo.pending, (state, action) => {
       state.isLoading = true; 
@@ -188,10 +227,34 @@ export const userSlice = createSlice({
       state.isRecoverPassSuccess = false; 
     })
 
+    builder.addCase(updateUserInfo.pending, (state, action) => {
+      state.isLoading = true; 
+    })
+    builder.addCase(updateUserInfo.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.userInfo = action.payload?.data; 
+      if(state.user !== null){
+        state.user.data.avatar = action.payload?.data?.avatar; 
+        state.user.data.userName = action.payload?.data?._id.userName
+      }
+      localStorage.removeItem('user'); 
+      localStorage.setItem('user',JSON.stringify(state.user)); 
+      state.isSuccess = true; 
+      state.successMessage = action.payload.message
+    })
+    builder.addCase(updateUserInfo.rejected, (state, action) => {
+      state.user = null;
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
+
   }
 })
 
 
-export const {userLogout,setIsSuccess,setUserActive} = userSlice.actions
+export const {userLogout,setIsSuccess,setUserActive,resetUserSuccess} = userSlice.actions
 
 export default userSlice.reducer

@@ -16,7 +16,18 @@ module.exports = {
   login: (data) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const account = await _accountRepository.getByEmail(data?.email)
+        const account = await _accountRepository.getByEmail(data?.email);
+
+        if(account.status === -1){
+            reject({
+              success:false,
+              message:"Email:Tài khoản của bạn đã bị khóa",
+              statusCode:401,
+              data:null,
+          });
+          return
+        }
+
         if (account) {
           const decryptPass = CryptoJS.AES.decrypt(
             account.password,
@@ -26,7 +37,7 @@ module.exports = {
           const originPass = decryptPass.toString(CryptoJS.enc.Utf8); 
           if (originPass === data.password) {
             const accessToken = jwt.sign(
-              { userName: account.userName, isAdmin: account.isAdmin },
+              { userName: account.userName, role: account.role },
               process.env.JWT_TOKEN,
               {
                 expiresIn: "1d",
@@ -37,6 +48,9 @@ module.exports = {
 
             const user = await _userRepository.get(account._id);
             _account.avatar = user.avatar;
+
+            
+
             resolve({
               success:true,
               message:"Đăng nhập thành công",
@@ -87,7 +101,7 @@ module.exports = {
             const {password,..._accountRest} = _account._doc;
             const user = await _userRepository.create({_id:_accountRest._id,avatar:process.env.AVATAR_DEFAULT,dob:data?.dob,gender:data?.gender}); 
             const accessToken = jwt.sign(
-              { userName: _accountRest.userName, isAdmin: _accountRest.isAdmin},
+              { userName: _accountRest.userName, role: _accountRest.role},
               process.env.JWT_TOKEN,
               {
                 expiresIn: "1d",
@@ -213,6 +227,16 @@ module.exports = {
                     data:null              
                  }; 
             }  
+
+            if(accountExisted.status === -1){
+              return {
+                  success:false,
+                  message:"Email:Tài khoản của bạn đã bị khóa",
+                  statusCode:401,
+                  data:null              
+               }; 
+          }  
+
 
             const newPassword = generateRandomPassword(10); 
 

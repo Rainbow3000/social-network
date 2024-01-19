@@ -33,11 +33,12 @@ const UserChat = ({item,chatLengh,activeList}) => {
     getRecentChatItem(); 
   },[chatLengh])
 
-  console.log(chatItem); 
   return (
     <div className='user-chat-container' onClick={()=>handleGetChatUser(item)}>
         <div className='left'>
+          <div>
             <img src={item.avatar} alt="" />
+          </div>
             <div className='chat-content'>
                 <span>{item._id.userName}</span>          
                 {

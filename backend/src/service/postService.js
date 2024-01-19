@@ -74,6 +74,35 @@ module.exports = {
             
         }
     },
+
+    getByAdmin: async()=>{
+        try { 
+            const postList =  await _postRepository.getByAdmin(); 
+            return {
+                success:true,
+                message:"Lấy danh sách bài viết thành công",
+                statusCode:200,
+                data:postList
+            }
+        } catch (error) {
+            
+        }
+    },
+
+    getByAdminCreated: async(adminId)=>{
+        try { 
+            const postList =  await _postRepository.getByAdminCreated(adminId); 
+            return {
+                success:true,
+                message:"Lấy danh sách bài viết thành công",
+                statusCode:200,
+                data:postList
+            }
+        } catch (error) {
+            
+        }
+    },
+
     getDenouncePostList: async()=>{
         try { 
             const postList =  await _postRepository.getAll(); 
@@ -177,6 +206,63 @@ module.exports = {
             }
         } catch (error) {
             
+        }
+    },
+
+    confirmOffense: async(data,id)=>{
+        const {userList} = data; 
+        try {
+            const postExisted = await _postRepository.get(id); 
+            if(!postExisted){
+                return {
+                    success:false,
+                    message:"Bài viết không tồn tại",
+                    statusCode:404,
+                    data:null
+                }
+            }
+
+           
+            const {ioObject,socketObject,userOnline} = getSocketIo();
+            const admin = await _accountRepository.getAdmin(); 
+            if(admin){
+             
+                await Promise.all(userList.map(async item=>{
+                    const user = await _userRepository.get(item);        
+                    if(user){                    
+                        const notificationCreated = await _notitficationRepository.create({
+                            notifiType:'ADMIN',
+                            content:`Quản trị viên@ đã xác nhận đơn tố cáo của bạn với bài viết của @${postExisted.user._id.userName}`,
+                            fromUser:admin._id,
+                            createdAt:moment().format(),
+                            user:user._id._id
+                        })
+                              
+                        if(ioObject && socketObject){  
+                            if(userOnline.has(user._id._id.toString())){
+                                const socketId = userOnline.get(user._id._id.toString());
+                                socketObject.join(socketId) 
+                                ioObject.to(socketId).emit("admin-confirm-offence",notificationCreated);               
+                            }                        
+                        }
+                        
+                    }
+                    return user; 
+                }))           
+                
+            }
+            
+            
+            const postDeleted = await _postRepository.delete(postExisted._id);
+
+            return {
+                success:true,
+                message:"Xác nhận tố cáo thành công",
+                statusCode:200,
+                data:postDeleted
+            }
+        } catch (error) {
+            console.log(error)
         }
     },
 
@@ -329,6 +415,10 @@ module.exports = {
                     data:null
                 }
             }
+
+            const user = await _userRepository.get(postExisted.user._id); 
+            user.postNumber = user.postNumber - 1;
+             await _userRepository.update(user,user._id._id); 
 
             const postDeleted = await _postRepository.delete(id); 
             return {

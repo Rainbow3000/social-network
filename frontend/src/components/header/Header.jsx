@@ -26,11 +26,11 @@ const Header = () => {
   }
   return (
     <div className='header-container'>
-          <div className='header-input'>
-            <div className='search-icon'>
+          <div className='header-input' style={{border:'none'}}>
+            {/* <div className='search-icon'>
                 <BiSearch/>
             </div>
-            <input type="text" placeholder='Hôm nay bạn tìm gì ...'/>
+            <input type="text" placeholder='Hôm nay bạn tìm gì ...'/> */}
           </div>
           <div className='header-user'>
             <span>{user.data?.userName}</span>

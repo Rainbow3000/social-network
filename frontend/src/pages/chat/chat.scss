@@ -1,5 +1,10 @@
+@import '../../responsive'; 
 body{
     overflow-y: scroll;
+    @include lowPc{
+        width: 100vw;;
+        overflow: hidden   
+    }
 }
 .chat-container{
     background-color: #F9FAFB;
@@ -9,7 +14,11 @@ body{
     padding: 10px;
     color: #1E2A35;
     overflow: hidden;
+    @include lowPc{
+        width: 100vw;;
+        overflow: hidden
     
+    }
 }
 
 
@@ -20,6 +29,9 @@ body{
     background-color: #FFFFFF;
     border-radius: 10px;
     padding: 10px;
+    @include lowPc{
+        width:max-content
+    }
     .input-wrapper{
         width: 100%;
         display: flex;
@@ -35,7 +47,14 @@ body{
             align-items: center;
             border-radius: 10px;
             margin-left: 20px;
+            &:hover{
+                .action{
+                    display: block !important;
+                }
+            }
         }
+
+       
         .input{
             width: 100%;
             display: flex;
@@ -273,9 +292,30 @@ body{
                 .content-wrapper{
                    width: 70%;
                 }
-                .option-icon{
-                    font-size: 28px;
+                .action{
+                    display: none;
                     cursor: pointer;
+                    background-color: #EEEEEE;
+                    color: #1E2A35;
+                    &:hover{
+                       color: gray;
+                    }
+                }
+                .option-wraper{
+                    &:hover{
+                        .action{
+                            display: block !important;
+                        }
+                    }
+                }
+                .option-icon{               
+                    cursor: pointer;
+                    
+                    // &:hover{
+                    //     .action{
+                    //         display: block !important;
+                    //     }
+                    // }
                 }
             }
         }
@@ -355,3 +395,5 @@ body{
         align-items: center;
     }
 }
+
+

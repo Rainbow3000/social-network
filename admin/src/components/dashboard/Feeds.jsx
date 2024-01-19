@@ -53,7 +53,7 @@ const Feeds = () => {
       <CardBody>
         <CardTitle tag="h5">Hoạt động</CardTitle>
         <CardSubtitle className="mb-2 text-muted" tag="h6">
-          Các hoạt động gần đây
+        
         </CardSubtitle>
         <ListGroup flush className="mt-4">
         
@@ -71,9 +71,10 @@ const Feeds = () => {
               >
                 <i className="bi bi-bell"></i>
               </Button>
-              Thông báo
+              Thông báo chưa đọc
               <small className="ms-auto text-muted text-small">
-                  {notifiList.length}
+                  {notifiList?.filter(item => item.isReaded === false && item.notifiType !== 
+                    'ADMIN').length}
               </small>
             </ListGroupItem>
 
@@ -99,6 +100,7 @@ const Feeds = () => {
            </ListGroupItem>
 
 
+        
            <ListGroupItem
              
              action
@@ -111,26 +113,6 @@ const Feeds = () => {
                size="sm"
                color="danger"
              >
-               <i className="bi bi-chat-dots"></i>
-             </Button>
-             Tin nhắn mới
-             <small className="ms-auto text-muted text-small">
-                 {notifiList.length}
-             </small>
-           </ListGroupItem>
-
-           <ListGroupItem
-             
-             action
-             href="/"
-             tag="a"
-             className="d-flex align-items-center p-3 border-0"
-           >
-             <Button
-               className="rounded-circle me-3"
-               size="sm"
-               color="success"
-             >
                <i className="bi bi-flag"></i>
              </Button>
                 Bài viết bị tố cáo
@@ -138,6 +120,10 @@ const Feeds = () => {
                  {denounceList.length}
              </small>
            </ListGroupItem>
+
+
+         
+          
         </ListGroup>
 
 

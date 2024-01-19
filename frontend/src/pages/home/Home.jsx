@@ -69,7 +69,7 @@ const Home = () => {
                 <div className="right-recommend">
                     <div className='top'>
                       <span>Sinh nhật</span>
-                      <span onClick={notify}>Xem thêm</span>
+                      {/* <span onClick={notify}>Xem thêm</span> */}
                     </div>
                     {
                       userDob.length > 0 && userDob.map(item =>{

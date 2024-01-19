@@ -3,7 +3,13 @@ const Post = require('../model/postModel');
 module.exports = {
     get: async(id)=>{
         try {
-            return await Post.findById(id); 
+            return await Post.findById(id).populate({
+                path: 'user',
+                populate: {
+                    path:'_id',
+                    select:'userName'
+                }
+              }); 
         } catch (error) {
             throw error;
         }
@@ -11,7 +17,7 @@ module.exports = {
 
     getByUser: async(id)=>{
         try {
-            let postShare = await Post.find({'share.userShared.user':id}).populate({
+            let postShare = await Post.find({$and:[{'share.userShared.user':id},{status:1}]}).populate({
                 path: 'user',
                 populate: {
                     path:'_id',
@@ -33,9 +39,7 @@ module.exports = {
                 },
               )
 
-            
-
-              const postList =  await Post.find({user:id}).populate({
+              const postList =  await Post.find({ $and:[{status:1,user:id}]}).populate({
                   path: 'user',
                   populate: {
                       path:'_id',
@@ -88,7 +92,69 @@ module.exports = {
            throw error; 
         }
     },
+    getByAdmin: async()=>{
+        try {
+            return await Post.find().sort({createdAt:1}).populate(
+                {
+                    path: 'user',
+                    populate: {
+                        path:'_id',
+                        select:'userName email'
+                    }
+                },
+              ).populate(
+                {
+                    path: 'denounce.user',
+                    populate: {
+                        path:'_id',
+                        select:'userName email'
+                    }
+                },
+              ).populate(
+                {
+                    path: 'like.userLiked',
+                    populate: {
+                            path:'_id',
+                            select:'userName email'
+                    }
+                },
+              )
+        } catch (error) {
+           throw error; 
+        }
+    },
 
+    getByAdminCreated: async(adminId)=>{
+        try {
+            return await Post.find({user:adminId}).sort({createdAt:1}).populate(
+                {
+                    path: 'user',
+                    populate: {
+                        path:'_id',
+                        select:'userName email'
+                    }
+                },
+              ).populate(
+                {
+                    path: 'denounce.user',
+                    populate: {
+                        path:'_id',
+                        select:'userName email'
+                    }
+                },
+              ).populate(
+                {
+                    path: 'like.userLiked',
+                    populate: {
+                            path:'_id',
+                            select:'userName email'
+                    }
+                },
+              )
+        } catch (error) {
+           throw error; 
+        }
+    },
   
     create: async(data)=>{
         try {

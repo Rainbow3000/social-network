@@ -103,7 +103,7 @@ useEffect(()=>{
                 call.on('stream',remoteStream =>playStream(friendVideoRef,remoteStream))
                 dispatch(setIsShowCallLayout(true))
                 setCall(call); 
-                            
+                setStartCall(false);        
             }); 
         });
 

@@ -15,7 +15,6 @@ import { useState } from 'react';
 import Post from '../../components/dashboard/Post';
 const PostList = () => {
 
-    // const {isSuccess,successMessage} = useSelector(state => state.user); 
     const [singlePost,setSinglePost] = useState(null); 
     const [viewSinglePost,setViewSinglePost] = useState(false); 
     const {denounceList} = useSelector(state => state.post); 
@@ -97,13 +96,13 @@ const PostList = () => {
                             <div  className="d-flex align-items-center p-2 content-type"> 
                             {
                               tdata.content !== "" && (
-                                <span>Văn bản</span>
+                                <span>Văn bản &nbsp;</span>
                               )
                             }   
 
                             {
                                 tdata.images?.length > 0 && (
-                                  <spam>Ảnh</spam>
+                                  <span>Ảnh &nbsp;</span>
                                 )
                             }
 

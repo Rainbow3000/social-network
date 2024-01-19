@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {useDispatch,useSelector} from 'react-redux'
-import {getNotifiList,updateNotifiList,setIsSuccess} from '../../store/slice/notificationSlice'
+import {getNotifiList,updateNotifiList,setIsSuccess,createNotifi,deleteNotifi} from '../../store/slice/notificationSlice'
 import { ToastContainer, toast } from 'react-toastify';
 import { FaRegFaceSmile } from "react-icons/fa6";
 import 'react-toastify/dist/ReactToastify.css';
@@ -23,13 +23,21 @@ import EmojiPicker from "emoji-picker-react";
 import moment from 'moment'
 import 'moment/locale/vi';
 const Alerts = () => {
-  // For Dismiss Button with Alert
   const [visible, setVisible] = useState(true);
   const [content,setContent] = useState("");
   const dispatch = useDispatch(); 
   const {notifiList,isSuccess,successMessage} = useSelector(state => state.notification)
   const [emojiShow, setEmojiShow] = useState(false);
   const {user} = useSelector(state => state.user);
+  const [notifiAccountList,setNotifiAccountList] = useState([]); 
+  const [notifiPostList,setNotifiPostList] = useState([]); 
+  const [typeFilterAccount,setTypeFilterAccount] = useState("0"); 
+  const [typeFilterPost,setTypeFilterPost] = useState("0"); 
+  const [notiFilter,setNotifilter] = useState([]); 
+
+  const [notifiAccountView,setNotifiAccountView] = useState([])
+  const [notifiPostView,setNotifiPostView] = useState([])
+
   const onDismiss = () => {
     setVisible(false);
   };
@@ -48,10 +56,67 @@ const Alerts = () => {
     setContent(text);
 };
 
+const handleDeleteNoti = (id)=>{
+  dispatch(deleteNotifi(id))
+}
+
+const handleSubmit= (e)=>{
+    e.preventDefault();
+    dispatch(createNotifi({content}))
+    setEmojiShow(false); 
+    setContent(""); 
+}
 
   useEffect(()=>{
     dispatch(getNotifiList(user?.data._id)); 
   },[])
+
+  useEffect(()=>{
+    const post = notifiList.filter(item => item.notifiType === 'CREATE_POST'); 
+    const account = notifiList.filter(item => item.notifiType === 'CREATE_ACCOUNT'); 
+    setNotifiAccountList(account); 
+    setNotifiPostList(post);
+
+  },[notifiList])
+
+
+  
+  useEffect(()=>{
+      
+    let filter = [];
+    if(typeFilterAccount === "0"){
+    
+        filter = notifiAccountList.filter(item => item.isReaded === true || item.isReaded === false);
+
+        setNotifiAccountView(filter); 
+    }else if(typeFilterAccount === "1") {
+      
+        filter = notifiAccountList.filter(item => item.isReaded === false);
+        setNotifiAccountView(filter); 
+    }else{
+        filter = notifiAccountList.filter(item => item.isReaded === true);
+        setNotifiAccountView(filter); 
+    }
+  },[typeFilterAccount,notifiAccountList])
+
+
+  useEffect(()=>{
+      
+    let filter = [];
+    if(typeFilterPost === "0"){
+    
+        filter = notifiPostList.filter(item => item.isReaded === true || item.isReaded === false);
+
+        setNotifiPostView(filter); 
+    }else if(typeFilterPost === "1") {
+      
+        filter = notifiPostList.filter(item => item.isReaded === false);
+        setNotifiPostView(filter); 
+    }else{
+        filter = notifiPostList.filter(item => item.isReaded === true);
+        setNotifiPostView(filter); 
+    }
+  },[typeFilterPost,notifiPostList])
 
   return (
     <div>
@@ -66,7 +131,7 @@ const Alerts = () => {
             Gửi thông báo đến người dùng
           </CardTitle>
           <CardBody>
-            <Form>
+            <Form onSubmit={handleSubmit}>
               <FormGroup style={{position:'relative'}}>
                 <Label for="exampleEmail">Nội dung thông báo</Label>
                 <input
@@ -86,7 +151,7 @@ const Alerts = () => {
                                     )}
 
                                    
-                                    <FaRegFaceSmile className='icon' onClick={() => setEmojiShow(!emojiShow)}/>
+                                    <FaRegFaceSmile style={{cursor:'pointer'}} className='icon' onClick={() => setEmojiShow(!emojiShow)}/>
                                   
                                 </div>
               </FormGroup>
@@ -105,12 +170,16 @@ const Alerts = () => {
           <i className="bi bi-bell me-2"> </i>
           Thông báo tài khoản
           </span>
-        <button className="btn btn-success"><i class="bi bi-pencil-square"></i> Tạo thông báo</button>
+          <select onChange={(e)=> setTypeFilterAccount(e.target.value)} className='noti-filter'>
+                            <option  selected value="0">Tất cả</option>
+                            <option  value="1">Chưa đọc</option>
+                            <option  value="2">Đã đọc</option>
+                        </select>
         </CardTitle>
         <CardBody className="">
           <div className="mt-3">
             {
-              notifiList.length > 0 && notifiList.filter(item => item.notifiType === 'CREATE_ACCOUNT').sort((x,y)=>{
+              notifiAccountView.length > 0 && notifiAccountView.sort((x,y)=>{
                 return  new Date(y.createdAt) - new Date(x.createdAt)
               }).map(item =>{
                 return (
@@ -132,7 +201,7 @@ const Alerts = () => {
                         item.isReaded === true ? 'đã đọc':'chưa đọc'
                       }
                     </span>
-                    <i class="bi bi-x" style={{position:'absolute', right:5,top:3,cursor:'pointer',fontSize:20,fontWeight:'bold'}}></i>
+                    <i onClick={()=>handleDeleteNoti(item._id)} class="bi bi-x" style={{position:'absolute', right:5,top:3,cursor:'pointer',fontSize:20,fontWeight:'bold'}}></i>
                   </div>
                 </Alert>
                 )
@@ -143,14 +212,21 @@ const Alerts = () => {
       </Card>
 
       <Card>
-        <CardTitle tag="h6" className="border-bottom p-3 mb-0">
+        <CardTitle tag="h6" className="border-bottom p-3 mb-0" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <span>
           <i className="bi bi-bell me-2"> </i>
-          Thông báo bài viết
+           Thông báo bài viết
+          </span>
+          <select onChange={(e)=> setTypeFilterPost(e.target.value)} className='noti-filter'>
+                            <option  selected value="0">Tất cả</option>
+                            <option  value="1">Chưa đọc</option>
+                            <option  value="2">Đã đọc</option>
+                        </select>
         </CardTitle>
         <CardBody className="">
           <div className="mt-3">
             {
-              notifiList.length > 0 && notifiList.filter(item => item.notifiType === 'CREATE_POST').sort((x,y)=>{
+              notifiPostView.length > 0 && notifiPostView.sort((x,y)=>{
                 return  new Date(y.createdAt) - new Date(x.createdAt)
               }).map(item =>{
                 return (
@@ -172,6 +248,7 @@ const Alerts = () => {
                         item.isReaded === true ? 'đã đọc':'chưa đọc'
                       }
                     </span>
+                    <i onClick={()=>handleDeleteNoti(item._id)} class="bi bi-x" style={{position:'absolute', right:5,top:3,cursor:'pointer',fontSize:20,fontWeight:'bold'}}></i>
                   </div>
                 </Alert>
                 )

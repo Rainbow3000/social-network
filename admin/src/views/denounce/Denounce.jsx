@@ -3,7 +3,7 @@ import { Card, CardBody, CardTitle, CardImg, Table, Row,Col } from "reactstrap";
 
 import {useSelector,useDispatch} from 'react-redux'
 import {getUserList,deleteUser,setIsSuccess,blockAccount} from '../../store/slice/userSlice'
-import {getDenounceList} from '../../store/slice/postSlice'
+import {getDenounceList,lockPost,confirmOffence} from '../../store/slice/postSlice'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { IoLockClosedOutline } from "react-icons/io5";
@@ -19,20 +19,24 @@ const Denounce = () => {
     const {denounceList} = useSelector(state => state.post); 
     const [viewDetails,setViewDetails] = useState(false); 
     const [detailsDenouncePost,setDetailsDenouncePost] = useState(null); 
-    console.log(denounceList)
+
     const dispatch = useDispatch()
     const handleDeleteUser = (userId)=>{
       dispatch(deleteUser(userId)); 
     }
   
-    const handleBlockAccount = (userId)=>{
-      dispatch(blockAccount({id:userId})); 
-    }
   
     if(isSuccess){
       dispatch(getUserList()); 
       dispatch(setIsSuccess(false))
       toast.success(successMessage)
+    }
+
+    const handleSetChecked = (value,item)=>{
+        const userList = item?.denounce.map(item => item.user._id._id); 
+        if(value === true){
+           dispatch(confirmOffence({postId:item._id,userList}))
+        }
     }
   
     useEffect(()=>{
@@ -104,11 +108,8 @@ const Denounce = () => {
                           <i class="bi bi-eye text-primary"></i>
                         </div>
 
-                        <div style={{marginLeft:10}} className='icon-wrapper' title="Khóa tài viết"  onClick={()=> {
-                          setDetailsDenouncePost(tdata)
-                          setViewDetails(true)
-                        }}>
-                          <IoLockClosedOutline className='text-danger'/>
+                        <div style={{marginLeft:10, display:'flex',justifyContent:'center',alignItems:'center',padding:5}} className='icon-wrapper' title="Xác nhận">
+                           <input onChange={(e)=> handleSetChecked(e.target.checked, tdata)} type="checkbox" />
                         </div>
                     </div>
 

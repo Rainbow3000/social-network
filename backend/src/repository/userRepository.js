@@ -376,7 +376,7 @@ module.exports = {
                 ])
                 
                 const userList = await User.find({status: - 1}); 
-                return {user,blockNumber:user.length}
+                return {user,blockNumber:userList.length}
             } catch (error) {
               
             }

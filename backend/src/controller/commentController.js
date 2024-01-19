@@ -59,6 +59,7 @@ module.exports = {
     },
     delete: async(req,res,next)=>{
         try {
+            console.log(req.params?.id)
             const result = await commentService.delete(req.params?.id); 
             res.status(result.statusCode).json(result);
         } catch (error) {

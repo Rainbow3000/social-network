@@ -197,8 +197,7 @@ module.exports = {
         }
     },
     delete: async(id)=>{
-        try {
-            const {id} = data; 
+        try {        
             const notificationExisted = await _notificationRepository.get(id); 
             if(!notificationExisted){
                 return {

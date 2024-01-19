@@ -289,8 +289,13 @@ useEffect(()=>{
                                                     &nbsp;&nbsp;
                                                  {
                                                     item.from._id._id === user?.data._id && (
-                                               
-                                                <BiDotsHorizontal onClick={()=>handleDelete(item._id)} title='Xóa tin nhắn' className='option-icon'/>
+                                                <span style={{position:'relative'}} className='option-wraper'>
+                                                    <BiDotsHorizontal style={{width:24,color:'gray'}} title='Xóa tin nhắn' className='option-icon'/>
+                                                    <ul className='action' style={{position:'absolute',backgroundColor:'#EEEEEE',padding:'10px 20px',borderRadius:5,right:5,top:20}}>
+                                                        <li style={{listStyle:'none'}} onClick={()=>handleDelete(item._id)}>Xóa</li>
+                                                                                                 
+                                                    </ul>
+                                                </span>
                                                     )
                                                  }   
                                             </div>

@@ -3,7 +3,7 @@ import { IoTimeOutline } from "react-icons/io5";
 import moment from 'moment/dist/moment';
 import './comment.scss'
 import 'moment/dist/locale/vi'
-import {setChildrentComment,getCommentByParent} from '../../store/slice/postSlice'
+import {setChildrentComment,getCommentByParent,removeComment} from '../../store/slice/postSlice'
 import { useDispatch } from 'react-redux';
 import { IoMdArrowDropright } from "react-icons/io";
 moment.locale('vi');
@@ -13,6 +13,10 @@ const dispatch = useDispatch();
 
  const handleShowCommentChild = (commentId,postId,children)=>{   
     dispatch(getCommentByParent({commentId,postId}));  
+ }
+
+ const handleRemoveComment = (data)=>{
+    dispatch(removeComment(data)); 
  }
 
 
@@ -52,10 +56,12 @@ const dispatch = useDispatch();
             </div>
 
             <div className='user-action'>
-                <div style={{paddingLeft:20}}>
-                   
-                    <span onClick={()=>handleSetReplyComment(`${comment.user?._id?.userName} `,comment._id,level,comment.parent)}>Phản hồi</span>
-                    <span onClick={()=>handleShowCommentChild(comment._id,comment.post,comment.children)} className='child-comment-num'>{comment.children?.length} Bình luận</span>
+                <div style={{paddingLeft:20,display:'flex',justifyContent:'space-between',width:'100%'}}>  
+                    <span> 
+                        <span onClick={()=>handleShowCommentChild(comment._id,comment.post,comment.children)} className='child-comment-num'>{comment.children?.length} Bình luận</span>
+                        <span onClick={()=>handleSetReplyComment(`${comment.user?._id?.userName} `,comment._id,level,comment.parent)}>Phản hồi</span>
+                    </span>         
+                    <span onClick={()=>handleRemoveComment({commentId:comment._id,postId:comment.post,parentComment:comment.parent})} className='child-comment-num' style={{float:'right'}}>Xóa</span>
                 </div>
                 
             </div>

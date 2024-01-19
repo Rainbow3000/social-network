@@ -25,34 +25,20 @@ const navigation = [
     icon: "bi bi-bell",
   },
   {
-    title: "Tin nhắn",
-    href: "/chat",
-    icon: "bi bi-chat-left-dots",
-  },
-  {
     title: "Bài viết của tôi",
-    href: "/cards",
+    href: "/admin/post",
     icon: "bi bi-card-text",
   },
   {
     title: "Thông báo của tôi",
     href: "/grid",
-    icon: "bi bi-columns",
+    icon: "bi bi-bell",
   },
+
   {
-    title: "Hồ sơ của tôi",
-    href: "/table",
-    icon: "bi bi-layout-split",
-  },
-  {
-    title: "Tài khoản của tôi",
-    href: "/forms",
+    title: "Tài khoản",
+    href: "/account",
     icon: "bi bi-person",
-  },
-  {
-    title: "Thoát",
-    href: "/breadcrumbs",
-    icon: "bi bi-box-arrow-right",
   },
 
 ];
@@ -93,6 +79,8 @@ const Sidebar = () => {
               </Link>
             </NavItem>
           ))}
+
+           
        
         </Nav>
       </div>

@@ -1,6 +1,6 @@
 import { createSlice,createAsyncThunk } from '@reduxjs/toolkit'
 import { _userRequest } from '../../requestMethod'
-import {findComment,addComment} from '../../helper/commentHelper'
+import {findComment,addComment,removeTreeComment} from '../../helper/commentHelper'
 export const createPost = createAsyncThunk(
   'post/create',
    async (data) => {
@@ -110,6 +110,15 @@ export const getPostByUser= createAsyncThunk(
   }
 )
 
+
+export const removeComment = createAsyncThunk(
+  'comment/removeComment',
+   async ({commentId,postId,parentComment}) => {
+    const response = await _userRequest.delete(`comment/${commentId}`); 
+    return {commentId,postId,message:response.data.message,parentComment}
+  }
+)
+
 const postState = {
   isShowCreatePost:false,
   postList:[],
@@ -186,6 +195,8 @@ export const postSlice = createSlice({
         return post;
       })
     },
+
+
    
     resetPostSuccess:(state,action)=>{
       state.isSuccess = false; 
@@ -292,6 +303,51 @@ export const postSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false; 
     })
+
+
+    
+    builder.addCase(removeComment.pending, (state, action) => {
+      state.isLoading = true; 
+      state.isSuccess = false; 
+    })
+    builder.addCase(removeComment.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+
+  
+
+
+      state.postList = state.postList.map(post =>{
+        if(post._id === action.payload.postId){
+          post.comment.number --; 
+
+
+          if(action.payload.parentComment === null){
+              post.commentList = post.commentList.filter(item => item._id !== action.payload.commentId)
+          }else{
+            
+            post.commentList = post.commentList.map(comment =>{
+              removeTreeComment(comment,action.payload.parentComment,action.payload.commentId); 
+              return comment; 
+            })
+          }
+                   
+
+        }
+
+        return post; 
+      })
+      state.isSuccess = true;
+      state.postSuccessMessage = action.payload.message
+      
+    })
+    builder.addCase(removeComment.rejected, (state, action) => {
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
+
 
 
 

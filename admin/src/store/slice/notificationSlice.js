@@ -27,6 +27,34 @@ export const updateNotifiList = createAsyncThunk(
     }
   }
 )
+
+export const createNotifi = createAsyncThunk(
+  'notifi/createByAdmin',
+  async (data) => {
+    try {
+      const response = await _userRequest.post(`notification/byadmin`,data); 
+      return response.data
+    } catch (error) {
+      throw error?.response?.data
+    }
+  }
+)
+
+
+export const deleteNotifi = createAsyncThunk(
+  'notifi/deleteNotifi',
+  async (id) => {
+    try {
+      const response = await _userRequest.delete(`notification/${id}`); 
+      return {id,message:response.data.message}
+    } catch (error) {
+      throw error?.response?.data
+    }
+  }
+)
+
+
+
   
 const postState = {
   isLoading:false,
@@ -69,6 +97,22 @@ export const notificationSlice = createSlice({
         state.isLoading = false;
         state.notifiList = action.payload.data; 
         state.isError = false;
+       
+      })
+
+      builder.addCase(createNotifi.fulfilled,(state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true; 
+        state.successMessage = action.payload.message; 
+       
+      })
+
+
+      builder.addCase(deleteNotifi.fulfilled,(state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true; 
+        state.notifiList = state.notifiList.filter(item => item._id !== action.payload.id)
+        state.successMessage = action.payload.message; 
        
       })
   }

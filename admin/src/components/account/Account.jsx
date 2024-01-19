@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import uuid from 'react-uuid';
 import storage from '../../firebase'; 
 import {ref as refStorage,uploadBytes, deleteObject , getDownloadURL} from 'firebase/storage'
-import {updatePassword,getUserInfo, resetUserSuccess} from '../../store/slice/userSlice'
+import {updatePassword,getUserInfo,resetUserSuccess} from '../../store/slice/userSlice'
 import { useNavigate } from 'react-router-dom';
 import {toggleOverlay} from '../../store/slice/appSlice'
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,7 +14,7 @@ import { validateEmail, validateEmpty, validateMinLenght } from '../../helper/va
 
 const Account = () => {
 
-    const {user,userInfo,error,success,userSuccessMessage} = useSelector(state => state.user); 
+    const {user,userInfo,error,isSuccess,userSuccessMessage} = useSelector(state => state.user); 
     const [password,setPassword] = useState(""); 
     const [newPassword,setNewPassword] = useState(""); 
     const [reNewPassword,setReNewPassword] = useState(""); 
@@ -24,6 +24,7 @@ const Account = () => {
     const [passwordErr,setPasswordErr] = useState(""); 
     const dispatch = useDispatch(); 
     const navigate = useNavigate(); 
+
     let flag = 0; 
     const handleSubmitForm = (e)=>{
         e.preventDefault(); 
@@ -46,8 +47,6 @@ const Account = () => {
         if(flag === 1){
             return; 
         }
-
-        dispatch(toggleOverlay(true))
         const accountData = {
             password,
             newPassword
@@ -75,28 +74,26 @@ const Account = () => {
             if(error?.message?.split(':')[0] === "Password"){
                setPasswordErr(error?.message?.split(':')[1]); 
             }
-            dispatch(toggleOverlay(false)); 
+
         }
     
-    },[error,success])
+    },[error])
+
+
+    if(isSuccess){
+        toast.success(userSuccessMessage)
+        dispatch(resetUserSuccess()); 
+    }
     
 
-
-    if(success){
-        toast.success(userSuccessMessage)
-        dispatch(resetUserSuccess())
-         dispatch(toggleOverlay(false)); 
-    }
 
   return (
     <div className='edit-profile-container'>
         <ToastContainer/>
         <form onSubmit={handleSubmitForm}>
+        <h5 style={{marginLeft:28}}>Đổi mật khẩu</h5><br/>
             <div className='input-list-wrapper'>
-                <div className='input-item-wrap'>
-                    <label htmlFor="">Email</label>
-                    <input style={{fontSize:14}} disabled value={user?.data.email} type="email" />
-                </div>
+             
 
                 <div className='input-item-wrap'>
                     <label htmlFor="">Mật khẩu hiện tại</label>
@@ -104,7 +101,7 @@ const Account = () => {
                     <span className='text-err'>{emptyErr}</span>
                     <input placeholder='Mật khẩu hiện tại' value={password} type="password" onChange={(e)=>{
                         setPassword(e.target.value)
-                        setPasswordErr("");
+                        setPasswordErr(""); 
                         setEmptyErr(""); 
                     }}/>
                 </div>
@@ -112,8 +109,8 @@ const Account = () => {
                 <div className='input-item-wrap'>
                     <label htmlFor="">Mật khẩu mới</label>
                     <span className='text-err'>{passwordLengthErr}</span>
-                    <input placeholder='Mật khẩu mới' value={newPassword} type="password" onChange={(e) => {
-                        setNewPassword(e.target.value)
+                    <input placeholder='Mật khẩu mới' value={newPassword} type="password" onChange={(e) =>{
+                        setNewPassword(e.target.value);
                         setPasswordLengthErr(""); 
                     }}/>
                 </div>
@@ -123,7 +120,7 @@ const Account = () => {
                     <span className='text-err'>{passwordLengthErr}</span>
                     <span className='text-err'>{passwordNotMatchErr}</span>
                     <input placeholder='Nhập lại mật khẩu mới' value={reNewPassword} type="password" onChange={(e) => {
-                        setReNewPassword(e.target.value)
+                        setReNewPassword(e.target.value); 
                         setPasswordLengthErr(""); 
                         setPasswordNotMatchErr(""); 
                     }}/>
@@ -131,7 +128,7 @@ const Account = () => {
             
                 
                 <div className='input-item'>
-                    <button type="submit" className='btn-update-pass'>Cập nhật</button>
+                    <button type="submit" className='btn btn-success'>Cập nhật</button>
                 </div>
             </div>
         </form>

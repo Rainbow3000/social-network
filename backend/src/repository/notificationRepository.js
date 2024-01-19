@@ -23,7 +23,7 @@ module.exports = {
 
     getByUserId: async(id)=>{
         try {
-            return await Notification.find({user:id}).limit(20).sort({createdAy:-1}).populate(
+            return await Notification.find({user:id}).limit(20).sort({createdAt:-1}).populate(
                 {
                     path:'fromUser',
                     populate: { path: '_id' }

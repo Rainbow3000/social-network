@@ -1,29 +1,44 @@
 const jwt = require('jsonwebtoken'); 
 
 const verifyToken = (req,res,next)=>{
-
-    const authHeader  = req.headers.token; 
+    const authHeader  = req.headers; 
     if(authHeader){
-        const token = authHeader.split(" ")[1]; 
+        const token = authHeader.authorization.split(" ")[1]; 
         jwt.verify(token, process.env.JWT_TOKEN,(err,user)=>{
             if(err){
-                res.status(500).json('token is not valid !'); 
+                res.status(500).json({
+                    success:false,
+                    message:"Token không hợp lệ",
+                    statusCode:401,
+                    data:null          
+                }); 
             }
             req.user = user; 
+        
             next(); 
         })
     }else{
-        res.status(401).json('you are not authenticated !');
+        res.status(401).json({
+            success:false,
+            message:"Tài khoản không được xác thực",
+            statusCode:401,
+            data:null     
+        });
     }
 }
 
 
  const verifyTokenAndAuthorization = (req,res,next)=>{
     verifyToken(req,res,()=>{
-        if(req.user.isAdmin || req.user.id === req.params.id){
+        if(req.user.role ==='USER' || req.user.role ==='ADMIN'){
             next(); 
         }else{
-            res.status(403).json('You are not allowed to do that !');
+            res.status(403).json({
+                success:false,
+                message:"Tài khoản không có quyền",
+                statusCode:401,
+                data:null 
+            });
         }
     })
 }
@@ -31,10 +46,15 @@ const verifyToken = (req,res,next)=>{
 
  const verifyTokenAndAdmin  = (req,res,next)=>{
     verifyToken(req,res,()=>{
-        if(req.user.isAdmin){
+        if(req.user.role === 'ADMIN'){
             next(); 
         }else{
-            res.status(403).json('You are not allowed to do that !'); 
+            res.status(403).json({
+                success:false,
+                message:"Tài khoản không có quyền",
+                statusCode:401,
+                data:null 
+            }); 
         }
     })
 }

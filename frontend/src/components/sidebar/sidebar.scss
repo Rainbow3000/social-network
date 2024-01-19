@@ -1,3 +1,4 @@
+@import '../../responsive'; 
 .sidebar{
     width: 100%;
     height: 100%;
@@ -5,6 +6,9 @@
     flex-direction: column;
     align-items: center;
     padding-left: 50px;
+    @include lowPc{
+        display: none;
+    }
     #logo{
         width: 90%;
         height: 100px;

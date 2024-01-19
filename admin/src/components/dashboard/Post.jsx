@@ -18,13 +18,7 @@ const Post = ({post}) => {
           <span>{post.user._id.userName}</span>
           <span>{moment(post.createdDate).calendar()}</span>
         </div>
-        {/* <div className="dot-icon" onClick={()=>setIsShowAction(value => !value)}>
-          <i class="bi bi-three-dots"></i>
-          <ul className={isShowAction === true ?"list-action active":"list-action"}>
-              <li>Khóa bài viết</li>
-              <li>Xóa bài viết</li>
-          </ul>
-        </div> */}
+      
       </div>
       <span style={{paddingLeft:20}}>{post.content}</span>
       {

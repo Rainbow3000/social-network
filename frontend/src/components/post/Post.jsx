@@ -67,6 +67,7 @@ const Post = ({item,userIdProfile}) => {
     setShareNumber(item?.share?.number + 1); 
     const userId = user.data._id 
     dispatch(updatePostByOtherUser({postId,userId,type:2})); 
+    toast.success('Chia sẻ bài viết thành công')
   }
 
 
@@ -193,13 +194,9 @@ const handleDeletePost = (postId)=>{
 
 const handleSendDebounce = ()=>{
 
-    if(myContent.trim() !== ""){
-        setDenounceContent(oldState => [...oldState,`${denounceContent} ${myContent}`])
-    }
-
     const data = {
         user:user.data._id, 
-        denounceContent,
+        denounceContent:[...denounceContent,myContent.trim() !== "" && `${denounceContent.length + 1}.${myContent}`] ,
         postId:item._id
     }
     dispatch(createDenounce(data)); 
@@ -448,7 +445,7 @@ useEffect(()=>{
                 {
                     item?.commentList?.length > 0 && (
                     <div className='more-comment'>
-                        <span>Xem các bình luận trước</span>
+                        <span>Ẩn các bình luận</span>
                     </div>
                     )
                 }
@@ -516,7 +513,7 @@ useEffect(()=>{
                         {
                              user?.data?._id === item?.user?._id?._id && (
                                 <div className={ isShowActionActive === true ? 'post-action-item-wrapper active':'post-action-item-wrapper'}>            
-                                        <span onClick={()=>handleHiddenPost(item._id)}>Ẩn bài viết</span>
+                                        
                                         <span onClick={()=>handleDeletePost(item._id)}>Xóa bài viết</span>                                 
                                 </div>
                              )
@@ -525,7 +522,7 @@ useEffect(()=>{
                         {
                              user?.data?._id !== item?.user?._id?._id && (
                                 <div className={ isShowActionActive === true ? 'post-action-item-wrapper active':'post-action-item-wrapper'}>            
-                                        <span style={{margin:0}} onClick={()=>handleDenouncePost(item?.user?._id?._id)}>Báo cáo bài viết</span>                           
+                                        <span style={{margin:0}} onClick={()=>handleDenouncePost(item?.user?._id?._id)}>Tố cáo bài viết</span>                           
                                 </div>
                              )
                         }

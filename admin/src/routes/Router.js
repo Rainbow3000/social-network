@@ -12,10 +12,10 @@ const About = lazy(() => import("../views/About.jsx"));
 const Alerts = lazy(() => import("../views/ui/Alerts"));
 const Badges = lazy(() => import("../views/ui/Badges"));
 const Chat = lazy(() => import("../views/ui/Chat.js"));
-const Cards = lazy(() => import("../views/ui/Cards"));
+const AdminPostList = lazy(() => import("../views/ui/AdminPost.js"));
 const Grid = lazy(() => import("../views/ui/Grid"));
 const Tables = lazy(() => import("../views/ui/Tables"));
-const Forms = lazy(() => import("../views/ui/Forms"));
+const Account = lazy(() => import("../views/ui/Account.js"));
 const Breadcrumbs = lazy(() => import("../views/ui/Breadcrumbs"));
 const Login = lazy(()=> import("../views/login/Login.jsx")); 
 const PostList = lazy(()=> import("../views/postList/PostList.jsx")); 
@@ -34,10 +34,10 @@ const ThemeRoutes = [
       { path: "/alerts", exact: true, element: <Alerts /> },
       { path: "/badges", exact: true, element: <Badges /> },
       { path: "/chat", exact: true, element: <Chat /> },
-      { path: "/cards", exact: true, element: <Cards /> },
+      { path: "/admin/post", exact: true, element: <AdminPostList /> },
       { path: "/grid", exact: true, element: <Grid /> },
       { path: "/table", exact: true, element: <Tables /> },
-      { path: "/forms", exact: true, element: <Forms /> },
+      { path: "/account", exact: true, element: <Account /> },
       { path: "/breadcrumbs", exact: true, element: <Breadcrumbs /> },
       { path: "/post-list", exact: true, element: <PostList /> },
       { path: "/denounce", exact: true, element: <Denounce /> },

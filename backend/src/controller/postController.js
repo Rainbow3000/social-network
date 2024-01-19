@@ -28,6 +28,26 @@ module.exports = {
         }
     },
 
+    getByAdmin: async(req,res,next)=>{
+        try { 
+            const result =  await postService.getByAdmin(); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
+    getByAdminCreated: async(req,res,next)=>{
+        try { 
+            const result =  await postService.getByAdminCreated(req.params?.id); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
+
+
     getDenounceList: async(req,res,next)=>{
         
         try { 
@@ -50,6 +70,15 @@ module.exports = {
     update: async(req,res,next)=>{
         try {
             const result = await postService.update(req.body,req.params?.id); 
+            res.status(result.statusCode).json(result);
+        } catch (error) {
+            
+        }
+    },
+
+    confirmOffence: async(req,res,next)=>{
+        try {
+            const result = await postService.confirmOffense(req.body,req.params?.id); 
             res.status(result.statusCode).json(result);
         } catch (error) {
             

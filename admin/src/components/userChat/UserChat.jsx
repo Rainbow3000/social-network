@@ -37,7 +37,9 @@ const UserChat = ({item,chatLengh,activeList}) => {
   return (
     <div className='user-chat-container' onClick={()=>handleGetChatUser(item)}>
         <div className='left'>
+          <div style={{width:'max-content'}}>
             <img src={item.avatar} alt="" />
+          </div>
             <div className='chat-content'>
                 <span>{item._id.userName}</span>          
                 {
@@ -63,9 +65,7 @@ const UserChat = ({item,chatLengh,activeList}) => {
                 </>
               )
             }
-            <div className='mess-num'>
-              <span>3</span>
-            </div>
+            
         </div>
     </div>
   )

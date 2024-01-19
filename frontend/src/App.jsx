@@ -74,10 +74,19 @@ function App() {
      socket.current.on('notifi-accept-add-friend-single-user',(notifi)=>{
          dispatch(addNotifi(notifi));
       })
-
+     
       socket.current.on('receive-message-single-user',(msg)=>{
         dispatch(addChatCreated(msg));
      })   
+     
+     socket.current.on('admin-notifi',(notifi)=>{
+      dispatch(addNotifi(notifi));
+   })   
+
+
+    socket.current.on('admin-confirm-offence',(notifi)=>{
+      dispatch(addNotifi(notifi));
+    })   
 
      
     }
@@ -103,7 +112,7 @@ function App() {
       {callFromFriend !== null && callFromFriend?._id !== user.data._id &&  (
         <div className='overlay-call'>       
           <div style={{display:'flex',flexDirection:'column',alignItems:'center',backgroundColor:'#FFFFFF',padding:30,width:'auto'}}>
-            <img width={120} height={120} style={{borderRadius:'50%'}} src={user.data.avatar} alt=''/>
+            <img width={120} height={120} style={{borderRadius:'50%'}} src={callFromFriend.avatar} alt=''/>
             <span>Cuộc gọi đến từ <b>{callFromFriend?.userName}</b></span>
             <div>
               <button onClick={handleCancel} className='btn btn-danger'>Hủy</button>

@@ -35,10 +35,6 @@ export const updatePostByOtherUser = createAsyncThunk(
 )
 
 
-
-
-
-
 const chatState = {
   chatList:[],
   userChatCurrent:JSON.parse(localStorage.getItem('user-chat')) !== null ? JSON.parse(localStorage.getItem('user-chat')) : null,

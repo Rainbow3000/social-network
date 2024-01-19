@@ -31,7 +31,10 @@
             flex-direction: column;
             margin-left: 10px;
             font-weight: bold;
+            
             span{
+                display: block;
+                width: max-content;
                 &:last-child{
                     white-space: nowrap; 
                     max-width: 250px; 

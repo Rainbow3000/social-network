@@ -13,7 +13,7 @@ import storage from '../../firebase';
 import {ref as refStorage,uploadBytes, getDownloadURL} from 'firebase/storage'
 import EmojiPicker from "emoji-picker-react";
 import {createChat,getChatListByUser,setIsPlayCall,setIsShowCallLayout} from '../../store/slice/chatSlice'
-import {getUserInfo} from '../../store/slice/userSlice'
+import {getUserInfo,getUserList} from '../../store/slice/userSlice'
 import moment from 'moment/dist/moment';
 import 'moment/dist/locale/vi'
 moment.locale('vi');
@@ -31,6 +31,7 @@ const Chat = () => {
   const inputRef = useRef(); 
   const dispatch = useDispatch(); 
 
+  console.log(userList); 
 
   useEffect(() => {
     const scrollToBottomWithSmoothScroll = () => {
@@ -111,6 +112,10 @@ const handlePlayVideo = ()=>{
 }
 
 
+useEffect(()=>{
+    dispatch(getUserList()); 
+},[])
+
 
 useEffect(()=>{
     if(userChatCurrent !== null){
@@ -137,10 +142,10 @@ useEffect(()=>{
             </div>
 
             {
-                userInfo?.chats.length > 0 && (
+                userList.length > 0 && (
                     <div className='user-list-chat' >
                         {
-                            userInfo.chats.map(item =>{
+                           userList.map(item =>{
                                 return (
                                     <UserChat activeList={activeList} chatLengh = {chatList?.length} item={item}/>
                                 )
@@ -175,9 +180,7 @@ useEffect(()=>{
                             <span>{userChatCurrent?._id.userName}<span className={activeList?.find(item => item === userChatCurrent?._id._id) !== undefined ? 'status on':'status off'}></span></span>                         
                             <span style={{fontSize:13}}>{activeList?.find(item => item === userChatCurrent?._id._id) !== undefined ? 'Đang hoạt động':'Không hoạt động'}</span>
                         </div>
-                        <div className='pen-icon'>
-                            <FaVideo onClick={handlePlayVideo}/>               
-                        </div>
+                     
                     </div>
                     <div className="chat-bottom">
                         {
@@ -267,7 +270,7 @@ useEffect(()=>{
                         <div className='chat-input'>
                             <form className='input-wrapper' onSubmit={handleSubmitForm}>
                                 <input  onChange={(e)=> setContent(e.target.value)} ref={inputRef}  value={content} type="text" placeholder='Nhập tin nhắn của bạn ...'/>
-                                <div style={{display:'flex',alignItems:'center'}} className='icon-wrapper'>
+                                <div style={{display:'flex',alignItems:'center',border:'none'}} className='icon-wrapper' >
                                     {emojiShow && (
                                         <div className="emoji">
                                             <EmojiPicker theme='light' onEmojiClick={onEmojiClick} />

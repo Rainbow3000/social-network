@@ -10,6 +10,14 @@ import {findComment,addComment} from '../../helper/commentHelper'
       return response.data
     }
   )
+
+  export const createPost = createAsyncThunk(
+    'post/create',
+     async (data) => {
+      const response = await _userRequest.post('post',data); 
+      return response.data
+    }
+  )
   export const updateStatusPost = createAsyncThunk(
     'post/updateStatusPost',
      async ({postId,status}) => {
@@ -25,6 +33,16 @@ import {findComment,addComment} from '../../helper/commentHelper'
       return response.data
     }
   )
+
+  export const confirmOffence = createAsyncThunk(
+    'post/offence',
+     async (data) => {
+      const {postId,userList} = data; 
+      const response = await _userRequest.put(`post/offence/${postId}`,{userList}); 
+      return {message:response.data.message,postId}
+    }
+  )
+  
   
 
   export const deletePost = createAsyncThunk(
@@ -53,7 +71,7 @@ export const getPostList = createAsyncThunk(
     'post/getList',
     async () => {
       try {
-        const response = await _userRequest.get('post'); 
+        const response = await _userRequest.get('post/all/byadmin'); 
         return response.data
       } catch (error) {
         throw error?.response?.data
@@ -65,6 +83,14 @@ export const getPostList = createAsyncThunk(
     'comment/getPostByUser',
      async (userId) => {
       const response = await _userRequest.get(`post/getbyuser/${userId}`); 
+      return response.data
+    }
+  )
+
+  export const getPostByAdmin = createAsyncThunk(
+    'comment/getPostByAdmin',
+     async (userId) => {
+      const response = await _userRequest.get(`post/byAdmin/${userId}`); 
       return response.data
     }
   )
@@ -119,9 +145,11 @@ const postState = {
   postList:[],
   denounceList:[],
   postOfUser:[],
+  adminPostList:[],
   isError:false,
   error:null,
-  successMessage:""
+  successMessage:"",
+  
 }
 
 export const postSlice = createSlice({
@@ -140,6 +168,7 @@ export const postSlice = createSlice({
       state.isSuccess = false; 
       state.isShowCreatePost = true; 
     },
+   
     hiddenShowCreatePost:(state)=>{
         state.isShowCreatePost = false; 
     },
@@ -202,10 +231,79 @@ export const postSlice = createSlice({
     resetSuccess:(state,action)=>{
       state.isSuccess = false; 
       state.successMessage = "" 
+    },
+    resetPostSuccess:(state,action)=>{
+      state.isSuccess = false; 
+      state.successMessage = "" 
     }
+   
   },
 
   extraReducers:(builder)=>{
+
+
+
+    
+    builder.addCase(getPostByAdmin.pending, (state, action) => {
+      state.isLoading = true; 
+      state.isSuccess = false;
+    })
+    builder.addCase(getPostByAdmin.fulfilled,(state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false;
+  
+      state.adminPostList = action.payload.data; 
+
+    })
+    builder.addCase(getPostByAdmin.rejected, (state, action) => {
+      state.isError = true;
+      state.isSuccess = false;
+      state.error = action.payload;
+      state.isLoading = false;
+    })
+
+
+    builder.addCase(confirmOffence.pending, (state, action) => {
+      state.isLoading = true; 
+      state.isSuccess = false;
+    })
+    builder.addCase(confirmOffence.fulfilled,(state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false;
+      state.isSuccess = true; 
+      state.successMessage = action.payload.message; 
+      state.denounceList = state.denounceList.filter(item => item._id !== action.payload.postId);
+    })
+    builder.addCase(confirmOffence.rejected, (state, action) => {
+      state.isError = true;
+      state.isSuccess = false;
+      state.error = action.payload;
+      state.isLoading = false;
+    })
+
+    builder.addCase(createPost.pending, (state, action) => {
+      state.isLoading = true; 
+      state.isSuccess = false; 
+    })
+    builder.addCase(createPost.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.error = null; 
+      state.isError = false; 
+      state.isSuccess = true;
+      state.postSuccessMessage = action.payload.message; 
+      state.postList = [...state.postList,action.payload?.data].reverse();
+      state.postOfUser = [...state.postOfUser,action.payload?.data].reverse(); 
+
+    })
+    builder.addCase(createPost.rejected, (state, action) => {
+      state.isError = true;
+      state.error = action.payload;
+      state.isLoading = false; 
+    })
+    
+
 
 
     builder.addCase(getPostByUser.pending, (state, action) => {
@@ -239,6 +337,13 @@ export const postSlice = createSlice({
          }
          return item; 
       })
+
+      state.adminPostList = state.adminPostList.map(item =>{
+        if(item._id === action.payload.data._id){
+           item = action.payload.data;
+        }
+        return item; 
+     })
       state.isSuccess = true; 
       state.successMessage = action.payload.message; 
     })
@@ -498,6 +603,6 @@ export const postSlice = createSlice({
 })
 
 
-export const {userLogout,setIsSuccess,resetSuccess,setValueSuccess} = postSlice.actions
+export const {userLogout,setIsSuccess,resetSuccess,setValueSuccess,hiddenShowCreatePost,resetPostSuccess} = postSlice.actions
 
 export default postSlice.reducer

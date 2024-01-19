@@ -49,8 +49,10 @@ export const notificationSlice = createSlice({
   initialState:notificationState,
   reducers: {
     addNotifi:(state,action)=>{
-      state.notificationList = [action.payload,...state.notificationList];
-      state.unReadNumber = state.unReadNumber + 1;
+      if(state.notificationList.find(item => item._id === action.payload._id) === undefined){
+        state.notificationList = [action.payload,...state.notificationList];
+        state.unReadNumber = state.unReadNumber + 1;
+      }
     },
     notifiReset: () => notificationState
   },

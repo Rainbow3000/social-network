@@ -27,3 +27,17 @@ export const addComment = (comment,parentId,data)=>{
     }
 
 }
+
+export const removeTreeComment = (comment,parentId,commentId)=>{
+    if(comment._id === parentId){
+        comment.children = comment.children.filter(item => item._id !== commentId); 
+        return; 
+    }
+
+    if(comment.children?.length > 0){
+        comment.children.forEach(element =>{
+            removeTreeComment(element,parentId,commentId); 
+        })
+    }
+
+}

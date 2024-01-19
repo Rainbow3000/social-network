@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import './postAction.scss'
+import './postActionAdmin.scss'
 import { IoCloseSharp } from "react-icons/io5";
 import {hiddenShowCreatePost} from '../../store/slice/postSlice'
 import {useDispatch, useSelector} from 'react-redux'
@@ -123,12 +123,12 @@ return (
     <div className='user-avatar'>
       <img src={user?.data?.avatar} alt="" />
     </div>
-    <input id='create-input' value={content} placeholder='Nội dung bài viết của bạn ...' type="text" onChange={(e)=>{
+    <input value={content} placeholder='Nội dung bài viết của bạn ...' type="text" onChange={(e)=>{
       setContent(e.target.value)
       setContentErr("")
       setMediaErr("")
       }}/>
-    <input type="file" id='post-file' multiple onChange={handleChooseImage}/>
+    <input style={{display:'none'}} type="file" id='post-file' multiple onChange={handleChooseImage}/>
   </div>
   <div className="form-preview">
         {
@@ -163,12 +163,12 @@ return (
 
 
 
-        <div className='img-preview'> 
+        <div className='img-preview' style={{margin:20}}> 
           {images && images.map((imageUrl,index)=>{
             return (
-              <div key={index} className="img-item">
-                <IoCloseSharp className='close-img-icon'/>
-                <img src={`${imageUrl}`} alt="" />
+              <div key={index} className="img-item" style={{position:'relative',width:'max-content'}}>
+                <IoCloseSharp style={{position:'absolute',right:5,top:5,color:'#FFFFFF',cursor:'pointer'}} className='close-img-icon'/>
+                <img width={200} height={200} src={`${imageUrl}`} alt="" style={{borderRadius:5}} />
               </div>
             )
           })}
@@ -177,19 +177,19 @@ return (
 
   <div className='post-media'>   
       {emojiShow && (
-              <div className="emoji">
+              <div style={{cursor:'pointer'}} className="emoji">
                 <EmojiPicker theme='light' onEmojiClick={onEmojiClick} />
               </div>
             )}
     <div className='media-action'>
       <span className='text-error media'>{mediaErr}</span>
-      <ul>
-        <li><label htmlFor="post-file"><IoMdImages/>&nbsp; Ảnh/Video</label></li>
-        <li><FaRegFaceSmile  onClick={() => setEmojiShow(!emojiShow)}
+      <ul style={{listStyle:'none',marginLeft:30}}>
+        <li style={{cursor:'pointer'}}><label htmlFor="post-file"><IoMdImages style={{cursor:'pointer'}}/>&nbsp; Ảnh/Video</label></li>
+        <li style={{cursor:'pointer'}}><FaRegFaceSmile  onClick={() => setEmojiShow(!emojiShow)}
           />&nbsp; Cảm xúc</li>
       </ul>            
     </div>             
-    <button className='btn-create-post' type='submit'>Đăng</button>
+    <button style={{marginLeft:'60px'}} className="btn btn-success" type='submit'>Đăng</button>
   </div>
 </form>
 

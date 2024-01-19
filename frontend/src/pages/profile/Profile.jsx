@@ -251,15 +251,11 @@ const Profile = () => {
                     <li>Giới thiệu</li>
                     <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><BsGenderAmbiguous /></div> &nbsp;&nbsp;{GenderEnum[userInfo?.gender]}</li>
                     <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><LiaBirthdayCakeSolid /></div>&nbsp;&nbsp;{userInfo?.dob.split('-').reverse().join('-')}</li>
-
-                    <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><FiPhone /></div>&nbsp;&nbsp;{userInfo?.phoneNumber}</li>
-
+                    <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><FiPhone /></div>&nbsp;&nbsp;{userInfo?.phoneNumber !== null && userInfo?.phoneNumber !== undefined ? <span>{userInfo?.phoneNumber}</span> :'Chưa cập nhật'}</li>
                     <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><IoLocationOutline /></div>&nbsp;&nbsp;{userInfo?.address !== null && userInfo?.address !== undefined ? <span>{userInfo?.address}</span> :'Chưa cập nhật'}</li>
                     <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><RiFacebookBoxLine /></div>&nbsp;&nbsp;{userInfo?.facebookLink !== null && userInfo?.facebookLink !== undefined ? <span>{userInfo?.facebookLink}</span> :'Chưa cập nhật'}</li>
                     <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><FiTwitter /></div>&nbsp;&nbsp;{userInfo?.twitterLink !== null && userInfo?.twitterLink !== undefined ? <span>{userInfo?.twitterLink}</span> :'Chưa cập nhật'}</li>
-                    <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><FaInstagram /></div>&nbsp;&nbsp;{userInfo?.instagramLink !== null && userInfo?.instagramLink !== undefined  ? <span>{userInfo?.instagramLink}</span> :'Chưa cập nhật'}</li>
-                   
-                   
+                    <li><div style={{width:'max-content',display:'flex',justifyContent:'cen',alignItems:'center'}}><FaInstagram /></div>&nbsp;&nbsp;{userInfo?.instagramLink !== null && userInfo?.instagramLink !== undefined  ? <span>{userInfo?.instagramLink}</span> :'Chưa cập nhật'}</li>                 
                 </ul>
             </div>
 
